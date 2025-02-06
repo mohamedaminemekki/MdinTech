@@ -6,19 +6,29 @@ public class ParkingTicket {
     private int id;
     private int userID;
     private int parkingID;
+    private int parkingSlotID;
     private Date issuingDate;
     private Date expirationDate;
     private boolean status;
 
-    public ParkingTicket(int userID, int parkingID, Date issuingDate, Date expirationDate, String status) {
+    public ParkingTicket(int userID, int parkingID, int parkingSlotID, Date issuingDate, boolean status, Date expirationDate) {
         this.userID = userID;
         this.parkingID = parkingID;
+        this.parkingSlotID = parkingSlotID;
         this.issuingDate = issuingDate;
+        this.status = status;
         this.expirationDate = expirationDate;
-        this.status = true;
     }
 
     public ParkingTicket() {}
+
+    public int getParkingSlotID() {
+        return parkingSlotID;
+    }
+
+    public void setParkingSlotID(int parkingSlotID) {
+        this.parkingSlotID = parkingSlotID;
+    }
 
     public int getUserID() {
         return userID;

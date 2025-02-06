@@ -29,6 +29,10 @@ public class ParkingService implements Iservice<Parking> {
                     if (generatedKeys.next()) {
                         obj.setID(generatedKeys.getInt(1));
                         System.out.println("Parking saved with ID: " + obj.getID());
+
+                        // Call ParkingSlotService to create slots
+                        ParkingSlotService slotService = new ParkingSlotService();
+                        slotService.createNewParking(obj.getID(), obj.getCapacity());
                     }
                 }
             }
@@ -36,6 +40,7 @@ public class ParkingService implements Iservice<Parking> {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void update(Parking obj) {
