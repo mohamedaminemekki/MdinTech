@@ -1,6 +1,6 @@
 package org.example.mdintech.test;
 
-import org.example.mdintech.service.MailerModule.mailNotificationService;
+import org.example.mdintech.service.NotificationModule.mailNotificationService;
 
 public class MailNotificationTest {
     public static void main(String[] args) {

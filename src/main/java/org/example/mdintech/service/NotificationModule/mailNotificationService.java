@@ -1,4 +1,4 @@
-    package org.example.mdintech.service.MailerModule;
+    package org.example.mdintech.service.NotificationModule;
 
     import jakarta.mail.*;
     import jakarta.mail.internet.InternetAddress;
@@ -16,7 +16,7 @@
             Dotenv dotenv = Dotenv.load(); // Load environment variables from .env
             this.username = dotenv.get("EMAIL_USERNAME");
             this.password = dotenv.get("EMAIL_PASSWORD");
-        }    // Use an App Password (for Gmail)
+        }
 
         private Properties getMailProperties() {
             Properties props = new Properties();
