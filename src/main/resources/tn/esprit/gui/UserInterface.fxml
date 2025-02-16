@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.UserController"
+      spacing="10"
+      style="-fx-padding: 20;">
+
+    <Label text="Mes Factures à Payer" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+
+    <TableView fx:id="factureTable">
+        <columns>
+            <TableColumn fx:id="colId" text="ID">
+                <cellValueFactory><PropertyValueFactory property="id"/></cellValueFactory>
+            </TableColumn>
+
+            <TableColumn fx:id="colType" text="Type">
+                <cellValueFactory><PropertyValueFactory property="typeFacture"/></cellValueFactory>
+            </TableColumn>
+
+            <TableColumn fx:id="colDateFacture" text="Date Facture">
+                <cellValueFactory><PropertyValueFactory property="dateFacture"/></cellValueFactory>
+            </TableColumn>
+
+            <TableColumn fx:id="colMontant" text="Montant">
+                <cellValueFactory><PropertyValueFactory property="prixFact"/></cellValueFactory>
+            </TableColumn>
+
+            <TableColumn fx:id="colDateLimite" text="Échéance">
+                <cellValueFactory><PropertyValueFactory property="dateLimitePaiement"/></cellValueFactory>
+            </TableColumn>
+
+            <TableColumn fx:id="colDatePaiement" text="Date Paiement">
+                <cellValueFactory><PropertyValueFactory property="datePaiement"/></cellValueFactory>
+            </TableColumn>
+
+            <TableColumn fx:id="colAction" text="Actions"/>
+        </columns>
+    </TableView>
+
+</VBox>

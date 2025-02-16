@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.LoginController"
+      spacing="10"
+      style="-fx-padding: 20;">
+
+    <Label text="Connexion SONEDE" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+
+    <TextField fx:id="emailField" promptText="Email"/>
+    <PasswordField fx:id="passwordField" promptText="Mot de passe"/>
+
+    <Button text="Se Connecter" onAction="#handleLogin"/>
+</VBox>

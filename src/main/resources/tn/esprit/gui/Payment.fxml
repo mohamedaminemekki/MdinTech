@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.PaymentController"
+      spacing="20"
+      style="-fx-padding: 30; -fx-background-color: #f5f5f5;">
+
+    <!-- En-tête -->
+    <Label text="Paiement Des factures en ligne"
+           style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+    <!-- Montant à payer -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Montant à payer : " style="-fx-font-weight: bold;"/>
+        <Label fx:id="montantLabel" style="-fx-text-fill: #2ecc71; -fx-font-size: 18px;"/>
+    </HBox>
+
+    <!-- Formulaire de carte -->
+    <GridPane hgap="15" vgap="15">
+        <Label text="Nom sur la carte *" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="nomCarteField" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.columnSpan="3"/>
+
+        <Label text="Numéro de carte *" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="numeroCarteField" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="3"/>
+
+        <Label text="Date d'expiration *" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <HBox spacing="5" GridPane.rowIndex="2" GridPane.columnIndex="1">
+            <ComboBox fx:id="monthCombo" promptText="MM" style="-fx-pref-width: 80px;"/>
+            <Label text="/"/>
+            <ComboBox fx:id="yearCombo" promptText="AAAA" style="-fx-pref-width: 100px;"/>
+        </HBox>
+
+        <Label text="CVV *" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <PasswordField fx:id="cvvField" GridPane.rowIndex="3" GridPane.columnIndex="1" style="-fx-pref-width: 100px;"/>
+    </GridPane>
+
+    <!-- Bouton de confirmation -->
+    <Button text="Confirmer le paiement"
+            style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-width: 200px;"
+            onAction="#handlePaymentConfirmation"/>
+
+    <!-- Pied de page -->
+    <VBox spacing="10">
+        <Separator/>
+        <Label text="SONEDE - Paiement Sécurisé SSL"
+               style="-fx-text-fill: #666; -fx-font-style: italic;"/>
+    </VBox>
+</VBox>
