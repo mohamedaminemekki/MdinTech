@@ -1,73 +1,30 @@
 package tn.esprit.entities;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Recu {
     private int id;
-    private int userId; // ID de l'utilisateur
-    private int factureId; // ID de la facture
-    private Date datePaiement; // Date du paiement
-    private float montant; // Montant payé
+    private int factureId;
+    private LocalDate datePaiement;
+    private double montant;
 
-    // Constructeur
-    public Recu(int id, int userId, int factureId, Date datePaiement, float montant) {
+    // Constructeur simplifié
+    public Recu(int id, int factureId, LocalDate datePaiement, double montant) {
         this.id = id;
-        this.userId = userId;
         this.factureId = factureId;
         this.datePaiement = datePaiement;
         this.montant = montant;
     }
 
-    // Getters et Setters
-    public int getId() {
-        return id;
-    }
+    // Getters/Setters
+    public int getId() { return id; }
+    public int getFactureId() { return factureId; }
+    public LocalDate getDatePaiement() { return datePaiement; }
+    public double getMontant() { return montant; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public void setId(int id) { this.id = id; }
+    public void setFactureId(int factureId) { this.factureId = factureId; }
 
-    public int getUserId() {
-        return userId;
-    }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public int getFactureId() {
-        return factureId;
-    }
-
-    public void setFactureId(int factureId) {
-        this.factureId = factureId;
-    }
-
-    public Date getDatePaiement() {
-        return datePaiement;
-    }
-
-    public void setDatePaiement(Date datePaiement) {
-        this.datePaiement = datePaiement;
-    }
-
-    public float getMontant() {
-        return montant;
-    }
-
-    public void setMontant(float montant) {
-        this.montant = montant;
-    }
-
-    // Méthode toString
-    @Override
-    public String toString() {
-        return "Recu{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", factureId=" + factureId +
-                ", datePaiement=" + datePaiement +
-                ", montant=" + montant +
-                '}';
-    }
+    // Setters si nécessaire...
 }

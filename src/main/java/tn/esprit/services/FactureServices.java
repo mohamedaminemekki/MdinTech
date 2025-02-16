@@ -4,12 +4,13 @@ import tn.esprit.entities.Facture;
 import tn.esprit.utils.MyDatabase;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FactureServices implements IService<Facture> {
 
-    Connection con;
+    private final Connection con;
 
     public FactureServices() {
         con = MyDatabase.getInstance().getCon();
@@ -17,78 +18,132 @@ public class FactureServices implements IService<Facture> {
 
     @Override
     public List<Facture> readList() throws SQLException {
-        String query = "SELECT * FROM `facture`";
+        String query = "SELECT * FROM facture";
         List<Facture> factures = new ArrayList<>();
-        Statement stm = con.createStatement();
-        ResultSet rs = stm.executeQuery(query);
-        while (rs.next()) {
-            Facture f = new Facture(
-                    rs.getInt("id"),
-                    rs.getDate("date_facture"),
-                    rs.getFloat("prix_fact"), // Si la colonne prix_fact est de type FLOAT
-                    rs.getString("type_facture"),
-                    rs.getBoolean("state"),
-                    rs.getInt("user_id")
-            );
 
-            factures.add(f);
+        try (Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            while (rs.next()) {
+                Facture f = new Facture(
+                        rs.getInt("id"),
+                        rs.getDate("date_facture").toLocalDate(),
+                        rs.getDate("date_limite_paiement").toLocalDate(),
+                        rs.getFloat("prix_fact"),
+                        rs.getString("type_facture"),
+                        rs.getBoolean("state"),
+                        rs.getString("user_cin")
+                );
+                factures.add(f);
+            }
         }
         return factures;
     }
 
-    @Override
-    public void add(Facture facture) throws SQLException {
-        String query = "INSERT INTO `facture`(`date_facture`, `prix_fact`, `type_facture`, `state`, `user_id`) VALUES (?,?,?,?,?)";
-        PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-        ps.setDate(1, new java.sql.Date(facture.getDate().getTime()));
-        ps.setFloat(2, facture.getPrixFact());
-        ps.setString(3, facture.getTypeFacture());
-        ps.setBoolean(4, facture.isState());
-        ps.setInt(5, facture.getUserId());
+    public List<Facture> getFacturesByUser(String cin) throws SQLException {
+        List<Facture> factures = new ArrayList<>();
+        String query = "SELECT * FROM facture WHERE user_cin = ?";
 
-        // Exécution de l'insertion
-        ps.executeUpdate();
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, cin);
+            ResultSet rs = ps.executeQuery();
 
-        // Récupération de l'ID généré
-        ResultSet generatedKeys = ps.getGeneratedKeys();
-        if (generatedKeys.next()) {
-            facture.setId(generatedKeys.getInt(1));  // Récupération du premier ID généré
-        } else {
-            throw new SQLException("Failed to retrieve the generated ID for facture.");
+            while (rs.next()) {
+                Facture facture = new Facture(
+                        rs.getInt("id"),
+                        rs.getDate("date_facture").toLocalDate(),
+                        rs.getDate("date_limite_paiement").toLocalDate(),
+                        rs.getFloat("prix_fact"),
+                        rs.getString("type_facture"),
+                        rs.getBoolean("state"),
+                        rs.getString("user_cin")
+                );
+
+                // Ajouter cette ligne pour récupérer la date de paiement
+                Date datePaiement = rs.getDate("date_paiement");
+                if (datePaiement != null) {
+                    facture.setDatePaiement(datePaiement.toLocalDate());
+                }
+
+                factures.add(facture);
+            }
         }
+        return factures;
     }
 
+
     @Override
-    public void addP(Facture facture) throws SQLException {
-        add(facture); // Avoid duplicate code by calling the add method
+    public void add(Facture facture) throws SQLException {
+        String query = "INSERT INTO facture (date_facture, date_limite_paiement, prix_fact, type_facture, state, user_cin) VALUES (?,?,?,?,?,?)";
+
+        try (PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setDate(1, java.sql.Date.valueOf(facture.getDateFacture()));
+            ps.setDate(2, java.sql.Date.valueOf(facture.getDateLimitePaiement()));
+            ps.setFloat(3, facture.getPrixFact());
+            ps.setString(4, facture.getTypeFacture());
+            ps.setBoolean(5, facture.isState());
+            ps.setString(6, facture.getUserCIN());
+
+            ps.executeUpdate();
+
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    facture.setId(generatedKeys.getInt(1));
+                }
+            }
+        }
+    }
+    public void updatePaymentStatus(Facture facture) throws SQLException {
+        String query = "UPDATE facture SET state = ?, date_paiement = ? WHERE id = ?";
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setBoolean(1, facture.isState());
+            ps.setDate(2, Date.valueOf(facture.getDatePaiement()));
+            ps.setInt(3, facture.getId());
+            ps.executeUpdate();
+        }
     }
 
     @Override
     public void update(Facture facture) throws SQLException {
-        String query = "UPDATE `facture` SET `date_facture` = ?, `type_facture` = ?, `state` = ?, `user_id` = ? WHERE `id` = ?";
-        PreparedStatement ps = con.prepareStatement(query);
-        ps.setDate(1, new java.sql.Date(facture.getDate().getTime()));
-        ps.setString(2, facture.getTypeFacture());
-        ps.setBoolean(3, facture.isState());
-        ps.setInt(4, facture.getUserId());  // L'ID de l'utilisateur
-        ps.setInt(5, facture.getId());
-        int rowsUpdated = ps.executeUpdate();
-        if (rowsUpdated > 0) {
-            System.out.println("Facture updated successfully!");
-        } else {
-            System.out.println("No facture found with ID: " + facture.getId());
+        String query = "UPDATE facture SET "
+                + "date_facture = ?, "
+                + "date_limite_paiement = ?, "
+                + "prix_fact = ?, "
+                + "type_facture = ?, "
+                + "state = ?, "
+                + "date_paiement = ?, " // Ajouté
+                + "user_cin = ? "
+                + "WHERE id = ?";
+
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setDate(1, Date.valueOf(facture.getDateFacture()));
+            ps.setDate(2, Date.valueOf(facture.getDateLimitePaiement()));
+            ps.setFloat(3, facture.getPrixFact());
+            ps.setString(4, facture.getTypeFacture());
+            ps.setBoolean(5, facture.isState());
+            ps.setDate(6, facture.getDatePaiement() != null ?
+                    Date.valueOf(facture.getDatePaiement()) : null);
+            ps.setString(7, facture.getUserCIN());
+            ps.setInt(8, facture.getId());
+
+            ps.executeUpdate();
         }
     }
 
+
     public void delete(int id) throws SQLException {
-        String query = "DELETE FROM `facture` WHERE `id` = ?";
-        PreparedStatement ps = con.prepareStatement(query);
-        ps.setInt(1, id);
-        int rowsDeleted = ps.executeUpdate();
-        if (rowsDeleted > 0) {
-            System.out.println("Facture deleted successfully!");
-        } else {
-            System.out.println("No facture found with ID: " + id);
+        String query = "DELETE FROM facture WHERE id=?";
+
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
         }
     }
+
+    // Méthode optionnelle si nécessaire
+    @Override
+    public void addP(Facture facture) throws SQLException {
+        add(facture); // Ou implémentation spécifique
+    }
+
 }

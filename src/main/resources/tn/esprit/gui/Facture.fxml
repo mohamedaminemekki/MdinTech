@@ -1,59 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
 
-<?import javafx.scene.control.cell.PropertyValueFactory?>
-<VBox xmlns="http://javafx.com/javafx/17"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="tn.esprit.controllers.FactureController"
-      spacing="10"
-      style="-fx-padding: 20;">
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.FactureController"
+            stylesheets="@style.css">
 
-    <GridPane hgap="10" vgap="10" style="-fx-padding: 10;">
-        <Label text="Date Facture:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-        <DatePicker fx:id="dateField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+    <left>
+        <VBox spacing="15" style="-fx-background-color: #2c3e50; -fx-padding: 20; -fx-pref-width: 200;">
+            <Label text="Admin Dashboard" style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;"/>
+            <Button text="Nouvelle Facture" onAction="#handleAddDialog" style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
+            <Separator style="-fx-border-color: #34495e;"/>
+            <Button text="Actualiser" onAction="#refreshTable" style="-fx-background-color: #34495e; -fx-text-fill: white;"/>
+        </VBox>
+    </left>
 
-        <Label text="Prix:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-        <TextField fx:id="prixField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-
-        <Label text="Type:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-        <TextField fx:id="typeField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-
-        <Label text="État:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-        <CheckBox fx:id="stateCheckbox" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-
-        <Button text="Ajouter" onAction="#handleAdd" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-        <Button text="Supprimer" onAction="#handleDelete" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-    </GridPane>
-
-    <TableView fx:id="factureTable" style="-fx-margin-top: 20;">
-        <columns>
-            <TableColumn text="ID" prefWidth="50">
-                <cellValueFactory>
-                    <PropertyValueFactory property="id"/>
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn text="Date" prefWidth="100">
-                <cellValueFactory>
-                    <PropertyValueFactory property="date"/>
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn text="Prix" prefWidth="80">
-                <cellValueFactory>
-                    <PropertyValueFactory property="prixFact"/>
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn text="Type" prefWidth="150">
-                <cellValueFactory>
-                    <PropertyValueFactory property="typeFacture"/>
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn text="État" prefWidth="80">
-                <cellValueFactory>
-                    <PropertyValueFactory property="state"/>
-                </cellValueFactory>
-            </TableColumn>
-        </columns>
-    </TableView>
-</VBox>
+    <center>
+        <VBox spacing="20" style="-fx-padding: 30;">
+            <Label text="Gestion des Factures" style="-fx-font-size: 24; -fx-text-fill: #2c3e50; -fx-font-weight: bold;"/>
+            <TableView fx:id="factureTable" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);"/>
+        </VBox>
+    </center>
+</BorderPane>

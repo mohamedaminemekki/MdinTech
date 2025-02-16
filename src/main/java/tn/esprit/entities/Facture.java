@@ -1,93 +1,67 @@
 package tn.esprit.entities;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Facture {
     private int id;
-    private Date date;
+    private LocalDate dateFacture;
+    private LocalDate dateLimitePaiement;
     private float prixFact;
     private String typeFacture;
     private boolean state;
-    private int userId;  // L'ID de l'utilisateur associé à la facture
+    private String userCIN;
+    private List<Recu> paiements = new ArrayList<>();
+    private LocalDate datePaiement;
 
-    // Constructeur avec les 6 paramètres
-    public Facture(int id, Date date, float prixFact, String typeFacture, boolean state, int userId) {
+    public Facture(int id, LocalDate dateFacture, LocalDate dateLimitePaiement, float prixFact,
+                   String typeFacture, boolean state, String userCIN) {
         this.id = id;
-        this.date = date;
+        this.dateFacture = dateFacture;
+        this.dateLimitePaiement = dateLimitePaiement;
         this.prixFact = prixFact;
         this.typeFacture = typeFacture;
         this.state = state;
-        this.userId = userId;  // Initialisation de l'ID de l'utilisateur
+        this.userCIN = userCIN;
     }
 
-    // Constructeur sans userId pour les cas où il n'est pas fourni (utile pour la création de Facture sans ID utilisateur)
-    public Facture(int id, Date date, float prixFact, String typeFacture, boolean state) {
-        this.id = id;
-        this.date = date;
-        this.prixFact = prixFact;
-        this.typeFacture = typeFacture;
-        this.state = state;
-    }
+    // Getters & Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    // Getters et Setters
-    public int getId() {
-        return id;
-    }
+    public LocalDate getDateFacture() { return dateFacture; }
+    public void setDateFacture(LocalDate dateFacture) { this.dateFacture = dateFacture; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public LocalDate getDateLimitePaiement() { return dateLimitePaiement; }
+    public void setDateLimitePaiement(LocalDate dateLimitePaiement) { this.dateLimitePaiement = dateLimitePaiement; }
 
-    public Date getDate() {
-        return date;
-    }
+    public float getPrixFact() { return prixFact; }
+    public void setPrixFact(float prixFact) { this.prixFact = prixFact; }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+    public String getTypeFacture() { return typeFacture; }
+    public void setTypeFacture(String typeFacture) { this.typeFacture = typeFacture; }
 
-    public float getPrixFact() {
-        return prixFact;
-    }
+    public boolean isState() { return state; }
+    public void setState(boolean state) { this.state = state; }
 
-    public void setPrixFact(float prixFact) {
-        this.prixFact = prixFact;
-    }
+    public String getUserCIN() { return userCIN; }
+    public void setUserCIN(String userCIN) { this.userCIN = userCIN; }
+    public List<Recu> getPaiements() { return paiements; }
+    public void setPaiements(List<Recu> paiements) { this.paiements = paiements; }
+    public LocalDate getDatePaiement() { return datePaiement; }
+    public void setDatePaiement(LocalDate datePaiement) { this.datePaiement = datePaiement; }
 
-    public String getTypeFacture() {
-        return typeFacture;
-    }
-
-    public void setTypeFacture(String typeFacture) {
-        this.typeFacture = typeFacture;
-    }
-
-    public boolean isState() {
-        return state;
-    }
-
-    public void setState(boolean state) {
-        this.state = state;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    // Méthode toString
     @Override
     public String toString() {
         return "Facture{" +
                 "id=" + id +
-                ", date=" + date +
+                ", dateFacture=" + dateFacture +
+                ", dateLimitePaiement=" + dateLimitePaiement +
                 ", prixFact=" + prixFact +
                 ", typeFacture='" + typeFacture + '\'' +
                 ", state=" + state +
-                ", userId=" + userId +
+                ", userCIN='" + userCIN + '\'' +
                 '}';
     }
 }
