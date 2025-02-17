@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.AdminController"
+            prefWidth="800" prefHeight="600">
+
+    <!-- Titre -->
+    <Label text="Interface Admin" layoutX="300" layoutY="20" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+
+    <!-- Liste des services hospitaliers -->
+    <ListView fx:id="serviceListView" layoutX="50" layoutY="80" prefWidth="700" prefHeight="300" />
+
+    <!-- Boutons principaux -->
+    <HBox layoutX="50" layoutY="400" spacing="15">
+        <Button fx:id="addServiceButton" text="Ajouter Service" />
+        <Button fx:id="doctorListButton" text="Liste Médecins" />
+        <Button fx:id="appointmentListButton" text="Liste Rendez-vous" />
+    </HBox>
+
+    <!-- Espacement pour alignement -->
+    <VBox layoutX="50" layoutY="450" spacing="10">
+        <Region prefHeight="20"/>
+    </VBox>
+
+</AnchorPane>

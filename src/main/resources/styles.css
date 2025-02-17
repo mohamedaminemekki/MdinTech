@@ -1,0 +1,95 @@
+/* Styles généraux */
+.root {
+    -fx-background-color: #F8F9FA;
+    -fx-font-family: 'Roboto', sans-serif;
+}
+
+/* Titres */
+.label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #007BFF;
+}
+
+/* ListView (Liste des services hospitaliers) */
+.list-view {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 8px;
+    -fx-padding: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 2, 2);
+}
+
+.list-cell {
+    -fx-padding: 15px;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 8px;
+    -fx-font-size: 14px;
+    -fx-text-fill: black;
+}
+
+/* Style pour l'élément sélectionné */
+.list-cell:filled:selected {
+    -fx-background-color: #007BFF;
+    -fx-text-fill: white;
+}
+
+/* Style des boutons généraux */
+.button {
+    -fx-background-color: #007BFF;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 18px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+    -fx-transition: 0.3s;
+}
+
+.button:hover {
+    -fx-background-color: #0056b3;
+}
+
+/* Bouton spécifique pour l'ajout de service */
+#addServiceButton {
+    -fx-background-color: #28A745;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 20px;
+}
+
+#addServiceButton:hover {
+    -fx-background-color: #218838;
+}
+
+/* Style pour les boutons Modifier et Supprimer */
+.modify-button {
+    -fx-background-color: #FFC107;
+    -fx-text-fill: black;
+    -fx-padding: 8px 16px;
+    -fx-border-radius: 5px;
+}
+
+.modify-button:hover {
+    -fx-background-color: #E0A800;
+}
+
+.delete-button {
+    -fx-background-color: #DC3545;
+    -fx-text-fill: white;
+    -fx-padding: 8px 16px;
+    -fx-border-radius: 5px;
+}
+
+.delete-button:hover {
+    -fx-background-color: #C82333;
+}
+
+/* Style pour le texte dans la liste des services */
+.list-cell-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+}
+
+
