@@ -1,0 +1,158 @@
+/* Background */
+.background {
+    -fx-background-color: linear-gradient(to bottom, #1e3c72, #2a5298);
+    -fx-padding: 40px;
+}
+
+/* Title */
+.title {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+/* Product Card */
+.product-card {
+    -fx-padding: 20px;
+    -fx-spacing: 10px;
+    -fx-alignment: center;
+    -fx-border-color: #ffffff;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 15px;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 8, 0, 0, 4);
+    -fx-pref-width: 220px;
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.product-card:hover {
+    -fx-background-color: #f0f7ff;
+    -fx-scale-x: 1.07;
+    -fx-scale-y: 1.07;
+}
+
+/* Product Name */
+.product-name {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e3c72;
+}
+
+/* Product Price */
+.product-price {
+    -fx-font-size: 18px;
+    -fx-text-fill: #0288d1;
+    -fx-font-weight: bold;
+}
+
+/* Button */
+.add-button {
+    -fx-background-color: #0288d1;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 15px;
+    -fx-border-radius: 8px;
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.add-button:hover {
+    -fx-background-color: #005f99;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+/* Quantity Buttons */
+.quantity-button {
+    -fx-background-color: #0288d1;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 5px 10px;
+    -fx-border-radius: 5px;
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.quantity-button:hover {
+    -fx-background-color: #005f99;
+}
+
+/* Quantity Label */
+.quantity-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e3c72;
+}
+
+/* Cart Sidebar */
+.cart-sidebar {
+    -fx-background-color: #ffffff;
+    -fx-padding: 20px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 0 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 10, 0, 0, 0);
+}
+
+.cart-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e3c72;
+}
+
+.cart-list {
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+    -fx-font-size: 16px;
+}
+
+.total-price {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0288d1;
+}
+
+.confirm-button {
+    -fx-background-color: #4caf50;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 8px;
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.confirm-button:hover {
+    -fx-background-color: #388e3c;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* Quantity Spinner */
+.quantity-spinner {
+    -fx-font-size: 16px;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #0288d1;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.quantity-spinner .increment-arrow-button,
+.quantity-spinner .decrement-arrow-button {
+    -fx-background-color: #0288d1;
+    -fx-background-radius: 5px;
+}
+
+.quantity-spinner .increment-arrow,
+.quantity-spinner .decrement-arrow {
+    -fx-background-color: white;
+}
+
+.quantity-spinner .text-field {
+    -fx-alignment: center;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e3c72;
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" stylesheets="@styles.css" fx:controller="tn.esprit.market_3a33.Controllers.MainController">
+    <center>
+        <ScrollPane fitToWidth="true">
+            <content>
+                <VBox spacing="30" alignment="center" styleClass="background">
+                    <Label text="Welcome to Mdintech's Market" styleClass="title"/>
+
+                    <!-- Dynamic Product Display -->
+                    <FlowPane fx:id="productContainer" hgap="20" vgap="20" alignment="center"/>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+    <right>
+        <VBox styleClass="cart-sidebar" spacing="10" prefWidth="300">
+            <Label text="Your Cart" styleClass="cart-title"/>
+            <ListView fx:id="cartListView" styleClass="cart-list"/>
+            <Label fx:id="totalPriceLabel" text="Total: 0.00dt" styleClass="total-price"/>
+            <Button text="Confirm Order" styleClass="confirm-button" onAction="#confirmOrder"/>
+        </VBox>
+    </right>
+</BorderPane>
