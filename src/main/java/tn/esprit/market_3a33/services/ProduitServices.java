@@ -7,9 +7,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProduitServices {
+public class ProduitServices implements IService<Produit> {
 
-    public List<Produit> getAllProducts() {
+    @Override
+    public List<Produit> readList() throws SQLException {
         List<Produit> products = new ArrayList<>();
         String query = "SELECT * FROM products";
         try (Connection conn = MyDatabase.getInstance().getCon();
@@ -24,12 +25,13 @@ public class ProduitServices {
                 products.add(new Produit(id, name, price, imagePath));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw e;
         }
         return products;
     }
 
-    public void addProduct(Produit product) {
+    @Override
+    public void add(Produit product) throws SQLException {
         String query = "INSERT INTO products (name, price) VALUES (?, ?)";
         try (Connection conn = MyDatabase.getInstance().getCon();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -37,22 +39,12 @@ public class ProduitServices {
             stmt.setDouble(2, product.getPrice());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw e;
         }
     }
 
-    public void deleteProduct(int productId) {
-        String query = "DELETE FROM products WHERE id = ?";
-        try (Connection conn = MyDatabase.getInstance().getCon();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, productId);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void updateProduct(Produit product) {
+    @Override
+    public void update(Produit product) throws SQLException {
         String query = "UPDATE products SET name = ?, price = ? WHERE id = ?";
         try (Connection conn = MyDatabase.getInstance().getCon();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -61,7 +53,19 @@ public class ProduitServices {
             stmt.setInt(3, product.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
+    public void delete(int productId) throws SQLException {
+        String query = "DELETE FROM products WHERE id = ?";
+        try (Connection conn = MyDatabase.getInstance().getCon();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, productId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
         }
     }
 }
