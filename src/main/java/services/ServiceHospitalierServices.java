@@ -79,6 +79,20 @@ public class ServiceHospitalierServices implements IService<ServiceHospitalier> 
         return -1; // Retourne -1 si aucun service trouvé
     }
 
+    public boolean existsByName(String nom) throws SQLException {
+        String query = "SELECT COUNT(*) FROM servicehospitalier WHERE nomService = ?";
+        try (PreparedStatement stmt = con.prepareStatement(query)) {
+            stmt.setString(1, nom);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
+
+
 
 }
 

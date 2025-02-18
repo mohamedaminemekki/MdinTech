@@ -3,28 +3,24 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.text.*?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.AdminController"
-            prefWidth="800" prefHeight="600">
+            prefWidth="800" prefHeight="600"
+            stylesheets="@styles.css">
 
     <!-- Titre -->
-    <Label text="Interface Admin" layoutX="300" layoutY="20" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+    <Label text="Interface Admin" layoutX="270" layoutY="20"
+           style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: black;" />
 
-    <!-- Liste des services hospitaliers -->
-    <ListView fx:id="serviceListView" layoutX="50" layoutY="80" prefWidth="700" prefHeight="300" />
+    <!-- Liste des Services Hospitaliers -->
+    <ListView fx:id="serviceListView" layoutX="50" layoutY="80" prefWidth="700" prefHeight="400"/>
 
     <!-- Boutons principaux -->
-    <HBox layoutX="50" layoutY="400" spacing="15">
-        <Button fx:id="addServiceButton" text="Ajouter Service" />
-        <Button fx:id="doctorListButton" text="Liste Médecins" />
-        <Button fx:id="appointmentListButton" text="Liste Rendez-vous" />
+    <HBox layoutX="50" layoutY="460" spacing="15">
+        <Button fx:id="addServiceButton" text="Ajouter Service" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button fx:id="doctorListButton" text="Liste Médecins" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button fx:id="appointmentListButton" text="Liste Rendez-vous" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
     </HBox>
-
-    <!-- Espacement pour alignement -->
-    <VBox layoutX="50" layoutY="450" spacing="10">
-        <Region prefHeight="20"/>
-    </VBox>
 
 </AnchorPane>

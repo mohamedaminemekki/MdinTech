@@ -21,12 +21,12 @@
 }
 
 .list-cell {
-    -fx-padding: 15px;
+    -fx-padding: 10px 15px;  /* Réduire un peu la marge intérieure */
     -fx-background-color: #FFFFFF;
     -fx-border-color: #E0E0E0;
     -fx-border-radius: 8px;
-    -fx-font-size: 14px;
-    -fx-text-fill: black;
+    -fx-font-size: 16px; /* Augmenter la taille de la police ici */
+    -fx-text-fill: black; /* Mettre la couleur noire */
 }
 
 /* Style pour l'élément sélectionné */
@@ -87,9 +87,7 @@
 
 /* Style pour le texte dans la liste des services */
 .list-cell-label {
-    -fx-font-size: 14px;
+    -fx-font-size: 16px; /* Augmenter la taille de la police ici aussi */
     -fx-text-fill: black;
     -fx-font-weight: bold;
 }
-
-

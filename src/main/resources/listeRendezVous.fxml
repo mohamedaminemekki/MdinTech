@@ -5,19 +5,19 @@
 <?import javafx.geometry.Insets?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controllers.ListeMedecinsController"
+            fx:controller="controllers.ListeRendezVousController"
             prefWidth="800" prefHeight="600">
 
     <!-- Titre -->
-    <Label text="Liste des Médecins" layoutX="270" layoutY="20"
+    <Label text="Liste des Rendez-vous" layoutX="270" layoutY="20"
            style="-fx-font-size: 24px; -fx-font-weight: bold;" />
 
-    <!-- Liste des Médecins améliorée -->
-    <ListView fx:id="medecinListView" layoutX="50" layoutY="80" prefWidth="700" prefHeight="350"/>
+    <!-- Liste des Rendez-vous -->
+    <ListView fx:id="rendezVousListView" layoutX="50" layoutY="80" prefWidth="700" prefHeight="350"/>
 
     <!-- Boutons principaux -->
     <HBox layoutX="50" layoutY="460" spacing="15">
-        <Button fx:id="addDoctorButton" text="Ajouter Médecin" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button fx:id="addRendezVousButton" text="Ajouter Rendez-vous" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
         <Button fx:id="backButton" text="Retour" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
     </HBox>
 
