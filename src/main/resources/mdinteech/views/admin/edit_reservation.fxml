@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mdinteech.controllers.admin.EditReservationController" spacing="10" alignment="CENTER">
+    <GridPane hgap="10" vgap="10">
+        <Label text="User ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+        <TextField fx:id="userIdField" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+        <Label text="Trip ID:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+        <TextField fx:id="tripIdField" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+        <Label text="Transport ID:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+        <TextField fx:id="transportIdField" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+        <Label text="Seat Number:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+        <TextField fx:id="seatNumberField" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+
+        <Label text="Seat Type:" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+        <TextField fx:id="seatTypeField" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+
+        <Label text="Payment Status:" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+        <TextField fx:id="paymentStatusField" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+    </GridPane>
+
+    <Button text="Enregistrer" onAction="#saveReservation" />
+    <Button text="Retour" onAction="#returnToPreviousPage" />
+</VBox>

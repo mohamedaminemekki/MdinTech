@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="mdinteech.controllers.ModifyReservationController">
+    <top>
+        <Label text="Modifier la Réservation" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-padding: 15px;"/>
+    </top>
+    <center>
+        <VBox spacing="15" alignment="CENTER" style="-fx-padding: 20px;">
+            <GridPane hgap="10" vgap="10" alignment="CENTER">
+                <!-- Informations du trajet (en lecture seule) -->
+                <Label text="Départ :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <Label fx:id="departureLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label text="Destination :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <Label fx:id="destinationLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="Prix :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <Label fx:id="priceLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <!-- Champs modifiables de la réservation -->
+                <Label text="Nombre de passagers :" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="passengersField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                <Label text="Type de siège :" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <ComboBox fx:id="seatTypeComboBox" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="Enregistrer les modifications" onAction="#handleSaveChanges" style="-fx-background-color: #1ABC9C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px; -fx-background-radius: 8px;"/>
+                <Button text="Retour" onAction="#handleBack" style="-fx-background-color: #3498DB; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px; -fx-background-radius: 8px;"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

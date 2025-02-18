@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.paint.Color?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mdinteech.controllers.admin.AdminDashboardController">
+    <!-- Barre latérale -->
+    <left>
+        <VBox style="-fx-background-color: #34495e; -fx-padding: 20;" spacing="20">
+            <!-- Logo et titre -->
+            <HBox alignment="CENTER" spacing="10">
+
+                <Label text="Admin" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" />
+            </HBox>
+
+            <!-- Boutons de navigation -->
+            <Button text="Gérer les trajets" onAction="#openManageTrips" style="-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #2c3e50; -fx-text-fill: white;">
+                <graphic>
+                    <ImageView fitWidth="20" fitHeight="20">
+                        <Image url="@/images/train.jpg" />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button text="Gérer les réservations" onAction="#openManageReservations" style="-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #2c3e50; -fx-text-fill: white;">
+                <graphic>
+                    <ImageView fitWidth="20" fitHeight="20">
+                        <Image url="@/images/reservation.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button text="Statistiques" onAction="#openStatistics" style="-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #2c3e50; -fx-text-fill: white;">
+                <graphic>
+                    <ImageView fitWidth="20" fitHeight="20">
+                        <Image url="@/images/stats.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
+
+        </VBox>
+    </left>
+
+    <!-- En-tête -->
+    <top>
+        <HBox alignment="CENTER" style="-fx-background-color: #2c3e50; -fx-padding: 15;">
+            <Label text="Tableau de bord Admin" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" />
+        </HBox>
+    </top>
+
+    <!-- Centre : Contenu principal -->
+    <center>
+        <VBox alignment="CENTER" spacing="20" style="-fx-padding: 20;">
+            <!-- Statistiques rapides -->
+            <GridPane hgap="20" vgap="20">
+                <!-- Carte 1 : Nombre de trajets -->
+                <VBox style="-fx-background-color: #ecf0f1; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10;">
+                    <Label text="Nombre de trajets" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                    <Label text="150" style="-fx-font-size: 24px; -fx-text-fill: #3498db;" />
+                </VBox>
+
+                <!-- Carte 2 : Nombre de réservations -->
+                <VBox style="-fx-background-color: #ecf0f1; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10;">
+                    <Label text="Nombre de réservations" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                    <Label text="1200" style="-fx-font-size: 24px; -fx-text-fill: #2ecc71;" />
+                </VBox>
+
+                <!-- Carte 3 : Utilisateurs actifs -->
+                <VBox style="-fx-background-color: #ecf0f1; -fx-padding: 20; -fx-border-radius: 10; -fx-background-radius: 10;">
+                    <Label text="Utilisateurs actifs" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                    <Label text="500" style="-fx-font-size: 24px; -fx-text-fill: #e67e22;" />
+                </VBox>
+            </GridPane>
+
+            <!-- Dernières activités -->
+            <VBox spacing="10" style="-fx-padding: 20; -fx-background-color: #ffffff; -fx-border-radius: 10; -fx-background-radius: 10;">
+                <Label text="Dernières activités" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                <Label text="1. Nouveau trajet ajouté : Tunis → Sfax" style="-fx-font-size: 14px;" />
+                <Label text="2. Réservation confirmée : ID 1234" style="-fx-font-size: 14px;" />
+                <Label text="3. Utilisateur inscrit : Mariem" style="-fx-font-size: 14px;" />
+            </VBox>
+
+            <!-- Boutons d'actions rapides -->
+            <HBox spacing="20" alignment="CENTER">
+                <Button text="Ajouter un trajet" onAction="#openManageTrips" style="-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #3498db; -fx-text-fill: white;" />
+                <Button text="Voir les réservations" onAction="#openManageReservations" style="-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #2ecc71; -fx-text-fill: white;" />
+            </HBox>
+        </VBox>
+    </center>
+
+    <!-- Pied de page -->
+    <bottom>
+        <HBox alignment="CENTER" style="-fx-background-color: #34495e; -fx-padding: 10;">
+            <Label text="© 2024 SmartCity Transport. Tous droits réservés." style="-fx-text-fill: white; -fx-font-size: 12px;" />
+        </HBox>
+    </bottom>
+</BorderPane>

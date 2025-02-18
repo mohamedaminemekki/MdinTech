@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="mdinteech.controllers.ReservationListController">
+    <top>
+        <Label text="Mes Réservations" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-padding: 15px;"/>
+    </top>
+    <center>
+        <ScrollPane>
+            <VBox fx:id="reservationContainer" spacing="10" style="-fx-padding: 10px;">
+                <!-- Les cartes de réservation seront ajoutées dynamiquement ici -->
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

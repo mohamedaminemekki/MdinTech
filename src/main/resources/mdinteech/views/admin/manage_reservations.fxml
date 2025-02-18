@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mdinteech.controllers.admin.ManageReservationsController">
+    <!-- En-tête -->
+    <top>
+        <HBox alignment="CENTER" style="-fx-background-color: #2c3e50; -fx-padding: 15;">
+            <Label text="Gestion des Réservations" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" />
+        </HBox>
+    </top>
+
+    <!-- Centre : Liste des réservations -->
+    <center>
+        <VBox spacing="10" style="-fx-padding: 20;">
+            <!-- Barre de recherche et filtres -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Rechercher une réservation..." style="-fx-font-size: 14px; -fx-pref-width: 300px;" />
+                <ComboBox fx:id="filterComboBox" promptText="Filtrer par" style="-fx-font-size: 14px; -fx-pref-width: 150px;" />
+                <Button text="Rechercher" onAction="#searchReservations" style="-fx-font-size: 14px; -fx-padding: 5 10;">
+                    <graphic>
+                        <ImageView fitWidth="16" fitHeight="16">
+                            <Image url="@/images/search.png" />
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button text="Effacer" onAction="#clearSearch" style="-fx-font-size: 14px; -fx-padding: 5 10;">
+                    <graphic>
+                        <ImageView fitWidth="16" fitHeight="16">
+                            <Image url="@/images/clear.png" />
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+
+            <!-- Liste des réservations -->
+            <ListView fx:id="reservationsListView" style="-fx-font-size: 14px; -fx-pref-height: 400px; -fx-border-color: #ddd; -fx-border-width: 1px;" />
+        </VBox>
+    </center>
+
+    <!-- Pied de page : Boutons d'action -->
+    <bottom>
+        <HBox alignment="CENTER" spacing="10" style="-fx-background-color: #34495e; -fx-padding: 10;">
+            <Button text="Ajouter" onAction="#openAddReservationDialog" style="-fx-font-size: 14px; -fx-padding: 5 10;">
+                <graphic>
+                    <ImageView fitWidth="16" fitHeight="16">
+                        <Image url="@/images/add.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button text="Modifier" onAction="#openEditReservationDialog" style="-fx-font-size: 14px; -fx-padding: 5 10;">
+                <graphic>
+                    <ImageView fitWidth="16" fitHeight="16">
+                        <Image url="@/images/edit.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button text="Supprimer" onAction="#deleteReservation" style="-fx-font-size: 14px; -fx-padding: 5 10;">
+                <graphic>
+                    <ImageView fitWidth="16" fitHeight="16">
+                        <Image url="@/images/delete.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
+        </HBox>
+    </bottom>
+</BorderPane>

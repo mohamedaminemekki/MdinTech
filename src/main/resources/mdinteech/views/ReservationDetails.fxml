@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="mdinteech.controllers.ReservationDetailsController">
+
+    <!-- En-tête -->
+    <top>
+        <Label text="Détails de la Réservation" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-padding: 15px;"/>
+    </top>
+
+    <!-- Contenu principal -->
+    <center>
+        <VBox spacing="15" alignment="CENTER" style="-fx-padding: 20px;">
+
+            <!-- Sélection du nombre de passagers -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Nombre de passagers:" style="-fx-font-size: 16px;"/>
+                <Spinner fx:id="passengerSpinner" min="1" max="10" initialValue="1"/>
+            </HBox>
+
+            <Label fx:id="departureLabel" />
+
+            <!-- Sélection du type de siège -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Type de siège:" style="-fx-font-size: 16px;"/>
+                <ComboBox fx:id="seatTypeComboBox">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Standard"/>
+                            <String fx:value="Premium (+10 DT)"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+
+            <!-- Affichage du prix total -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Prix total:" style="-fx-font-size: 16px;"/>
+                <Label fx:id="totalPriceLabel" text="0 DT" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            </HBox>
+
+            <!-- Choix du mode de paiement -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Paiement:" style="-fx-font-size: 16px;"/>
+                <RadioButton text="Payer maintenant" fx:id="payNowRadio"/>
+                <RadioButton text="Réserver sans payer" fx:id="payLaterRadio"/>
+            </HBox>
+
+            <!-- Bouton de confirmation -->
+            <Button text="Confirmer la réservation" fx:id="confirmButton" style="-fx-background-color: #2C3E50; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px; -fx-background-radius: 8px;"/>
+        </VBox>
+    </center>
+
+</BorderPane>

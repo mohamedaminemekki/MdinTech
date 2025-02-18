@@ -1,0 +1,18 @@
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.effect.DropShadow?>
+
+<?import javafx.scene.layout.VBox?>
+<HBox fx:id="cellRoot" xmlns:fx="http://javafx.com/fxml" style="-fx-padding: 15px; -fx-background-color: #FFFFFF; -fx-border-radius: 10px; -fx-border-color: #BDC3C7; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);">
+    <VBox spacing="5">
+        <Label fx:id="departureLabel" style="-fx-font-size: 16px; -fx-text-fill: #2C3E50;"/>
+        <Label fx:id="destinationLabel" style="-fx-font-size: 16px; -fx-text-fill: #2C3E50;"/>
+        <Label fx:id="transportLabel" style="-fx-font-size: 14px; -fx-text-fill: #555555;"/>
+    </VBox>
+    <VBox spacing="5" HBox.hgrow="ALWAYS">
+        <Label fx:id="priceLabel" style="-fx-font-size: 16px; -fx-text-fill: #2C3E50; -fx-alignment: CENTER_RIGHT;"/>
+        <Label fx:id="departureTimeLabel" style="-fx-font-size: 14px; -fx-text-fill: #555555; -fx-alignment: CENTER_RIGHT;"/>
+        <Label fx:id="arrivalTimeLabel" style="-fx-font-size: 14px; -fx-text-fill: #555555; -fx-alignment: CENTER_RIGHT;"/>
+    </VBox>
+</HBox>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte des Trains</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        #map { height: 100vh; width: 100%; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        // Initialisation de la carte
+        var map = L.map('map').setView([36.8065, 10.1815], 13); // Centrer sur Tunis
+
+        // Ajouter une couche de tuiles OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Ajouter des marqueurs pour les arrêts de train
+        var trainStops = [
+            { name: "Gare Tunis", lat: 36.8065, lng: 10.1815 },
+            { name: "Gare Ariana", lat: 36.8625, lng: 10.1956 },
+            { name: "Gare Manouba", lat: 36.8081, lng: 10.0972 }
+        ];
+
+        trainStops.forEach(function(stop) {
+            L.marker([stop.lat, stop.lng])
+                .addTo(map)
+                .bindPopup(stop.name);
+        });
+
+        // Ajouter une ligne pour représenter le trajet de train
+        var trainRoute = [
+            [36.8065, 10.1815], // Gare Tunis
+            [36.8625, 10.1956], // Gare Ariana
+            [36.8081, 10.0972]  // Gare Manouba
+        ];
+
+        L.polyline(trainRoute, { color: 'red' }).addTo(map);
+    </script>
+</body>
+</html>
