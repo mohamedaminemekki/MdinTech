@@ -12,7 +12,6 @@ import services.RendezVousServices;
 import services.MedecinServices;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.sql.SQLException;
 import javafx.event.ActionEvent;
 
@@ -36,7 +35,6 @@ public class RendezVousController {
     private MedecinController.MedecinItem medecin;
     private RendezVousServices rendezVousService;
     private MedecinServices medecinService;
-    private int idMedecin; // Déclaration de idMedecin
 
     public void showRendezVousForm(MedecinController.MedecinItem medecin) {
         try {
@@ -64,29 +62,21 @@ public class RendezVousController {
         rendezVousService = new RendezVousServices();
         medecinService = new MedecinServices();
 
-        // Remplir le ComboBox avec la liste des médecins disponibles
-        SpinnerValueFactory<Integer> heureFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12); // Valeur par défaut : 12
+        SpinnerValueFactory<Integer> heureFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12);
         heureSpinner.setValueFactory(heureFactory);
 
-        // Configurer le Spinner pour les minutes (0-59)
-        SpinnerValueFactory<Integer> minuteFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0); // Valeur par défaut : 0
+        SpinnerValueFactory<Integer> minuteFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0);
         minuteSpinner.setValueFactory(minuteFactory);
 
-        // Ajouter les salles disponibles dans le ComboBox
         salleComboBox.getItems().addAll("Salle A", "Salle B", "Salle C");
 
-        // Exemple de dates disponibles (peut être dynamique selon la logique de votre application)
         datePicker.setDayCellFactory(picker -> new DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
-                // Désactiver certaines dates selon la disponibilité
-                if (date.isBefore(LocalDate.now()) ||
-                        (date.getDayOfMonth() == 25 && date.getMonthValue() == 2 && date.getYear() == 2025) ||
-                        (date.getDayOfMonth() == 26 && date.getMonthValue() == 2 && date.getYear() == 2050) ||
-                        (date.getDayOfMonth() == 27 && date.getMonthValue() == 2 && date.getYear() == 2025)) {
+                if (date.isBefore(LocalDate.now())) {
+                    setDisable(true);
                     setStyle("-fx-background-color: #ff0000;");
-                    setDisable(true); // Désactiver la date
                 }
             }
         });
@@ -94,43 +84,41 @@ public class RendezVousController {
 
     public void initializeForm(MedecinController.MedecinItem medecin) {
         this.medecin = medecin;
-        // On peut ajouter ici des actions supplémentaires, comme pré-remplir les champs
     }
 
     @FXML
     public void handleConfirmRendezVous(ActionEvent event) {
         try {
-            // Récupération et validation des champs
             String salle = salleComboBox.getValue();
             LocalDate date = datePicker.getValue();
             int heure = heureSpinner.getValue();
             int minute = minuteSpinner.getValue();
 
-            // Validation des champs
             if (salle == null || date == null) {
                 throw new IllegalArgumentException("Tous les champs doivent être remplis !");
             }
 
-            // Créer un LocalTime à partir des valeurs des Spinner
             LocalTime time = LocalTime.of(heure, minute);
 
-            // Vérifier que le médecin est bien sélectionné
-            if (medecin == null) {
-                throw new IllegalArgumentException("Aucun médecin sélectionné !");
+            // Vérification de la disponibilité du créneau
+            if (rendezVousService.isTimeSlotTaken(date, time)) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Créneau Indisponible");
+                alert.setHeaderText("Ce créneau est déjà réservé.");
+                alert.setContentText("Veuillez choisir une autre heure.");
+                alert.showAndWait();
+                return;
             }
 
-            // Création et insertion du rendez-vous
             RendezVous rendezVous = new RendezVous();
             rendezVous.setLieu(salle);
             rendezVous.setDateRendezVous(date);
             rendezVous.setTimeRendezVous(time);
             rendezVous.setStatus("confirmé");
-            rendezVous.setIdMedecin(medecin.getId()); // Assurez-vous d'utiliser le bon ID du médecin
+            rendezVous.setIdMedecin(medecin.getId());
 
-            // Ajout du rendez-vous dans la base de données
             rendezVousService.add(rendezVous);
 
-            // Afficher un message de confirmation
             Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
             successAlert.setTitle("Succès");
             successAlert.setHeaderText("Rendez-vous confirmé avec succès !");

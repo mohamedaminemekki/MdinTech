@@ -4,44 +4,96 @@
     -fx-font-family: 'Roboto', sans-serif;
 }
 
-/* Titres */
-.label {
-    -fx-font-size: 22px;
+/* Titre */
+.title-label {
+    -fx-font-size: 28px;
     -fx-font-weight: bold;
     -fx-text-fill: #007BFF;
+    -fx-text-alignment: center;
 }
 
-/* ListView (Liste des services hospitaliers) */
-.list-view {
+/* Formulaire de connexion */
+.login-container {
     -fx-background-color: #FFFFFF;
     -fx-border-color: #E0E0E0;
-    -fx-border-radius: 8px;
-    -fx-padding: 5px;
+    -fx-border-radius: 10px;
+    -fx-padding: 20px;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 2, 2);
 }
 
+/* Champ de texte */
+.text-field, .password-field {
+    -fx-font-size: 14px;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px;
+    -fx-prompt-text-fill: #999999;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #007BFF;
+}
+
+/* Bouton de connexion */
+.login-button {
+    -fx-background-color: #007BFF;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+    -fx-transition: 0.3s;
+}
+
+.login-button:hover {
+    -fx-background-color: #0056b3;
+}
+
+/* Lien pour créer un compte */
+.link-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #007BFF;
+    -fx-underline: true;
+    -fx-cursor: hand;
+}
+
+.link-label:hover {
+    -fx-text-fill: #0056b3;
+}
+
+/* ListView (Liste des rendez-vous) */
+.list-view {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 10px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 2, 2);
+}
+
+/* Style des éléments de la liste */
 .list-cell {
-    -fx-padding: 10px 15px;  /* Réduire un peu la marge intérieure */
+    -fx-padding: 10px;
     -fx-background-color: #FFFFFF;
     -fx-border-color: #E0E0E0;
     -fx-border-radius: 8px;
-    -fx-font-size: 16px; /* Augmenter la taille de la police ici */
-    -fx-text-fill: black; /* Mettre la couleur noire */
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333;
 }
 
-/* Style pour l'élément sélectionné */
+/* Style de l'élément sélectionné */
 .list-cell:filled:selected {
     -fx-background-color: #007BFF;
     -fx-text-fill: white;
 }
 
-/* Style des boutons généraux */
+/* Boutons généraux */
 .button {
     -fx-background-color: #007BFF;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-padding: 10px 18px;
-    -fx-border-radius: 5px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 10px;
     -fx-cursor: hand;
     -fx-transition: 0.3s;
 }
@@ -50,44 +102,120 @@
     -fx-background-color: #0056b3;
 }
 
-/* Bouton spécifique pour l'ajout de service */
-#addServiceButton {
+/* Bouton d'ajout */
+.add-button {
     -fx-background-color: #28A745;
     -fx-font-size: 14px;
     -fx-padding: 10px 20px;
     -fx-border-radius: 20px;
 }
 
-#addServiceButton:hover {
+.add-button:hover {
     -fx-background-color: #218838;
 }
 
-/* Style pour les boutons Modifier et Supprimer */
-.modify-button {
-    -fx-background-color: #FFC107;
-    -fx-text-fill: black;
-    -fx-padding: 8px 16px;
-    -fx-border-radius: 5px;
-}
-
-.modify-button:hover {
-    -fx-background-color: #E0A800;
-}
-
+/* Bouton de suppression */
 .delete-button {
     -fx-background-color: #DC3545;
     -fx-text-fill: white;
-    -fx-padding: 8px 16px;
-    -fx-border-radius: 5px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 20px;
 }
 
 .delete-button:hover {
     -fx-background-color: #C82333;
 }
 
-/* Style pour le texte dans la liste des services */
-.list-cell-label {
-    -fx-font-size: 16px; /* Augmenter la taille de la police ici aussi */
-    -fx-text-fill: black;
-    -fx-font-weight: bold;
+/* Bouton d'annulation */
+.cancel-button {
+    -fx-background-color: #6C757D;
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 20px;
 }
+
+.cancel-button:hover {
+    -fx-background-color: #5A6268;
+}
+
+/* Alertes */
+.alert {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 2, 2);
+}
+
+.alert .header-panel {
+    -fx-background-color: #007BFF;
+    -fx-text-fill: white;
+}
+
+.alert .content {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
+
+.alert .button {
+    -fx-background-color: #007BFF;
+    -fx-text-fill: white;
+    -fx-border-radius: 5px;
+}
+
+.alert .button:hover {
+    -fx-background-color: #0056b3;
+}
+
+/* styles.css */
+
+/* Conteneur principal */
+/* Styles généraux */
+.service-container {
+    -fx-background-color: #F5F5F5;
+    -fx-padding: 20;
+}
+
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4A90E2;
+    -fx-padding: 10;
+}
+
+.service-list {
+    -fx-background-color: #FFFFFF;
+    -fx-border-radius: 8;
+    -fx-padding: 10;
+    -fx-font-size: 16px;
+}
+
+.action-button {
+    -fx-background-color: #4A90E2;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10;
+    -fx-border-radius: 5;
+}
+
+.action-button:hover {
+    -fx-background-color: #357ABD;
+}
+
+/* Styles de la Navbar */
+.navbar {
+    -fx-background-color: #FFFFFF;
+    -fx-border-radius: 8;
+    -fx-padding: 10;
+    -fx-spacing: 15;
+}
+
+.navbar-item {
+    -fx-font-size: 16px;
+    -fx-text-fill: #4A90E2;
+    -fx-padding: 10;
+}
+
+.navbar-item:hover {
+    -fx-text-fill: #357ABD;
+}
+

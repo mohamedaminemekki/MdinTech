@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import controllers.LoginController;
 
@@ -28,7 +29,7 @@ public class MainFX extends Application {
         controller.setMainApp(this);
 
         // Créer la scène pour l'écran de login
-        Scene loginScene = new Scene(loginRoot, 600, 450);
+        Scene loginScene = new Scene(loginRoot, 800, 600);
 
         // Appliquer le CSS
         loginScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
@@ -44,7 +45,8 @@ public class MainFX extends Application {
         Parent serviceRoot = FXMLLoader.load(getClass().getResource("/service-view.fxml"));
 
         // Créer la scène pour l'interface des services
-        Scene serviceScene = new Scene(serviceRoot, 600, 450);
+        Scene serviceScene = new Scene(serviceRoot, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+
 
         // Appliquer le CSS
         serviceScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());

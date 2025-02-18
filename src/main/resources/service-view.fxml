@@ -1,12 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
 
+<?import java.net.URL?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.ServiceController">
-    <VBox spacing="10" alignment="CENTER" prefWidth="500" prefHeight="400">
-        <Label text="Liste des Services" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
-        <ListView fx:id="serviceListView" prefHeight="350" />
+    <!-- Référence au fichier CSS -->
+    <stylesheets>
+        <URL value="@styles.css" />
+    </stylesheets>
+
+    <!-- Conteneur principal -->
+    <VBox spacing="20" alignment="CENTER" prefWidth="600" prefHeight="500" styleClass="service-container">
+
+        <!-- Barre de navigation -->
+        <HBox spacing="20" alignment="CENTER" styleClass="navbar">
+            <Label text="🚗 Transport" styleClass="navbar-item"/>
+            <Label text="💳 Factures" styleClass="navbar-item"/>
+            <Label text="📞 Réclamations" styleClass="navbar-item"/>
+            <Label text="🛍️ Market" styleClass="navbar-item"/>
+            <Label text="🚗 Parking" styleClass="navbar-item"/>
+        </HBox>
+
+        <!-- Titre de la page -->
+        <Label text="Choisissez le service hospitalier désiré" styleClass="title-label" />
+
+        <!-- Liste des services -->
+        <ListView fx:id="serviceListView" prefHeight="1000" prefWidth="2000" styleClass="service-list" />
+
+        <!-- Bouton pour accéder aux rendez-vous -->
+        <Button fx:id="btnMesRendezVous" text="Mes Rendez-vous" onAction="#openMesRendezVous" styleClass="action-button" />
     </VBox>
 </AnchorPane>

@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -25,6 +26,8 @@ public class ServiceController {
 
     @FXML
     private ListView<ServiceItem> serviceListView;
+    @FXML
+    private Button btnMesRendezVous;
 
     private final ServiceHospitalierServices serviceHospitalierServices = new ServiceHospitalierServices();
 
@@ -42,7 +45,7 @@ public class ServiceController {
                     // Appeler la méthode pour afficher les médecins de ce service
                     showMedecinsForService(idService);
                 } else {
-                    System.out.println("Service non trouvé !");
+                    System.err.println("Service non trouvé !");
                 }
             }
         });
@@ -57,7 +60,7 @@ public class ServiceController {
 
             // Convertir en objets `ServiceItem` et ajouter à l'ObservableList
             for (ServiceHospitalier s : serviceList) {
-                String imageUrl = getImageForService(s.getNomService()); // Obtenir l'image spécifique
+                String imageUrl = getImagePathForService(s.getNomService()); // Obtenir l'image spécifique
                 services.add(new ServiceItem(s.getNomService(), s.getDescription(), imageUrl));
             }
 
@@ -69,8 +72,8 @@ public class ServiceController {
         serviceListView.setCellFactory(listView -> new ServiceListCell());
     }
 
-    // Méthode pour retourner l'URL de l'image selon le nom du service
-    private String getImageForService(String serviceName) {
+    // Méthode pour retourner le chemin de l'image selon le nom du service
+    private String getImagePathForService(String serviceName) {
         switch (serviceName.toLowerCase()) {
             case "neurologie":
                 return "/images/Neuro.jpg";
@@ -99,11 +102,10 @@ public class ServiceController {
         }
     }
 
-
-    // Méthode pour afficher les médecins du service (exemple)
+    // Méthode pour afficher les médecins du service
     private void showMedecinsForService(int idService) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/medecin_list.fxml")); // Le / au début du chemin
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/medecin_list.fxml"));
             AnchorPane medecinListView = loader.load();
             MedecinController controller = loader.getController();
             controller.loadMedecinsForService(idService);
@@ -115,7 +117,6 @@ public class ServiceController {
             e.printStackTrace();
         }
     }
-
 
     // Classe interne pour représenter un service
     public static class ServiceItem {
@@ -184,6 +185,21 @@ public class ServiceController {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    // Méthode pour ouvrir la vue des rendez-vous
+    @FXML
+    private void openMesRendezVous() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/rendezvous-view.fxml"));
+            AnchorPane rendezvousView = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Mes Rendez-vous");
+            stage.setScene(new Scene(rendezvousView));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

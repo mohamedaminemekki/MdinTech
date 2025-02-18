@@ -88,4 +88,26 @@ public class RendezVousServices implements IService<RendezVous> {
             System.out.println("Aucun rendez-vous trouvé avec l'ID : " + rendezVous.getIdRendezVous());
         }
     }
+
+
+
+
+
+    public boolean isTimeSlotTaken(LocalDate date, LocalTime time) throws SQLException {
+        String query = "SELECT COUNT(*) FROM rendezvous WHERE dateRendezVous = ? AND timeRendezVous = ?";
+        try (PreparedStatement statement = con.prepareStatement(query)) {
+            statement.setDate(1, Date.valueOf(date)); // Convertir LocalDate en java.sql.Date
+            statement.setTime(2, Time.valueOf(time)); // Convertir LocalTime en java.sql.Time
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0; // Retourne true si un rendez-vous existe déjà à ce créneau
+            }
+        }
+        return false; // Retourne false si le créneau est disponible
+    }
+
+
+
+
+
 }

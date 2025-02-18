@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.RendezvousViewController">
+    <VBox spacing="10" alignment="CENTER" prefWidth="600" prefHeight="400">
+        <!-- Titre -->
+        <Label text="Mes Rendez-vous" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+
+        <!-- Liste des rendez-vous -->
+        <ListView fx:id="appointmentsListView" prefHeight="350" prefWidth="550" style="-fx-font-size: 14px;" />
+    </VBox>
+</AnchorPane>
