@@ -34,7 +34,7 @@ public class EditReservationController {
 
     public void setReservation(Reservation reservation) {
         this.reservation = reservation;
-        // Remplir les champs avec les données de la réservation
+
         userIdField.setText(String.valueOf(reservation.getUserId()));
         tripIdField.setText(String.valueOf(reservation.getTripId()));
         transportIdField.setText(String.valueOf(reservation.getTransportId()));
@@ -49,7 +49,7 @@ public class EditReservationController {
 
     @FXML
     private void initialize() {
-        // Validation pour User ID, Trip ID, Transport ID, Seat Number (doivent être des entiers)
+
         userIdField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 userIdField.setText(newValue.replaceAll("[^\\d]", ""));
@@ -81,7 +81,7 @@ public class EditReservationController {
 
     @FXML
     private void saveReservation() {
-        // Vérifier si tous les champs obligatoires sont remplis
+
         if (userIdField.getText().isEmpty() || tripIdField.getText().isEmpty() ||
                 transportIdField.getText().isEmpty() || seatNumberField.getText().isEmpty() ||
                 seatTypeField.getText().isEmpty() || paymentStatusField.getText().isEmpty()) {
@@ -90,7 +90,7 @@ public class EditReservationController {
         }
 
         try {
-            // Mettre à jour les données de la réservation
+
             reservation.setUserId(Integer.parseInt(userIdField.getText()));
             reservation.setTripId(Integer.parseInt(tripIdField.getText()));
             reservation.setTransportId(Integer.parseInt(transportIdField.getText()));
@@ -98,10 +98,10 @@ public class EditReservationController {
             reservation.setSeatType(seatTypeField.getText());
             reservation.setPaymentStatus(paymentStatusField.getText());
 
-            // Enregistrer les modifications dans la base de données
+
             reservationService.update(reservation);
 
-            // Fermer la fenêtre
+
             userIdField.getScene().getWindow().hide();
         } catch (Exception e) {
             e.printStackTrace();
@@ -111,7 +111,7 @@ public class EditReservationController {
 
     @FXML
     private void returnToPreviousPage() {
-        // Fermer la fenêtre actuelle
+
         userIdField.getScene().getWindow().hide();
     }
 

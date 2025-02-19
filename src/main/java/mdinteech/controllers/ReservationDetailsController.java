@@ -9,6 +9,8 @@ import javafx.stage.Stage;
 import mdinteech.entities.Reservation;
 import mdinteech.entities.Trip;
 import mdinteech.services.ReservationService;
+import mdinteech.services.TripService;
+import mdinteech.utils.DatabaseConnection;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -39,8 +41,9 @@ public class ReservationDetailsController {
     private String selectedDestination;
     private String selectedTransportName;
     private Reservation reservation;
-    private int selectedTripId; // Ajout de l'ID du voyage sélectionné
+    private int selectedTripId;
     private ReservationService reservationService;
+    private double totalPrice;
 
     @FXML
     public void initialize() {
@@ -58,9 +61,10 @@ public class ReservationDetailsController {
         confirmButton.setOnAction(event -> confirmReservation());
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/city_transport", "root", "");
+            Connection connection = DatabaseConnection.getInstance().getConnection();
+
             reservationService = new ReservationService(connection);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -89,44 +93,44 @@ public class ReservationDetailsController {
         int passengers = passengerSpinner.getValue();
         boolean isPremium = seatTypeComboBox.getValue().contains("Premium");
 
-        double price = selectedTripPrice * passengers;
+        totalPrice = selectedTripPrice * passengers;
         if (isPremium) {
-            price += 10 * passengers; // Supplément premium de 10 DT par passager
+            totalPrice += 10 * passengers;
         }
 
-        totalPriceLabel.setText(price + " DT");
+        totalPriceLabel.setText(totalPrice + " DT");
     }
 
     @FXML
     private void confirmReservation() {
-        confirmButton.setDisable(true); // Désactiver le bouton après le premier clic
+        confirmButton.setDisable(true);
         System.out.println("Tentative de création de réservation...");
 
         if (seatTypeComboBox.getValue() == null || passengerSpinner.getValue() == null) {
             showAlert("Erreur", "Veuillez remplir tous les champs.");
-            confirmButton.setDisable(false); // Réactiver le bouton en cas d'erreur
+            confirmButton.setDisable(false);
             return;
         }
 
-        if (selectedTripId == 0) { // Vérifier si un voyage est sélectionné
+        if (selectedTripId == 0) {
             showAlert("Erreur", "Veuillez sélectionner un voyage valide.");
-            confirmButton.setDisable(false); // Réactiver le bouton en cas d'erreur
+            confirmButton.setDisable(false);
             return;
         }
 
         reservation = new Reservation();
-        reservation.setUserId(9); // Exemple d'ID utilisateur
-        reservation.setTripId(selectedTripId);  // Utiliser l'ID du voyage sélectionné
-        reservation.setTransportId(selectedTransportId);  // TransportId reste inchangé
+        reservation.setUserId(9);
+        reservation.setTripId(selectedTripId);
+        reservation.setTransportId(selectedTransportId);
         reservation.setReservationTime(new Timestamp(System.currentTimeMillis()));
         reservation.setStatus("Pending");
         reservation.setSeatNumber(passengerSpinner.getValue());
         reservation.setSeatType(seatTypeComboBox.getValue());
         reservation.setPaymentStatus(payNowRadio.isSelected() ? "Pending" : "Reserved");
 
-        // Rediriger vers la page récapitulative
         loadReservationSummary(reservation);
     }
+
     private void loadReservationSummary(Reservation reservation) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdinteech/views/ReservationSummary.fxml"));
@@ -138,7 +142,7 @@ public class ReservationDetailsController {
                     selectedDeparture,
                     selectedDestination,
                     selectedTransportName,
-                    totalPriceLabel.getText() // Transmettre le prix total
+                    totalPrice
             );
 
             Stage stage = new Stage();

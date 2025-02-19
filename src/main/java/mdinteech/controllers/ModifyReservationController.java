@@ -1,19 +1,22 @@
 package mdinteech.controllers;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import mdinteech.entities.Reservation;
 import mdinteech.entities.Trip;
 import mdinteech.services.ReservationService;
 import mdinteech.services.TripService;
-import javafx.scene.control.Alert;
+import mdinteech.utils.DatabaseConnection;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class ModifyReservationController {
 
@@ -37,12 +40,15 @@ public class ModifyReservationController {
     private ReservationService reservationService;
     private TripService tripService;
 
+    private double initialPrice;
+    private double newPrice;
+
     public ModifyReservationController() {
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/city_transport", "root", "");
-            reservationService = new ReservationService(connection);
+            Connection connection = DatabaseConnection.getInstance().getConnection();
             tripService = new TripService(connection);
-        } catch (SQLException e) {
+            reservationService = new ReservationService(connection);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -54,16 +60,19 @@ public class ModifyReservationController {
 
     private void loadReservationDetails() {
         try {
-            // Récupérer les détails du trajet associé à la réservation en utilisant tripId
+
             trip = tripService.getById(reservation.getTripId());
 
             if (trip != null) {
-                // Afficher les informations du trajet (départ, destination, prix)
+
                 departureLabel.setText(trip.getDeparture());
                 destinationLabel.setText(trip.getDestination());
                 priceLabel.setText(String.valueOf(trip.getPrice()));
 
-                // Afficher les valeurs actuelles de la réservation (nombre de passagers, type de siège)
+
+                initialPrice = calculateTotalPrice(reservation.getSeatNumber(), reservation.getSeatType());
+
+
                 passengersField.setText(String.valueOf(reservation.getSeatNumber()));
                 seatTypeComboBox.getItems().addAll("Standard", "Premium");
                 seatTypeComboBox.setValue(reservation.getSeatType());
@@ -79,13 +88,12 @@ public class ModifyReservationController {
     @FXML
     private void handleSaveChanges() {
         try {
-            // Valider les champs avant de sauvegarder
+
             if (passengersField.getText().isEmpty() || seatTypeComboBox.getValue() == null) {
                 showAlert("Erreur", "Veuillez remplir tous les champs.");
                 return;
             }
 
-            // Valider que le nombre de passagers est un entier positif
             int passengers;
             try {
                 passengers = Integer.parseInt(passengersField.getText());
@@ -98,27 +106,77 @@ public class ModifyReservationController {
                 return;
             }
 
-            // Mettre à jour les détails de la réservation
-            reservation.setSeatNumber(passengers);
-            reservation.setSeatType(seatTypeComboBox.getValue());
+            newPrice = calculateTotalPrice(passengers, seatTypeComboBox.getValue());
 
-            // Enregistrer les modifications dans la base de données
-            reservationService.update(reservation);
 
-            showAlert("Succès", "Les modifications ont été enregistrées avec succès.");
+            double priceDifference = newPrice - initialPrice;
+            if (priceDifference > 0) {
 
-            // Fermer la fenêtre de modification
-            Stage stage = (Stage) passengersField.getScene().getWindow();
-            stage.close();
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Différence de prix");
+                alert.setHeaderText("Il y a une différence de prix à payer.");
+                alert.setContentText("Montant à payer : " + priceDifference + " DT. Voulez-vous continuer ?");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+
+                    redirectToPayment(priceDifference);
+                }
+            } else {
+
+                reservation.setSeatNumber(passengers);
+                reservation.setSeatType(seatTypeComboBox.getValue());
+
+
+                reservationService.update(reservation);
+
+                showAlert("Succès", "Les modifications ont été enregistrées avec succès.");
+
+
+                Stage stage = (Stage) passengersField.getScene().getWindow();
+                stage.close();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert("Erreur", "Une erreur est survenue lors de l'enregistrement des modifications.");
         }
     }
 
+    private double calculateTotalPrice(int passengers, String seatType) {
+        double basePrice = trip.getPrice();
+        double premiumFee = seatType.equals("Premium") ? 10.0 : 0.0;
+        return (basePrice + premiumFee) * passengers;
+    }
+
+    private void redirectToPayment(double priceDifference) {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdinteech/views/PaymentPage.fxml"));
+            Parent root = loader.load();
+
+
+            PaymentController paymentController = loader.getController();
+            paymentController.setReservation(reservation);
+            paymentController.setTotalPrice(priceDifference);
+
+
+            Stage stage = new Stage();
+            stage.setTitle("Paiement");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+
+            Stage currentStage = (Stage) passengersField.getScene().getWindow();
+            currentStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible d'ouvrir la page de paiement.");
+        }
+    }
+
     @FXML
     private void handleBack() {
-        // Fermer la fenêtre actuelle et revenir à la liste des réservations
+
         Stage stage = (Stage) passengersField.getScene().getWindow();
         stage.close();
     }

@@ -36,7 +36,7 @@ public class EditTripController {
 
     public void setTrip(Trip trip) {
         this.trip = trip;
-        // Remplir les champs avec les données du trajet
+
         transportIdField.setText(String.valueOf(trip.getTransportId()));
         departureTimeField.setText(trip.getDepartureTime().toString());
         arrivalTimeField.setText(trip.getArrivalTime().toString());
@@ -52,7 +52,7 @@ public class EditTripController {
 
     @FXML
     private void initialize() {
-        // Validation pour Transport ID (doit être un entier)
+
         transportIdField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 transportIdField.setText(newValue.replaceAll("[^\\d]", ""));
@@ -60,20 +60,23 @@ public class EditTripController {
             }
         });
 
-        // Validation pour Departure Time et Arrival Time (doit être une date valide)
-        departureTimeField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.isEmpty() && !isValidTimestamp(newValue)) {
-                showAlert("Erreur de saisie", "Le format de la date de départ est invalide (yyyy-MM-dd HH:mm:ss).");
+
+        departureTimeField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                if (!isValidTimestamp(departureTimeField.getText())) {
+                    showAlert("Erreur de saisie", "Le format de la date de départ est invalide (yyyy-MM-dd HH:mm:ss).");
+                }
             }
         });
 
-        arrivalTimeField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.isEmpty() && !isValidTimestamp(newValue)) {
-                showAlert("Erreur de saisie", "Le format de la date d'arrivée est invalide (yyyy-MM-dd HH:mm:ss).");
+        arrivalTimeField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                if (!isValidTimestamp(arrivalTimeField.getText())) {
+                    showAlert("Erreur de saisie", "Le format de la date d'arrivée est invalide (yyyy-MM-dd HH:mm:ss).");
+                }
             }
         });
 
-        // Validation pour Price (doit être un nombre décimal)
         priceField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*(\\.\\d*)?")) {
                 priceField.setText(newValue.replaceAll("[^\\d.]", ""));
@@ -84,7 +87,6 @@ public class EditTripController {
 
     @FXML
     private void saveTrip() {
-        // Vérifier si tous les champs obligatoires sont remplis
         if (transportIdField.getText().isEmpty() || departureTimeField.getText().isEmpty() ||
                 arrivalTimeField.getText().isEmpty() || priceField.getText().isEmpty() ||
                 departureField.getText().isEmpty() || destinationField.getText().isEmpty() ||
@@ -94,7 +96,7 @@ public class EditTripController {
         }
 
         try {
-            // Mettre à jour les données du trajet
+
             trip.setTransportId(Integer.parseInt(transportIdField.getText()));
             trip.setDepartureTime(Timestamp.valueOf(departureTimeField.getText()));
             trip.setArrivalTime(Timestamp.valueOf(arrivalTimeField.getText()));
@@ -103,10 +105,10 @@ public class EditTripController {
             trip.setDestination(destinationField.getText());
             trip.setTransportName(transportNameField.getText());
 
-            // Enregistrer les modifications dans la base de données
+
             tripService.update(trip);
 
-            // Fermer la fenêtre
+
             transportIdField.getScene().getWindow().hide();
         } catch (Exception e) {
             e.printStackTrace();
@@ -116,7 +118,7 @@ public class EditTripController {
 
     @FXML
     private void returnToPreviousPage() {
-        // Fermer la fenêtre actuelle
+
         transportIdField.getScene().getWindow().hide();
     }
 

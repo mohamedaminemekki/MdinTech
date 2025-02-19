@@ -4,121 +4,193 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import mdinteech.entities.Reservation;
 import mdinteech.services.ReservationService;
 import mdinteech.services.TripService;
+import mdinteech.utils.DatabaseConnection;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 public class ReservationListController {
 
     @FXML
     private VBox reservationContainer;
 
+    @FXML
+    private TextField searchField;
+
+    @FXML
+    private ComboBox<String> filterComboBox;
+
     private ReservationService reservationService;
     private TripService tripService;
-    private int currentUserId = 9; // ID de l'utilisateur connecté (à adapter selon votre système d'authentification)
+    private int currentUserId = 9;
 
     public ReservationListController() {
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/city_transport", "root", "");
-            reservationService = new ReservationService(connection);
+            Connection connection = DatabaseConnection.getInstance().getConnection();
             tripService = new TripService(connection);
-        } catch (SQLException e) {
+            reservationService = new ReservationService(connection);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @FXML
     public void initialize() {
-        // Charger les réservations depuis la base de données
+
+        filterComboBox.getItems().addAll("Toutes", "Confirmed", "Pending", "Cancelled");
+        filterComboBox.setValue("Toutes");
+
+
         loadReservations();
+
+
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> filterReservations());
+        filterComboBox.valueProperty().addListener((observable, oldValue, newValue) -> filterReservations());
     }
 
     private void loadReservations() {
         List<Reservation> reservations = reservationService.getReservationsByUserId(currentUserId);
+        displayReservations(reservations);
+    }
+
+    private void displayReservations(List<Reservation> reservations) {
+        reservationContainer.getChildren().clear();
         for (Reservation reservation : reservations) {
-            // Créer une carte pour chaque réservation
             AnchorPane card = createReservationCard(reservation);
             reservationContainer.getChildren().add(card);
         }
     }
 
     private AnchorPane createReservationCard(Reservation reservation) {
-        // Créer une carte pour la réservation
         AnchorPane card = new AnchorPane();
-        card.setStyle("-fx-background-color: #ffffff; -fx-border-color: #cccccc; -fx-border-radius: 5px; -fx-padding: 10px;");
+        card.setStyle("-fx-background-color: #ffffff; -fx-border-color: #cccccc; -fx-border-radius: 5px; -fx-padding: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);");
 
-        // Ajouter les détails de la réservation
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setLayoutX(10);
+        grid.setLayoutY(10);
+
+
+        ImageView tripIcon = loadIcon("/images/trip.png", 20, 20);
+        if (tripIcon != null) {
+            grid.add(tripIcon, 0, 0);
+        }
+
+
         Label tripLabel = new Label("Trajet : " + reservation.getTripId());
-        tripLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
-        tripLabel.setLayoutX(10);
-        tripLabel.setLayoutY(10);
+        tripLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        tripLabel.setTextFill(Color.DARKBLUE);
+        grid.add(tripLabel, 1, 0);
 
-        Label passengersLabel = new Label("Nombre de passagers : " + reservation.getSeatNumber());
-        passengersLabel.setLayoutX(10);
-        passengersLabel.setLayoutY(40);
 
-        Label seatTypeLabel = new Label("Type de siège : " + reservation.getSeatType());
-        seatTypeLabel.setLayoutX(10);
-        seatTypeLabel.setLayoutY(70);
+        Label passengersLabel = new Label("Passagers : " + reservation.getSeatNumber());
+        passengersLabel.setFont(Font.font("Arial", 12));
+        grid.add(passengersLabel, 1, 1);
+
+
+        Label seatTypeLabel = new Label("Siège : " + reservation.getSeatType());
+        seatTypeLabel.setFont(Font.font("Arial", 12));
+        grid.add(seatTypeLabel, 1, 2);
+
 
         Label statusLabel = new Label("Statut : " + reservation.getStatus());
-        statusLabel.setLayoutX(10);
-        statusLabel.setLayoutY(100);
+        statusLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        grid.add(statusLabel, 1, 3);
 
-        // Ajouter les boutons "Modifier" et "Supprimer"
-        Button modifyButton = new Button("Modifier");
-        modifyButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
-        modifyButton.setLayoutX(250);
-        modifyButton.setLayoutY(10);
-        modifyButton.setOnAction(event -> modifyReservation(reservation));
 
-        Button deleteButton = new Button("Supprimer");
-        deleteButton.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
-        deleteButton.setLayoutX(250);
-        deleteButton.setLayoutY(50);
-        deleteButton.setOnAction(event -> deleteReservation(reservation));
+        if (reservation.getStatus().equals("Cancelled")) {
+            card.setStyle("-fx-background-color: #f0f0f0; -fx-border-color: #cccccc; -fx-border-radius: 5px; -fx-padding: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);");
+            statusLabel.setTextFill(Color.RED);
+        } else if (reservation.getStatus().equals("Pending")) {
+            statusLabel.setTextFill(Color.ORANGE);
+        } else {
+            statusLabel.setTextFill(Color.GREEN);
+        }
 
-        // Ajouter les éléments à la carte
-        card.getChildren().addAll(tripLabel, passengersLabel, seatTypeLabel, statusLabel, modifyButton, deleteButton);
 
+        HBox buttonBox = new HBox(10);
+        buttonBox.setLayoutX(300);
+        buttonBox.setLayoutY(10);
+
+
+        Button detailsButton = new Button("Détails", loadIcon("/images/details.png", 16, 16));
+        detailsButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5px 10px; -fx-border-radius: 5px;");
+        detailsButton.setOnAction(event -> showReservationDetails(reservation));
+
+
+        if (reservation.getStatus().equals("Confirmed") || reservation.getStatus().equals("Pending")) {
+            Button modifyButton = new Button("Modifier", loadIcon("/images/edit.png", 16, 16));
+            modifyButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5px 10px; -fx-border-radius: 5px;");
+            modifyButton.setOnAction(event -> modifyReservation(reservation));
+            buttonBox.getChildren().add(modifyButton);
+        }
+
+
+        if (reservation.getStatus().equals("Confirmed") || reservation.getStatus().equals("Pending")) {
+            Button cancelButton = new Button("Annuler", loadIcon("/images/cancel.png", 16, 16));
+            cancelButton.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5px 10px; -fx-border-radius: 5px;");
+            cancelButton.setOnAction(event -> cancelReservation(reservation));
+            buttonBox.getChildren().add(cancelButton);
+        }
+
+
+        card.getChildren().addAll(grid, buttonBox);
         return card;
+    }
+
+    private ImageView loadIcon(String path, double width, double height) {
+        try {
+            ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream(path)));
+            imageView.setFitWidth(width);
+            imageView.setFitHeight(height);
+            return imageView;
+        } catch (Exception e) {
+            System.err.println("Icône non trouvée : " + path);
+            return null;
+        }
+    }
+
+    private void showReservationDetails(Reservation reservation) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Détails de la réservation");
+        alert.setHeaderText("Détails pour le trajet : " + reservation.getTripId());
+        alert.setContentText(
+                "Nombre de passagers : " + reservation.getSeatNumber() + "\n" +
+                        "Type de siège : " + reservation.getSeatType() + "\n" +
+                        "Statut : " + reservation.getStatus()
+        );
+        alert.showAndWait();
     }
 
     private void modifyReservation(Reservation reservation) {
         try {
-            // Charger la fenêtre de modification
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdinteech/views/ModifyReservation.fxml"));
             Parent root = loader.load();
 
-            // Récupérer le contrôleur de la fenêtre de modification
             ModifyReservationController modifyController = loader.getController();
-
-            // Passer la réservation sélectionnée au contrôleur de modification
             modifyController.setReservation(reservation);
 
-            // Créer une nouvelle scène et afficher la fenêtre de modification
             Stage stage = new Stage();
             stage.setTitle("Modifier la Réservation");
             stage.setScene(new Scene(root));
 
-            // Rafraîchir la liste des réservations après la fermeture de la fenêtre de modification
-            stage.setOnHidden(event -> {
-                reservationContainer.getChildren().clear();
-                loadReservations();
-            });
-
+            stage.setOnHidden(event -> loadReservations());
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -126,20 +198,42 @@ public class ReservationListController {
         }
     }
 
-    private void deleteReservation(Reservation reservation) {
-        try {
-            // Supprimer la réservation de la base de données
-            reservationService.delete(reservation.getId());
+    private void cancelReservation(Reservation reservation) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmer l'annulation");
+        alert.setHeaderText("Êtes-vous sûr de vouloir annuler cette réservation ?");
+        alert.setContentText("Cette action est irréversible.");
 
-            // Recharger les réservations
-            reservationContainer.getChildren().clear();
-            loadReservations();
-
-            showAlert("Succès", "La réservation a été supprimée avec succès.");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showAlert("Erreur", "Impossible de supprimer la réservation.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                reservation.setStatus("Cancelled");
+                reservationService.update(reservation);
+                loadReservations();
+                showAlert("Succès", "La réservation a été annulée.");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showAlert("Erreur", "Impossible d'annuler la réservation.");
+            }
         }
+    }
+
+    private void filterReservations() {
+        String searchText = searchField.getText().toLowerCase();
+        String filter = filterComboBox.getValue();
+
+        List<Reservation> reservations = reservationService.getReservationsByUserId(currentUserId);
+        List<Reservation> filteredReservations = reservations.stream()
+                .filter(reservation -> (filter.equals("Toutes") || reservation.getStatus().equals(filter)))
+                .filter(reservation ->
+                        String.valueOf(reservation.getTripId()).toLowerCase().contains(searchText) ||
+                                String.valueOf(reservation.getSeatNumber()).contains(searchText) ||
+                                reservation.getSeatType().toLowerCase().contains(searchText) ||
+                                reservation.getStatus().toLowerCase().contains(searchText)
+                )
+                .toList();
+
+        displayReservations(filteredReservations);
     }
 
     private void showAlert(String title, String message) {

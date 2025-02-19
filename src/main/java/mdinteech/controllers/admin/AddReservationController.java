@@ -37,7 +37,7 @@ public class AddReservationController {
 
     @FXML
     private void initialize() {
-        // Validation pour User ID, Trip ID, Transport ID, Seat Number (doivent être des entiers)
+
         userIdField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 userIdField.setText(newValue.replaceAll("[^\\d]", ""));
@@ -69,7 +69,7 @@ public class AddReservationController {
 
     @FXML
     private void saveReservation() {
-        // Vérifier si tous les champs obligatoires sont remplis
+
         if (userIdField.getText().isEmpty() || tripIdField.getText().isEmpty() ||
                 transportIdField.getText().isEmpty() || seatNumberField.getText().isEmpty() ||
                 seatTypeField.getText().isEmpty() || paymentStatusField.getText().isEmpty()) {
@@ -78,7 +78,7 @@ public class AddReservationController {
         }
 
         try {
-            // Créer une nouvelle réservation à partir des champs du formulaire
+
             Reservation reservation = new Reservation(
                     0, // L'ID sera généré par la base de données
                     Integer.parseInt(userIdField.getText()),
@@ -91,10 +91,10 @@ public class AddReservationController {
                     paymentStatusField.getText()
             );
 
-            // Ajouter la réservation à la base de données
+
             reservationService.add(reservation);
 
-            // Fermer la fenêtre
+
             userIdField.getScene().getWindow().hide();
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,7 +104,7 @@ public class AddReservationController {
 
     @FXML
     private void returnToPreviousPage() {
-        // Fermer la fenêtre actuelle
+
         userIdField.getScene().getWindow().hide();
     }
 

@@ -289,4 +289,9 @@ public class ReservationService implements Services<Reservation> {
         }
         return reservations;
     }
+
+
+    public List<Reservation> searchByStatus(String keyword) {
+        return List.of();
+    }
 }

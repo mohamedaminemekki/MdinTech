@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 import mdinteech.entities.Reservation;
 import mdinteech.entities.Trip;
 import mdinteech.services.ReservationService;
+import mdinteech.services.TripService;
+import mdinteech.utils.DatabaseConnection;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -32,29 +34,30 @@ public class ReservationSummaryController {
 
     public ReservationSummaryController() {
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/city_transport", "root", "");
+            Connection connection = DatabaseConnection.getInstance().getConnection();
+
             reservationService = new ReservationService(connection);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void setReservationDetails(Reservation reservation, String departure, String destination, String transportName, String totalPrice) {
+    public void setReservationDetails(Reservation reservation, String departure, String destination, String transportName, double totalPrice) {
         this.reservation = reservation;
         this.selectedDeparture = departure;
         this.selectedDestination = destination;
         this.selectedTransportName = transportName;
-        this.selectedTripPrice = Double.parseDouble(totalPrice.replaceAll("[^\\d.]", "")); // Extraire le prix total
+        this.selectedTripPrice = totalPrice;
         displayReservationDetails(departure, destination, transportName, totalPrice);
     }
 
-    private void displayReservationDetails(String departure, String destination, String transportName, String totalPrice) {
+    private void displayReservationDetails(String departure, String destination, String transportName, double totalPrice) {
         String details = "Détails de la réservation :\n" +
                 "Trajet : " + departure + " → " + destination + "\n" +
                 "Transport : " + transportName + "\n" +
                 "Nombre de passagers : " + reservation.getSeatNumber() + "\n" +
                 "Type de siège : " + reservation.getSeatType() + "\n" +
-                "Prix total : " + totalPrice + "\n" +
+                "Prix total : " + totalPrice + " DT\n" +
                 "Statut : " + reservation.getStatus();
         reservationDetailsLabel.setText(details);
     }
@@ -67,22 +70,22 @@ public class ReservationSummaryController {
 
             ReservationDetailsController controller = loader.getController();
 
-            // Créer un objet Trip avec les informations actuelles
+
             Trip currentTrip = new Trip(
-                    reservation.getTripId(), // Utiliser l'ID du voyage
+                    reservation.getTripId(),
                     reservation.getTransportId(),
-                    new Timestamp(System.currentTimeMillis()), // Valeur temporaire pour departureTime
-                    new Timestamp(System.currentTimeMillis()), // Valeur temporaire pour arrivalTime
+                    new Timestamp(System.currentTimeMillis()),
+                    new Timestamp(System.currentTimeMillis()),
                     selectedTripPrice,
                     selectedDeparture,
                     selectedDestination,
                     selectedTransportName
             );
 
-            // Passer les détails du trajet à la page ReservationDetails
+
             controller.setTripDetails(currentTrip);
 
-            // Pré-remplir les champs avec les informations actuelles
+
             controller.setPassengerSpinnerValue(reservation.getSeatNumber());
             controller.setSeatTypeComboBoxValue(reservation.getSeatType());
 
@@ -91,7 +94,7 @@ public class ReservationSummaryController {
             stage.setScene(new Scene(root));
             stage.show();
 
-            // Fermer la fenêtre actuelle
+
             Stage currentStage = (Stage) reservationDetailsLabel.getScene().getWindow();
             currentStage.close();
         } catch (IOException e) {
@@ -103,25 +106,27 @@ public class ReservationSummaryController {
     private void handleConfirm() {
         try {
             if (reservation.getPaymentStatus().equals("Pending")) {
-                // Cas "Payer maintenant" : Rediriger vers la page de paiement
+
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdinteech/views/PaymentPage.fxml"));
                 Parent root = loader.load();
 
-                // Passer la réservation au contrôleur de la page de paiement
+
                 PaymentController paymentController = loader.getController();
                 paymentController.setReservation(reservation);
+                paymentController.setTotalPrice(selectedTripPrice); // Transmettre le prix total
 
                 Stage stage = new Stage();
                 stage.setTitle("Paiement");
                 stage.setScene(new Scene(root));
                 stage.show();
 
-                // Fermer la fenêtre actuelle
+
                 Stage currentStage = (Stage) reservationDetailsLabel.getScene().getWindow();
                 currentStage.close();
             } else {
-                // Cas "Réserver sans payer" : Ajouter la réservation à la base de données
+
                 if (!reservationService.isReservationExists(reservation.getTripId(), reservation.getUserId())) {
+                    reservation.setStatus("Pending"); // Statut "Pending" si le paiement n'est pas effectué
                     reservationService.add(reservation);
                     showConfirmationMessage();
                 } else {

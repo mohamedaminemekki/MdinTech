@@ -13,9 +13,12 @@ import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import mdinteech.entities.Trip;
+import mdinteech.services.ReservationService;
 import mdinteech.services.TripService;
+import mdinteech.utils.DatabaseConnection;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
@@ -27,7 +30,7 @@ public class ManageTripsController {
     private TextField searchField;
 
     @FXML
-    private ComboBox<String> filterComboBox; // Nouveau : ComboBox pour les filtres
+    private ComboBox<String> filterComboBox;
 
     @FXML
     private ListView<Trip> tripsListView;
@@ -37,15 +40,15 @@ public class ManageTripsController {
     @FXML
     public void initialize() {
         try {
-            // Initialiser TripService avec une connexion à la base de données
-            tripService = new TripService(DriverManager.getConnection("jdbc:mysql://localhost:3306/city_transport", "root", ""));
-            loadTrips(); // Charger les trajets au démarrage
-        } catch (SQLException e) {
+            Connection connection = DatabaseConnection.getInstance().getConnection();
+
+        tripService = new TripService(connection);
+            loadTrips();
+        } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Erreur", "Impossible de se connecter à la base de données.");
         }
 
-        // Personnaliser l'affichage des éléments dans la ListView
+
         tripsListView.setCellFactory(new Callback<ListView<Trip>, ListCell<Trip>>() {
             @Override
             public ListCell<Trip> call(ListView<Trip> param) {
@@ -55,9 +58,9 @@ public class ManageTripsController {
                         super.updateItem(trip, empty);
                         if (empty || trip == null) {
                             setText(null);
-                            setStyle(""); // Réinitialiser le style
+                            setStyle("");
                         } else {
-                            // Afficher les détails du trajet dans une cellule personnalisée
+
                             setText(String.format("Trajet #%d : %s → %s (%s - %s)",
                                     trip.getTripId(),
                                     trip.getDeparture(),
@@ -71,11 +74,11 @@ public class ManageTripsController {
             }
         });
 
-        // Initialiser les filtres
+
         filterComboBox.getItems().addAll("Tous", "Départ", "Destination", "Transport ID");
         filterComboBox.setValue("Tous"); // Valeur par défaut
 
-        // Recherche dynamique
+
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 searchTrips();
@@ -99,11 +102,11 @@ public class ManageTripsController {
     @FXML
     private void searchTrips() throws SQLException {
         String keyword = searchField.getText();
-        String filter = filterComboBox.getValue(); // Récupérer le filtre sélectionné
+        String filter = filterComboBox.getValue();
 
         List<Trip> trips;
         if (keyword.isEmpty()) {
-            trips = tripService.readList(); // Si la recherche est vide, charger tous les trajets
+            trips = tripService.readList();
         } else {
             switch (filter) {
                 case "Départ":
@@ -116,7 +119,7 @@ public class ManageTripsController {
                     trips = tripService.searchByTransportId(keyword);
                     break;
                 default:
-                    trips = tripService.searchTrips(keyword); // Recherche générale
+                    trips = tripService.searchTrips(keyword);
                     break;
             }
         }
@@ -125,10 +128,10 @@ public class ManageTripsController {
 
     @FXML
     private void clearSearch() {
-        searchField.clear(); // Effacer le champ de recherche
-        filterComboBox.setValue("Tous"); // Réinitialiser le filtre
+        searchField.clear();
+        filterComboBox.setValue("Tous");
         try {
-            loadTrips(); // Recharger tous les trajets
+            loadTrips();
         } catch (Exception e) {
             e.printStackTrace();
             showAlert("Erreur", "Impossible de réinitialiser la recherche.");
@@ -138,21 +141,21 @@ public class ManageTripsController {
     @FXML
     private void openAddTripDialog() {
         try {
-            // Charger le fichier FXML pour l'ajout de trajet
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdintech/views/admin/add_trip.fxml"));
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdinteech/views/admin/add_trip.fxml"));
             Parent root = loader.load();
 
-            // Obtenir le contrôleur associé
-            AddTripController controller = loader.getController();
-            controller.setTripService(tripService); // Injecter TripService dans le contrôleur
 
-            // Afficher la fenêtre
+            AddTripController controller = loader.getController();
+            controller.setTripService(tripService);
+
+
             Stage stage = new Stage();
             stage.setTitle("Ajouter un trajet");
             stage.setScene(new Scene(root));
-            stage.showAndWait(); // Attendre que la fenêtre soit fermée
+            stage.showAndWait();
 
-            // Recharger les trajets après l'ajout
+
             loadTrips();
         } catch (IOException e) {
             e.printStackTrace();
@@ -165,22 +168,22 @@ public class ManageTripsController {
         Trip selectedTrip = tripsListView.getSelectionModel().getSelectedItem();
         if (selectedTrip != null) {
             try {
-                // Charger le fichier FXML pour la modification de trajet
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdintech/views/admin/edit_trip.fxml"));
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdinteech/views/admin/edit_trip.fxml"));
                 Parent root = loader.load();
 
-                // Obtenir le contrôleur associé
-                EditTripController controller = loader.getController();
-                controller.setTrip(selectedTrip); // Passer le trajet sélectionné
-                controller.setTripService(tripService); // Injecter TripService dans le contrôleur
 
-                // Afficher la fenêtre
+                EditTripController controller = loader.getController();
+                controller.setTrip(selectedTrip);
+                controller.setTripService(tripService);
+
+
                 Stage stage = new Stage();
                 stage.setTitle("Modifier un trajet");
                 stage.setScene(new Scene(root));
-                stage.showAndWait(); // Attendre que la fenêtre soit fermée
+                stage.showAndWait();
 
-                // Recharger les trajets après la modification
+
                 loadTrips();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -204,7 +207,7 @@ public class ManageTripsController {
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 try {
                     tripService.delete(selectedTrip.getTripId());
-                    loadTrips(); // Recharger la liste des trajets après la suppression
+                    loadTrips();
                 } catch (SQLException e) {
                     e.printStackTrace();
                     showAlert("Erreur", "Impossible de supprimer le trajet.");

@@ -1,0 +1,18 @@
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox fx:id="cellRoot" xmlns:fx="http://javafx.com/fxml" spacing="10" style="-fx-padding: 10px; -fx-background-color: #FFFFFF; -fx-border-radius: 10px; -fx-border-color: #BDC3C7; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);">
+    <ImageView fx:id="transportIcon" fitWidth="40" fitHeight="40"/> <!-- Icône agrandie -->
+    <VBox spacing="5">
+        <Label fx:id="departureLabel" text="Départ: " style="-fx-font-size: 14px; -fx-text-fill: black;"/>
+        <Label fx:id="destinationLabel" text="Destination: " style="-fx-font-size: 14px; -fx-text-fill: black;"/>
+        <Label fx:id="transportLabel" text="Transport: " style="-fx-font-size: 14px; -fx-text-fill: black;"/>
+    </VBox>
+    <VBox spacing="5">
+        <Label fx:id="priceLabel" text="Prix: " style="-fx-font-size: 14px; -fx-text-fill: black;"/>
+        <Label fx:id="departureTimeLabel" text="Heure Départ: " style="-fx-font-size: 14px; -fx-text-fill: black;"/>
+        <Label fx:id="arrivalTimeLabel" text="Heure Arrivée: " style="-fx-font-size: 14px; -fx-text-fill: black;"/>
+    </VBox>
+</HBox>

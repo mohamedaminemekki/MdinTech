@@ -14,8 +14,11 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import mdinteech.entities.Reservation;
 import mdinteech.services.ReservationService;
+import mdinteech.services.TripService;
+import mdinteech.utils.DatabaseConnection;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
@@ -27,7 +30,7 @@ public class ManageReservationsController {
     private TextField searchField;
 
     @FXML
-    private ComboBox<String> filterComboBox; // Nouveau : ComboBox pour les filtres
+    private ComboBox<String> filterComboBox;
 
     @FXML
     private ListView<Reservation> reservationsListView;
@@ -37,15 +40,15 @@ public class ManageReservationsController {
     @FXML
     public void initialize() {
         try {
-            // Initialiser ReservationService avec une connexion à la base de données
-            reservationService = new ReservationService(DriverManager.getConnection("jdbc:mysql://localhost:3306/city_transport", "root", ""));
-            loadReservations(); // Charger les réservations au démarrage
-        } catch (SQLException e) {
+            Connection connection = DatabaseConnection.getInstance().getConnection();
+
+            reservationService = new ReservationService(connection);
+            loadReservations();
+        } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Erreur", "Impossible de se connecter à la base de données.");
         }
 
-        // Personnaliser l'affichage des éléments dans la ListView
+
         reservationsListView.setCellFactory(new Callback<ListView<Reservation>, ListCell<Reservation>>() {
             @Override
             public ListCell<Reservation> call(ListView<Reservation> param) {
@@ -55,26 +58,32 @@ public class ManageReservationsController {
                         super.updateItem(reservation, empty);
                         if (empty || reservation == null) {
                             setText(null);
-                            setStyle(""); // Réinitialiser le style
+                            setStyle("");
                         } else {
-                            // Afficher les détails de la réservation dans une cellule personnalisée
+
                             setText(String.format("Réservation #%d : User ID %d, Trip ID %d, Statut: %s",
                                     reservation.getId(),
                                     reservation.getUserId(),
                                     reservation.getTripId(),
-                                    reservation.getPaymentStatus()));
-                            setStyle("-fx-padding: 10; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0;");
+                                    reservation.getStatus()));
+
+
+                            if (reservation.getStatus().equals("cancelled")) {
+                                setStyle("-fx-background-color: #f0f0f0; -fx-text-fill: #ff0000;");
+                            } else {
+                                setStyle("");
+                            }
                         }
                     }
                 };
             }
         });
 
-        // Initialiser les filtres
-        filterComboBox.getItems().addAll("Tous", "User ID", "Trip ID", "Statut");
-        filterComboBox.setValue("Tous"); // Valeur par défaut
 
-        // Recherche dynamique
+        filterComboBox.getItems().addAll("Tous", "User ID", "Trip ID", "Statut");
+        filterComboBox.setValue("Tous");
+
+
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 searchReservations();
@@ -98,11 +107,10 @@ public class ManageReservationsController {
     @FXML
     private void searchReservations() throws SQLException {
         String keyword = searchField.getText();
-        String filter = filterComboBox.getValue(); // Récupérer le filtre sélectionné
-
+        String filter = filterComboBox.getValue();
         List<Reservation> reservations;
         if (keyword.isEmpty()) {
-            reservations = reservationService.readList(); // Si la recherche est vide, charger toutes les réservations
+            reservations = reservationService.readList();
         } else {
             switch (filter) {
                 case "User ID":
@@ -112,7 +120,7 @@ public class ManageReservationsController {
                     reservations = reservationService.searchByTripId(keyword);
                     break;
                 case "Statut":
-                    reservations = reservationService.searchByPaymentStatus(keyword);
+                    reservations = reservationService.searchByStatus(keyword);
                     break;
                 default:
                     reservations = reservationService.searchReservations(keyword); // Recherche générale
@@ -137,21 +145,21 @@ public class ManageReservationsController {
     @FXML
     private void openAddReservationDialog() {
         try {
-            // Charger le fichier FXML pour l'ajout de réservation
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdinteech/views/admin/add_reservation.fxml"));
             Parent root = loader.load();
 
-            // Obtenir le contrôleur associé
+
             AddReservationController controller = loader.getController();
             controller.setReservationService(reservationService); // Injecter ReservationService dans le contrôleur
 
-            // Afficher la fenêtre
+
             Stage stage = new Stage();
             stage.setTitle("Ajouter une réservation");
             stage.setScene(new Scene(root));
             stage.showAndWait(); // Attendre que la fenêtre soit fermée
 
-            // Recharger les réservations après l'ajout
+
             loadReservations();
         } catch (IOException e) {
             e.printStackTrace();
@@ -164,22 +172,22 @@ public class ManageReservationsController {
         Reservation selectedReservation = reservationsListView.getSelectionModel().getSelectedItem();
         if (selectedReservation != null) {
             try {
-                // Charger le fichier FXML pour la modification de réservation
+
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdinteech/views/admin/edit_reservation.fxml"));
                 Parent root = loader.load();
 
-                // Obtenir le contrôleur associé
-                EditReservationController controller = loader.getController();
-                controller.setReservation(selectedReservation); // Passer la réservation sélectionnée
-                controller.setReservationService(reservationService); // Injecter ReservationService dans le contrôleur
 
-                // Afficher la fenêtre
+                EditReservationController controller = loader.getController();
+                controller.setReservation(selectedReservation);
+                controller.setReservationService(reservationService);
+
+
                 Stage stage = new Stage();
                 stage.setTitle("Modifier une réservation");
                 stage.setScene(new Scene(root));
-                stage.showAndWait(); // Attendre que la fenêtre soit fermée
+                stage.showAndWait();
 
-                // Recharger les réservations après la modification
+
                 loadReservations();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -203,11 +211,44 @@ public class ManageReservationsController {
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 try {
                     reservationService.delete(selectedReservation.getId());
-                    loadReservations(); // Recharger la liste des réservations après la suppression
+                    loadReservations();
                 } catch (SQLException e) {
                     e.printStackTrace();
                     showAlert("Erreur", "Impossible de supprimer la réservation.");
                 }
+            }
+        } else {
+            showAlert("Avertissement", "Veuillez sélectionner une réservation.");
+        }
+    }
+
+    @FXML
+    private void cancelReservation() {
+        Reservation selectedReservation = reservationsListView.getSelectionModel().getSelectedItem();
+        if (selectedReservation != null) {
+            if (selectedReservation.getStatus().equals("confirmed") || selectedReservation.getStatus().equals("pending")) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmer l'annulation");
+                alert.setHeaderText("Êtes-vous sûr de vouloir annuler cette réservation ?");
+                alert.setContentText("Cette action est irréversible.");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    try {
+
+                        selectedReservation.setStatus("cancelled");
+                        reservationService.update(selectedReservation);
+
+                        loadReservations();
+
+                        showAlert("Succès", "La réservation a été annulée.");
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        showAlert("Erreur", "Impossible d'annuler la réservation.");
+                    }
+                }
+            } else {
+                showAlert("Avertissement", "Seules les réservations actives peuvent être annulées.");
             }
         } else {
             showAlert("Avertissement", "Veuillez sélectionner une réservation.");

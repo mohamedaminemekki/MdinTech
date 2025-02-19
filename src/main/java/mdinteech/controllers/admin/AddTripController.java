@@ -47,20 +47,24 @@ public class AddTripController {
             }
         });
 
-        // Validation pour Departure Time et Arrival Time (doit être une date valide)
-        departureTimeField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.isEmpty() && !isValidTimestamp(newValue)) {
-                showAlert("Erreur de saisie", "Le format de la date de départ est invalide (yyyy-MM-dd HH:mm:ss).");
+
+        departureTimeField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { // Lorsque le champ perd le focus
+                if (!isValidTimestamp(departureTimeField.getText())) {
+                    showAlert("Erreur de saisie", "Le format de la date de départ est invalide (yyyy-MM-dd HH:mm:ss).");
+                }
             }
         });
 
-        arrivalTimeField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.isEmpty() && !isValidTimestamp(newValue)) {
-                showAlert("Erreur de saisie", "Le format de la date d'arrivée est invalide (yyyy-MM-dd HH:mm:ss).");
+        arrivalTimeField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                if (!isValidTimestamp(arrivalTimeField.getText())) {
+                    showAlert("Erreur de saisie", "Le format de la date d'arrivée est invalide (yyyy-MM-dd HH:mm:ss).");
+                }
             }
         });
 
-        // Validation pour Price (doit être un nombre décimal)
+
         priceField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*(\\.\\d*)?")) {
                 priceField.setText(newValue.replaceAll("[^\\d.]", ""));
@@ -71,7 +75,7 @@ public class AddTripController {
 
     @FXML
     private void saveTrip() {
-        // Vérifier si tous les champs obligatoires sont remplis
+
         if (transportIdField.getText().isEmpty() || departureTimeField.getText().isEmpty() ||
                 arrivalTimeField.getText().isEmpty() || priceField.getText().isEmpty() ||
                 departureField.getText().isEmpty() || destinationField.getText().isEmpty() ||
@@ -81,7 +85,7 @@ public class AddTripController {
         }
 
         try {
-            // Créer un nouveau trajet à partir des champs du formulaire
+
             Trip trip = new Trip(
                     0, // L'ID sera généré par la base de données
                     Integer.parseInt(transportIdField.getText()),
@@ -93,10 +97,10 @@ public class AddTripController {
                     transportNameField.getText()
             );
 
-            // Ajouter le trajet à la base de données
+
             tripService.add(trip);
 
-            // Fermer la fenêtre
+
             transportIdField.getScene().getWindow().hide();
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,7 +110,7 @@ public class AddTripController {
 
     @FXML
     private void returnToPreviousPage() {
-        // Fermer la fenêtre actuelle
+
         transportIdField.getScene().getWindow().hide();
     }
 

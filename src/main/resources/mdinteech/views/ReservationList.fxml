@@ -6,13 +6,17 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="mdinteech.controllers.ReservationListController">
     <top>
-        <Label text="Mes Réservations" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-padding: 15px;"/>
+        <VBox spacing="10" style="-fx-padding: 15px; -fx-background-color: #2196F3;">
+            <Label text="Mes Réservations" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Rechercher une réservation..." style="-fx-pref-width: 300px; -fx-font-size: 14px; -fx-background-radius: 5px;"/>
+                <ComboBox fx:id="filterComboBox" promptText="Filtrer par statut" style="-fx-pref-width: 150px; -fx-font-size: 14px; -fx-background-radius: 5px;"/>
+            </HBox>
+        </VBox>
     </top>
     <center>
-        <ScrollPane>
-            <VBox fx:id="reservationContainer" spacing="10" style="-fx-padding: 10px;">
-                <!-- Les cartes de réservation seront ajoutées dynamiquement ici -->
-            </VBox>
+        <ScrollPane style="-fx-background-color: transparent;">
+            <VBox fx:id="reservationContainer" spacing="10" style="-fx-padding: 10px;"/>
         </ScrollPane>
     </center>
 </BorderPane>

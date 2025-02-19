@@ -71,11 +71,11 @@ public class AdminDashboardController {
     @FXML
     public void logout(ActionEvent actionEvent) {
         try {
-            // Fermer la fenêtre actuelle
+
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.close();
 
-            // Ouvrir la page de connexion
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdinteech/views/login.fxml"));
             Parent root = loader.load();
             Stage loginStage = new Stage();
