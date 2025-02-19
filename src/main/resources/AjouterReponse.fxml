@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="10" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AjouterReponse">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Répondre à la Réclamation" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <Label text="Message de réponse :"/>
+    <TextArea fx:id="messageField" prefHeight="100"/>
+
+    <Button text="Envoyer Réponse" fx:id="btnEnvoyer" />
+</VBox>

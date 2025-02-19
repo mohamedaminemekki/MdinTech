@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<AnchorPane prefHeight="500.0" prefWidth="650.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/17.0.6"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AfficherReclamation">
+
+    <VBox alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
+
+        <!-- Titre -->
+        <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333333;" text="Liste des Réclamations" />
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="Chercher par :" style="-fx-font-weight: bold;" />
+            <ComboBox fx:id="chercherPar" prefWidth="150">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Client ID"/>
+                        <String fx:value="Type"/>
+                        <String fx:value="Date"/>
+                        <String fx:value="État"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+            <TextField fx:id="searchField" promptText="Entrez votre recherche..." prefWidth="200" />
+            <Button fx:id="btnSearch" text="Rechercher" style="-fx-background-color: #007BFF; -fx-text-fill: white; -fx-font-weight: bold;" />
+            <Button fx:id="btnActualiser" style="-fx-background-color: transparent; -fx-padding: 5px;">
+                <graphic>
+                    <ImageView fitWidth="24" fitHeight="24">
+                        <image>
+                            <Image url="/images/refresh.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </HBox>
+
+        <!-- En-tête du tableau -->
+        <GridPane hgap="10" vgap="5" style="-fx-padding: 10px; -fx-background-color: #dddddd; -fx-font-weight: bold; -fx-border-radius: 5px;">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="5"/>
+                <ColumnConstraints percentWidth="10"/>
+                <ColumnConstraints percentWidth="15"/>
+                <ColumnConstraints percentWidth="15"/>
+                <ColumnConstraints percentWidth="10"/>
+                <ColumnConstraints percentWidth="30"/>
+                <ColumnConstraints percentWidth="15"/>
+            </columnConstraints>
+
+            <Label text="ID" GridPane.columnIndex="0" style="-fx-text-fill: #000;" />
+            <Label text="Client ID" GridPane.columnIndex="1" style="-fx-text-fill: #000;" />
+            <Label text="Type" GridPane.columnIndex="2" style="-fx-text-fill: #000;" />
+            <Label text="Date" GridPane.columnIndex="3" style="-fx-text-fill: #000;" />
+            <Label text="État" GridPane.columnIndex="4" style="-fx-text-fill: #000;" />
+            <Label text="Réponse" GridPane.columnIndex="5" style="-fx-text-fill: #000;" />
+            <Label text="Action" GridPane.columnIndex="6" style="-fx-text-fill: #000;" />
+        </GridPane>
+
+
+        <!-- Liste des réclamations -->
+        <ListView fx:id="listViewReclamations" style="-fx-border-color: #cccccc; -fx-border-radius: 5px; -fx-background-color: white;" AnchorPane.bottomAnchor="150" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="100" />
+        <!-- Zone de description -->
+
+        <HBox alignment="CENTER">
+            <TextArea fx:id="descriptionArea"
+                      editable="false"
+                      wrapText="true"
+                      prefWidth="500"
+                      prefHeight="250"
+                      maxWidth="500"
+                      maxHeight="250"
+                      style="-fx-border-color: #cccccc;
+                     -fx-border-radius: 5px;
+                     -fx-background-color: white;
+                     -fx-font-size: 14px;" />
+        </HBox>
+
+
+
+
+
+    </VBox>
+</AnchorPane>

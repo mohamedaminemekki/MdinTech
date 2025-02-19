@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.AjouterReclamation"
+            prefHeight="600.0" prefWidth="650.0"
+            style="-fx-background-color: linear-gradient(to bottom, #ffffff, #e3f2fd);">
+
+    <VBox spacing="20" alignment="TOP_CENTER"
+          layoutX="0" layoutY="20"
+          AnchorPane.topAnchor="20" AnchorPane.bottomAnchor="20"
+          AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+
+        <Label text="Ajouter une Réclamation"
+               style="-fx-font-size: 26px;
+       -fx-font-family: 'Times New Roman';
+       -fx-font-weight: bold;
+       -fx-text-fill: #2C3E50;"
+        />
+
+        <GridPane hgap="15" vgap="15" alignment="CENTER">
+            <Label text="ID Client:"
+                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"
+                   GridPane.rowIndex="0" GridPane.columnIndex="0" />
+            <TextField fx:id="clientIdField" promptText="Entrez l'ID client"
+                       style="-fx-pref-width: 250px; -fx-text-fill: #555; -fx-background-radius: 8px; -fx-padding: 8px;"
+                       GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+            <Label text="Date:"
+                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"
+                   GridPane.rowIndex="1" GridPane.columnIndex="0" />
+            <DatePicker fx:id="dateField"
+                        style="-fx-pref-width: 250px; -fx-background-radius: 8px;"
+                        GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+            <Label text="Type de Réclamation:"
+                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"
+                   GridPane.rowIndex="2" GridPane.columnIndex="0" />
+            <ComboBox fx:id="typeComboBox"
+                      style="-fx-pref-width: 250px; -fx-background-radius: 8px;"
+                      GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+            <Label text="Description:"
+                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"
+                   GridPane.rowIndex="3" GridPane.columnIndex="0" />
+            <TextArea fx:id="descriptionField" promptText="Décrivez votre problème..."
+                      style="-fx-pref-width: 450px; -fx-pref-height: 100px; -fx-text-fill: #555;
+                     -fx-background-radius: 8px; -fx-padding: 8px;"
+                      GridPane.rowIndex="3" GridPane.columnIndex="1" />
+
+            <Label text="Photo (optionnel):"
+                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"
+                   GridPane.rowIndex="4" GridPane.columnIndex="0" />
+            <HBox spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="4" GridPane.columnIndex="1">
+                <Button fx:id="uploadButton" text="📷 Télécharger une photo"
+                        style="-fx-background-color: #1565C0; -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-background-radius: 8px;" />
+                <ImageView fx:id="photoPreview" fitWidth="100" fitHeight="100" />
+            </HBox>
+        </GridPane>
+
+        <HBox spacing="15" alignment="CENTER">
+            <Button fx:id="submitButton" text="✔ Ajouter Réclamation"
+                    style="-fx-background-color: #388E3C; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 8px; -fx-pref-width: 220px;" />
+        </HBox>
+
+        <!-- Added Button for navigating to reclamation list -->
+        <HBox spacing="15" alignment="CENTER" layoutX="0" layoutY="0" AnchorPane.bottomAnchor="20">
+            <Button fx:id="afficherReclamationsButton" text="👀 Voir les réclamations"
+                    style="-fx-background-color: #FF7043; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 8px; -fx-pref-width: 220px;" />
+        </HBox>
+    </VBox>
+</AnchorPane>
