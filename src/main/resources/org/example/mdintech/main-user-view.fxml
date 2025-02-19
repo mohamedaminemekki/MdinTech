@@ -12,11 +12,10 @@
 
     <MenuBar fx:id="menuBar" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
         <Menu text="Navigation">
-            <!-- Added fx:id attributes -->
             <MenuItem fx:id="goToHomeView" text="Home" onAction="#goToHomeView" />
             <MenuItem fx:id="goToParkings" text="Parkings" onAction="#goToParkings" />
             <MenuItem fx:id="goToParkingTickets" text="Parking Tickets" onAction="#goToParkingTickets" />
-            <MenuItem fx:id="goToUpdateProfile" text="Parking Tickets" onAction="#goToUpdatePorfile" />
+            <MenuItem fx:id="goToUpdateProfile" text="update profile" onAction="#goToUpdatePorfile" />
         </Menu>
     </MenuBar>
 

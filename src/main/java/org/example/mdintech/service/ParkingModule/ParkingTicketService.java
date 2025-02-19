@@ -93,6 +93,7 @@ public class ParkingTicketService {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return new ParkingTicket(
+                        rs.getInt("TicketID"),
                         rs.getInt("user_id"),
                         rs.getInt("parking_id"),
                         rs.getInt("parking_slot_id"), // New addition
@@ -116,6 +117,7 @@ public class ParkingTicketService {
 
             while (rs.next()) {
                 tickets.add(new ParkingTicket(
+                        rs.getInt("TicketID"),
                         rs.getInt("user_id"),
                         rs.getInt("parking_id"),
                         rs.getInt("parking_slot_id"), // New addition
@@ -140,6 +142,7 @@ public class ParkingTicketService {
 
             while (rs.next()) {
                 tickets.add(new ParkingTicket(
+                        rs.getInt("TicketID"),
                         rs.getInt("user_id"),
                         rs.getInt("parking_id"),
                         rs.getInt("parking_slot_id"),
@@ -163,6 +166,7 @@ public class ParkingTicketService {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 tickets.add(new ParkingTicket(
+                        rs.getInt("TicketID"),
                         rs.getInt("user_id"),
                         rs.getInt("parking_id"),
                         rs.getInt("parking_slot_id"),

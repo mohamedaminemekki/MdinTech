@@ -8,18 +8,11 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.mdintech.Controller.parkingController.DisplayParkingDetailsViewController">
     <Button layoutX="10" layoutY="10" onAction="#handleBackButton" text="← Back" />
-    <VBox alignment="BASELINE_LEFT" layoutX="63.0" layoutY="75.0" prefHeight="71.0" prefWidth="64.0" spacing="10">
+    <VBox alignment="BASELINE_LEFT" layoutX="65.0" layoutY="83.0" prefHeight="71.0" prefWidth="153.0" spacing="10">
         <Label fx:id="parkingNameLabel" text="Name: " />
         <Label fx:id="parkingLocationLabel" text="Location: " />
         <Label fx:id="parkingCapacityLabel" text="Capacity: " />
     </VBox>
     <ListView fx:id="ticketListView" layoutX="63.0" layoutY="174.0" prefHeight="200.0" prefWidth="475.0" />
-   <VBox alignment="BASELINE_LEFT" layoutX="412.0" layoutY="83.0" prefHeight="71.0" prefWidth="126.0" spacing="10">
-      <children>
-         <Label text="Name: " />
-         <Label text="Location: " />
-         <Label text="Capacity: " />
-      </children>
-   </VBox>
 
 </AnchorPane>

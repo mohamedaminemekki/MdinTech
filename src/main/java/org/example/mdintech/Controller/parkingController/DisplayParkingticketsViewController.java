@@ -1,5 +1,6 @@
 package org.example.mdintech.Controller.parkingController;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
@@ -8,7 +9,9 @@ import org.example.mdintech.entities.ParkingModule.ParkingTicket;
 import org.example.mdintech.service.ParkingModule.ParkingTicketService;
 import org.example.mdintech.service.userService;
 import org.example.mdintech.entities.User;
+import org.example.mdintech.utils.navigation;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,5 +70,8 @@ public class DisplayParkingticketsViewController {
                 "\nStatus: " + (ticket.isStatus() ? "Active" : "Expired"));
 
         alert.showAndWait();
+    }
+    public void handleBackButton(ActionEvent event) throws IOException {
+        navigation.switchScene(event, "/org/example/mdintech/main-admin-view.fxml");
     }
 }

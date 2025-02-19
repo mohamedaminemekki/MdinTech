@@ -1,5 +1,6 @@
 package org.example.mdintech.Controller.userController.parking;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,6 +12,7 @@ import javafx.stage.Stage;
 import org.example.mdintech.entities.ParkingModule.Parking;
 import org.example.mdintech.service.ParkingModule.ParkingService;
 import org.example.mdintech.service.ParkingModule.ParkingSlotService;
+import org.example.mdintech.utils.navigation;
 
 import java.io.IOException;
 import java.util.List;
@@ -78,4 +80,7 @@ public class displayparkingsController {
         alert.show();
     }
 
+    public void handleBackButton(ActionEvent event) throws IOException {
+        navigation.switchScene(event, "/org/example/mdintech/main-user-view.fxml");
+    }
 }

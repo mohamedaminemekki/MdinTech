@@ -2,6 +2,7 @@ package org.example.mdintech.Controller.userController;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ListCell;
@@ -11,7 +12,9 @@ import javafx.scene.image.ImageView;
 import javafx.util.Callback;
 import org.example.mdintech.entities.User;
 import org.example.mdintech.service.userService;
+import org.example.mdintech.utils.navigation;
 
+import java.io.IOException;
 import java.util.List;
 
 public class displayuserController {
@@ -84,5 +87,8 @@ public class displayuserController {
                         "Status: " + (user.isStatus() ? "Active" : "Inactive")
         );
         alert.showAndWait();
+    }
+    public void handleBackButton(ActionEvent event) throws IOException {
+        navigation.switchScene(event, "/org/example/mdintech/main-admin-view.fxml");
     }
 }

@@ -10,6 +10,8 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.mdintech.Controller.userController.parking.displayparkingsController"
             prefHeight="400.0" prefWidth="600.0">
+    <Button layoutX="10" layoutY="10" onAction="#handleBackButton" text="← Back" />
+
     <ListView fx:id="parkingListView" layoutX="50" layoutY="30" prefHeight="300.0" prefWidth="500.0"/>
 </AnchorPane>
 

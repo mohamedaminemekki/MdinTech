@@ -20,6 +20,16 @@ public class ParkingTicket {
         this.expirationDate = expirationDate;
     }
 
+    public ParkingTicket(int id,int userID, int parkingID, int parkingSlotID, Date issuingDate, Date expirationDate,boolean status) {
+        this.id = id;
+        this.userID = userID;
+        this.parkingID = parkingID;
+        this.parkingSlotID = parkingSlotID;
+        this.issuingDate = issuingDate;
+        this.status = status;
+        this.expirationDate = expirationDate;
+    }
+
     public ParkingTicket() {}
 
     public int getParkingSlotID() {

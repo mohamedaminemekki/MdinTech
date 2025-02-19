@@ -7,6 +7,9 @@ import javafx.scene.control.TextField;
 import javafx.event.ActionEvent;
 import org.example.mdintech.entities.ParkingModule.Parking;
 import org.example.mdintech.service.ParkingModule.ParkingService;
+import org.example.mdintech.utils.navigation;
+
+import java.io.IOException;
 
 public class AddParkingViewController {
 
@@ -25,7 +28,7 @@ public class AddParkingViewController {
     private final ParkingService parkingService = new ParkingService();
 
     @FXML
-    private void handleAddParking(ActionEvent event) {
+    private void handleAddParking(ActionEvent event) throws IOException {
         String name = nameField.getText().trim();
         String location = locationField.getText().trim();
         String capacityText = capacityField.getText().trim();
@@ -57,6 +60,8 @@ public class AddParkingViewController {
         if (success) {
             showAlert("Success", "Parking added successfully!");
             clearFields();
+            navigation.switchScene(event, "/org/example/mdintech/main-admin-view.fxml");
+
         } else {
             showAlert("Error", "Failed to add parking. Please try again.");
         }
@@ -74,5 +79,9 @@ public class AddParkingViewController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public void handleBackButton(ActionEvent event) throws IOException {
+        navigation.switchScene(event, "/org/example/mdintech/main-admin-view.fxml");
     }
 }

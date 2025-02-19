@@ -1,5 +1,6 @@
 package org.example.mdintech.Controller.userController.parking;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -9,7 +10,9 @@ import org.example.mdintech.service.ParkingModule.ParkingTicketService;
 import org.example.mdintech.entities.ParkingModule.ParkingTicket;
 import org.example.mdintech.entities.ParkingModule.Parking;
 import org.example.mdintech.Singleton.loggedInUser;
+import org.example.mdintech.utils.navigation;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -58,6 +61,7 @@ public class displayParkingTicketsController {
                 .map(this::mapTicketToString)
                 .collect(Collectors.toList());
         allTicketsListView.getItems().setAll(allTicketDetails);
+        System.out.println("Active ticket details: " + activeTicketDetails);
     }
 
     private String mapTicketToString(ParkingTicket ticket) {
@@ -105,6 +109,7 @@ public class displayParkingTicketsController {
     }
 
     private void showUpdateExpiryDateDialog(ParkingTicket ticket) {
+        System.out.println(ticket.getId());
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Update Expiration Date");
 
@@ -112,12 +117,13 @@ public class displayParkingTicketsController {
         ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 
-        // Extract issuing date as default values
+        // Extract issuing and expiration dates
         Date issuingDate = ticket.getIssuingDate();
         LocalDateTime issuingDateTime = issuingDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime();
 
-        // Default expiration date is issuing date + 1 hour
-        LocalDateTime defaultExpirationDateTime = issuingDateTime.plusHours(1);
+        Date expirationDate = ticket.getExpirationDate();
+        LocalDateTime defaultExpirationDateTime = expirationDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime();
+
 
         DatePicker expirationDatePicker = new DatePicker(defaultExpirationDateTime.toLocalDate());
         ComboBox<Integer> hourComboBox = new ComboBox<>();
@@ -182,6 +188,9 @@ public class displayParkingTicketsController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(message);
         alert.show();
+    }
+    public void handleBackButton(ActionEvent event) throws IOException {
+        navigation.switchScene(event, "/org/example/mdintech/main-user-view.fxml");
     }
 
 }

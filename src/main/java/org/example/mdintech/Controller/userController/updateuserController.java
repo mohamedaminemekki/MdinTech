@@ -9,6 +9,9 @@ import javafx.scene.control.TextField;
 import org.example.mdintech.Singleton.loggedInUser;
 import org.example.mdintech.entities.User;
 import org.example.mdintech.service.userService;
+import org.example.mdintech.utils.navigation;
+
+import java.io.IOException;
 
 
 public class updateuserController {
@@ -139,5 +142,8 @@ public class updateuserController {
         } catch (Exception e) {
             statusLabel.setText("Update failed: " + e.getMessage());
         }
+    }
+    public void handleBackButton(ActionEvent event) throws IOException {
+        navigation.switchScene(event, "/org/example/mdintech/main-user-view.fxml");
     }
 }

@@ -5,6 +5,7 @@
 <?import javafx.geometry.*?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.mdintech.Controller.userController.parking.displayParkingTicketsController">
+    <Button layoutX="10" layoutY="10" onAction="#handleBackButton" text="← Back" />
 
     <ListView fx:id="activeTicketsListView" layoutX="20" layoutY="20" prefHeight="150" prefWidth="560" onMouseClicked="#handleTicketClick"/>
 

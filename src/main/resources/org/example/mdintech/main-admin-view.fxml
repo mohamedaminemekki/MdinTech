@@ -10,5 +10,14 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.mdintech.Controller.userController.mainAdminViewController"
             prefHeight="400.0" prefWidth="600.0">
-
+    <MenuBar fx:id="menuBar" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <Menu text="Navigation">
+            <!-- Added fx:id attributes -->
+            <MenuItem fx:id="goToHomeView" text="Home" onAction="#goToHomeView" />
+            <MenuItem fx:id="goToParkings" text="Parkings" onAction="#goToParkings" />
+            <MenuItem fx:id="goToParkingTickets" text="Parking Tickets" onAction="#goToParkingTickets" />
+            <MenuItem fx:id="goToUsers" text="Users" onAction="#goToUsers" />
+            <MenuItem fx:id="goToCreateParking" text="Createparking" onAction="#goToCreateParking" />
+        </Menu>
+    </MenuBar>
 </AnchorPane>

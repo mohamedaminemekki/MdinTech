@@ -8,6 +8,8 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.mdintech.Controller.userController.displayuserController">
+   <Button layoutX="10" layoutY="10" onAction="#handleBackButton" text="← Back" />
+
    <children>
       <Label layoutX="50.0" layoutY="30.0" text="List of Users">
          <font>

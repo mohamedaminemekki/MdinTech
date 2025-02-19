@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.example.mdintech.entities.ParkingModule.Parking;
 import org.example.mdintech.service.ParkingModule.ParkingService;
+import org.example.mdintech.utils.navigation;
 
 import java.io.IOException;
 import java.util.List;
@@ -71,5 +72,8 @@ public class DisplayParkingsViewController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public void handleBackButton(ActionEvent event) throws IOException {
+        navigation.switchScene(event, "/org/example/mdintech/main-admin-view.fxml");
     }
 }

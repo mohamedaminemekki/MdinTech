@@ -19,7 +19,7 @@ public class User {
         this.CIN = CIN;
         Email = email;
         Password = password;
-        Role = UserRole.USER;
+        Role = role;
         Phone = phone;
         Address = address;
         City = city;
