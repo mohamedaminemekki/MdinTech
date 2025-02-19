@@ -1,0 +1,16 @@
+.label {
+    -fx-font-size: 14px;
+}
+
+.grid-pane {
+    -fx-padding: 20;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+}
+
+.header-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}

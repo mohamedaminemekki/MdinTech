@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.control.Button?>
+<AnchorPane fx:id="rootPane"
+        xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.ReceiptController">
+    <VBox spacing="20" style="-fx-padding: 20;" stylesheets="@receipt.css">
+        <Label text="Reçu de Paiement SONEDE" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+
+        <GridPane hgap="10" vgap="10">
+            <Label text="Date de Paiement:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <Label fx:id="lblPaymentDate" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <Label text="Référence Facture:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Label fx:id="lblInvoiceNumber" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <Label text="Montant Payé:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Label fx:id="lblAmount" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+            <Label text="Méthode de Paiement:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <Label fx:id="lblPaymentMethod" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+            <Label text="Client:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+            <Label fx:id="lblClient" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+            <Label text="Transaction ID:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+            <Label fx:id="lblTransactionId" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+        </GridPane>
+        <Button fx:id="btnPrint" text="Imprimer"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 8 15;"
+                onAction="#handlePrint"/>
+        <Label text="Merci pour votre confiance !" style="-fx-font-style: italic;"/>
+    </VBox>
+</AnchorPane>

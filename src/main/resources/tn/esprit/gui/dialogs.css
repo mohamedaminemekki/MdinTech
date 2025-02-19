@@ -1,0 +1,48 @@
+.dialog-pane {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
+}
+
+.dialog-pane .button {
+    -fx-pref-width: 120;
+    -fx-pref-height: 40;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+}
+
+.dialog-pane .text-field,
+.dialog-pane .date-picker {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-font-size: 14;
+}
+
+.dialog-pane .date-picker .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.dialog-pane .check-box .box {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+}
+
+.dialog-pane .check-box:selected .mark {
+    -fx-background-color: #4a90e2;
+}
+
+.dialog-pane .combo-box {
+    -fx-background-color: transparent;
+    -fx-border-color: #ddd;
+}
+.grid-pane {
+    -fx-alignment: center-left;
+}
+
+.grid-pane .label {
+    -fx-alignment: center-left;
+    -fx-padding: 0 5px;
+}
