@@ -45,7 +45,7 @@ public class ParkingTicketService {
 
     // Update an existing parking ticket
     public void update(ParkingTicket ticket) {
-        String query = "UPDATE parking_ticket SET user_id=?, parking_id=?, parking_slot_id=?, issuing_date=?, expiration_date=?, status=? WHERE id=?";
+        String query = "UPDATE parking_ticket SET user_id=?, parking_id=?, parking_slot_id=?, issuing_date=?, expiration_date=?, status=? WHERE TicketID=?";
         try (Connection conn = dbConnection.getInstance().getConn();PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, ticket.getUserID());
             stmt.setInt(2, ticket.getParkingID());
@@ -66,7 +66,7 @@ public class ParkingTicketService {
     public void delete(int id) {
         ParkingTicket ticket = findById(id);
         if (ticket != null) {
-            String query = "DELETE FROM parking_ticket WHERE id=?";
+            String query = "DELETE FROM parking_ticket WHERE TicketID=?";
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
                 stmt.setInt(1, id);
                 int rowsDeleted = stmt.executeUpdate();
@@ -87,7 +87,7 @@ public class ParkingTicketService {
 
     // Find a parking ticket by ID
     public ParkingTicket findById(int id) {
-        String query = "SELECT * FROM parking_ticket WHERE id=?";
+        String query = "SELECT * FROM parking_ticket WHERE TicketID=?";
         try (Connection conn = dbConnection.getInstance().getConn();PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();

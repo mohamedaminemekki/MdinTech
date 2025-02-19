@@ -3,6 +3,7 @@ package org.example.mdintech.Controller.userController.parking;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import org.example.mdintech.service.ParkingModule.ParkingService;
 import org.example.mdintech.service.ParkingModule.ParkingTicketService;
 import org.example.mdintech.entities.ParkingModule.ParkingTicket;
@@ -11,6 +12,9 @@ import org.example.mdintech.Singleton.loggedInUser;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,40 +85,103 @@ public class displayParkingTicketsController {
         }
     }
 
+    private void updateTicketInLists(ParkingTicket updatedTicket) {
+        // Update active tickets list
+        for (int i = 0; i < activeTickets.size(); i++) {
+            if (activeTickets.get(i).getId() == updatedTicket.getId()) {
+                activeTickets.set(i, updatedTicket);
+                activeTicketsListView.getItems().set(i, mapTicketToString(updatedTicket));
+                break;
+            }
+        }
+
+        for (int i = 0; i < allTickets.size(); i++) {
+            if (allTickets.get(i).getId() == updatedTicket.getId()) {
+                allTickets.set(i, updatedTicket);
+                allTicketsListView.getItems().set(i, mapTicketToString(updatedTicket));
+                break;
+            }
+        }
+    }
 
     private void showUpdateExpiryDateDialog(ParkingTicket ticket) {
-        Dialog<String> dialog = new Dialog<>();
+        Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Update Expiration Date");
 
+        // Set button types
         ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 
-        TextField expirationDateField = new TextField();
-        expirationDateField.setPromptText("Enter new expiration date (yyyy-MM-dd)");
+        // Extract issuing date as default values
+        Date issuingDate = ticket.getIssuingDate();
+        LocalDateTime issuingDateTime = issuingDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime();
 
-        dialog.getDialogPane().setContent(expirationDateField);
+        // Default expiration date is issuing date + 1 hour
+        LocalDateTime defaultExpirationDateTime = issuingDateTime.plusHours(1);
 
+        DatePicker expirationDatePicker = new DatePicker(defaultExpirationDateTime.toLocalDate());
+        ComboBox<Integer> hourComboBox = new ComboBox<>();
+        ComboBox<Integer> minuteComboBox = new ComboBox<>();
+
+        // Populate hour (0-23) and minutes (0, 15, 30, 45)
+        for (int i = 0; i < 24; i++) hourComboBox.getItems().add(i);
+        for (int i = 0; i < 60; i += 15) minuteComboBox.getItems().add(i);
+
+        // Set default values for time from issuing date (+1 hour)
+        hourComboBox.setValue(defaultExpirationDateTime.getHour());
+        minuteComboBox.setValue((defaultExpirationDateTime.getMinute() / 15) * 15);
+
+        // Arrange elements in layout
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.add(new Label("Expiration Date:"), 0, 0);
+        grid.add(expirationDatePicker, 1, 0);
+        grid.add(new Label("Hour:"), 0, 1);
+        grid.add(hourComboBox, 1, 1);
+        grid.add(new Label("Minutes:"), 0, 2);
+        grid.add(minuteComboBox, 1, 2);
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Validation and processing
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
-                return expirationDateField.getText();
+                LocalDate selectedDate = expirationDatePicker.getValue();
+                Integer selectedHour = hourComboBox.getValue();
+                Integer selectedMinute = minuteComboBox.getValue();
+
+                if (selectedDate == null || selectedHour == null || selectedMinute == null) {
+                    showAlert("Please select a valid date and time!");
+                    return null;
+                }
+
+                // Construct expiration datetime
+                LocalDateTime selectedDateTime = LocalDateTime.of(selectedDate, LocalTime.of(selectedHour, selectedMinute));
+
+                // Validate if the new expiration date is at least 1 hour after issuing date
+                if (selectedDateTime.isBefore(issuingDateTime.plusHours(1))) {
+                    showAlert("The expiration time must be at least one hour after the issuing time!");
+                    return null;
+                }
+
+                // Convert LocalDateTime to Date
+                Date newExpirationDate = java.sql.Timestamp.valueOf(selectedDateTime);
+                ticket.setExpirationDate(newExpirationDate);
+                ticketService.update(ticket);
+                updateTicketInLists(ticket);
+
             }
             return null;
         });
 
-        dialog.showAndWait().ifPresent(result -> {
-            try {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date newExpirationDate = dateFormat.parse(result);
+        dialog.showAndWait();
+    }
 
-                ticket.setExpirationDate(newExpirationDate);
-
-                ticketService.update(ticket);
-
-                initialize();
-            } catch (ParseException e) {
-                System.out.println("Invalid date format. Please use yyyy-MM-dd.");
-            }
-        });
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText(message);
+        alert.show();
     }
 
 }
