@@ -145,5 +145,42 @@ public class FactureServices implements IService<Facture> {
     public void addP(Facture facture) throws SQLException {
         add(facture); // Ou implémentation spécifique
     }
+    public List<Facture> getUnpaidFacturesByUser(String cin) throws SQLException {
+        String query = "SELECT * FROM facture WHERE user_cin = ? AND state = false";
+        return executeFactureQuery(query, cin);
+    }
+
+    public List<Facture> getPaidFacturesByUser(String cin) throws SQLException {
+        String query = "SELECT * FROM facture WHERE user_cin = ? AND state = true";
+        return executeFactureQuery(query, cin);
+    }
+
+    private List<Facture> executeFactureQuery(String query, String cin) throws SQLException {
+        List<Facture> factures = new ArrayList<>();
+        try (
+             PreparedStatement pstmt = con.prepareStatement(query)) {
+            pstmt.setString(1, cin);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Date datePaiement = rs.getDate("date_paiement");
+                    LocalDate localDatePaiement = (datePaiement != null) ? datePaiement.toLocalDate() : null;
+                    Facture facture = new Facture(
+                            rs.getInt("id"),
+                            rs.getDate("date_facture").toLocalDate(),
+                            rs.getDate("date_limite_paiement").toLocalDate(),
+                            rs.getFloat("prix_fact"),
+                            rs.getString("type_facture"),
+                            rs.getBoolean("state"),
+                            rs.getString("user_cin")
+                    );
+                    if (facture.isState()) {
+                        facture.setDatePaiement(rs.getDate("date_paiement").toLocalDate());
+                    }
+                    factures.add(facture);
+                }
+            }
+        }
+        return factures;
+    }
 
 }

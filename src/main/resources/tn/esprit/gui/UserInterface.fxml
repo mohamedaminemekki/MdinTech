@@ -1,44 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="tn.esprit.controllers.UserController"
-      spacing="10"
-      style="-fx-padding: 20;">
+<BorderPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.UserController">
 
-    <Label text="Mes Factures à Payer" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+    <left>
+        <VBox prefHeight="516.0" prefWidth="206.0" spacing="15"
+              style="-fx-background-color: #2c3e50; -fx-padding: 20;">
+            <Label style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;"
+                   text="Espace Client"/>
+            <Button fx:id="unpaidBtn" mnemonicParsing="false" styleClass="icon-btn" onAction="#showUnpaid">
+                <graphic>
+                    <SVGPath content="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"
+                             style="-fx-fill: white;"/>
+                </graphic>
+                <text>Mes Factures</text>
+            </Button>
+            <Button fx:id="paidBtn" mnemonicParsing="false" styleClass="icon-btn" onAction="#showPaid">
+                <graphic>
+                    <SVGPath content="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"
+                             style="-fx-fill: white;"/>
+                </graphic>
+                <text>Historique</text>
+            </Button>
+            <Button mnemonicParsing="false" styleClass="icon-btn">
+                <graphic>
+                    <SVGPath content="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"
+                             style="-fx-fill: white;"/>
+                </graphic>
+                <text>Déconnexion</text>
+            </Button>
+        </VBox>
+    </left>
 
-    <TableView fx:id="factureTable">
-        <columns>
-            <TableColumn fx:id="colId" text="ID">
-                <cellValueFactory><PropertyValueFactory property="id"/></cellValueFactory>
-            </TableColumn>
-
-            <TableColumn fx:id="colType" text="Type">
-                <cellValueFactory><PropertyValueFactory property="typeFacture"/></cellValueFactory>
-            </TableColumn>
-
-            <TableColumn fx:id="colDateFacture" text="Date Facture">
-                <cellValueFactory><PropertyValueFactory property="dateFacture"/></cellValueFactory>
-            </TableColumn>
-
-            <TableColumn fx:id="colMontant" text="Montant">
-                <cellValueFactory><PropertyValueFactory property="prixFact"/></cellValueFactory>
-            </TableColumn>
-
-            <TableColumn fx:id="colDateLimite" text="Échéance">
-                <cellValueFactory><PropertyValueFactory property="dateLimitePaiement"/></cellValueFactory>
-            </TableColumn>
-
-            <TableColumn fx:id="colDatePaiement" text="Date Paiement">
-                <cellValueFactory><PropertyValueFactory property="datePaiement"/></cellValueFactory>
-            </TableColumn>
-
-            <TableColumn fx:id="colAction" text="Actions"/>
-        </columns>
-    </TableView>
-
-</VBox>
+    <center>
+            <VBox spacing="20" style="-fx-padding: 30;">
+                <Label fx:id="pageTitle" style="-fx-font-size: 24; -fx-text-fill: #2c3e50; -fx-font-weight: bold;" text="Mes Factures à Payer"/>
+                <ListView fx:id="unpaidList" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);"/>
+                <ListView fx:id="paidList" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" />
+            </VBox>
+    </center>
+</BorderPane>

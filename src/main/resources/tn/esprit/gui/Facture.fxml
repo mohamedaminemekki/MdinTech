@@ -1,25 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="tn.esprit.controllers.FactureController"
-            stylesheets="@style.css">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.shape.SVGPath?>
+<BorderPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.FactureController">
 
     <left>
-        <VBox spacing="15" style="-fx-background-color: #2c3e50; -fx-padding: 20; -fx-pref-width: 200;">
-            <Label text="Admin Dashboard" style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;"/>
-            <Button text="Nouvelle Facture" onAction="#handleAddDialog" style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
-            <Separator style="-fx-border-color: #34495e;"/>
-            <Button text="Actualiser" onAction="#refreshTable" style="-fx-background-color: #34495e; -fx-text-fill: white;"/>
+        <VBox prefHeight="516.0" prefWidth="206.0" spacing="15" style="-fx-background-color: #2c3e50; -fx-padding: 20; -fx-pref-width: 200;">
+            <Label style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;" text="Admin Dashboard" />
+            <Button mnemonicParsing="false" styleClass="icon-btn">
+            <graphic>
+                <SVGPath content="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"
+                         style="-fx-fill: white;"/>
+            </graphic>
+            <text>Dashboard</text>
+        </Button>
+            <Button mnemonicParsing="false" styleClass="icon-btn">
+                <graphic>
+                    <SVGPath content="M2 20h20v-2H2v2zm2-3h2v-5H4v5zm5 0h2V4H9v13zm5 0h2V9h-2v8z"
+                             style="-fx-fill: white;"/>
+                </graphic>
+                <text>Statistiques</text>
+            </Button>
+            <Button mnemonicParsing="false" styleClass="icon-btn">
+                <graphic>
+                    <SVGPath content="M14 2v2h4v16H6V4h4V2H4v20h16V2h-6zm-1 6l-1.4-1.4L12.2 8H8v2h4.2l-1.6 1.6L13 13l4-4-4-4z"
+                             style="-fx-fill: white;"/>
+                </graphic>
+                <text>Déconnexion</text>
+            </Button>
         </VBox>
     </left>
 
     <center>
-        <VBox spacing="20" style="-fx-padding: 30;">
-            <Label text="Gestion des Factures" style="-fx-font-size: 24; -fx-text-fill: #2c3e50; -fx-font-weight: bold;"/>
-            <TableView fx:id="factureTable" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);"/>
+        <VBox prefHeight="516.0" prefWidth="1882.0" spacing="20" style="-fx-padding: 30;">
+            <Label style="-fx-font-size: 24; -fx-text-fill: #2c3e50; -fx-font-weight: bold;" text="Gestion des Factures" />
+            <!-- Changed from TableView to ListView with fx:id "factureList" -->
+            <ListView fx:id="factureList" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);" />
         </VBox>
     </center>
 </BorderPane>
