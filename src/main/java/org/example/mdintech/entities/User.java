@@ -19,7 +19,7 @@ public class User {
         this.CIN = CIN;
         Email = email;
         Password = password;
-        Role = UserRole.Citizen;
+        Role = UserRole.USER;
         Phone = phone;
         Address = address;
         City = city;
@@ -32,6 +32,8 @@ public class User {
     public String getName() {
         return Name;
     }
+
+
 
     public void setName(String name) {
         Name = name;
@@ -103,5 +105,21 @@ public class User {
 
     public int getCIN() {
         return CIN;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "CIN=" + CIN +
+                ", Name='" + Name + '\'' +
+                ", Email='" + Email + '\'' +
+                ", Password='" + Password + '\'' +
+                ", Role=" + Role +
+                ", Phone='" + Phone + '\'' +
+                ", Address='" + Address + '\'' +
+                ", City='" + City + '\'' +
+                ", State='" + State + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

@@ -3,7 +3,7 @@ package org.example.mdintech.service;
 import java.util.List;
 
 public interface Iservice<T> {
-    void save(T obj);
+    boolean save(T obj);
     void update(T obj);
     void delete(T obj);
     T findById(int id);

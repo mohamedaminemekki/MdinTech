@@ -11,7 +11,7 @@ public class ParkingTicket {
     private Date expirationDate;
     private boolean status;
 
-    public ParkingTicket(int userID, int parkingID, int parkingSlotID, Date issuingDate, boolean status, Date expirationDate) {
+    public ParkingTicket(int userID, int parkingID, int parkingSlotID, Date issuingDate, Date expirationDate,boolean status) {
         this.userID = userID;
         this.parkingID = parkingID;
         this.parkingSlotID = parkingSlotID;

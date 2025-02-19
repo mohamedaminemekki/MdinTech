@@ -13,12 +13,13 @@ public class ParkingTicketService {
 
     public ParkingTicketService() {
         this.conn = dbConnection.getInstance().getConn();
+        this.parkingSlotService = new ParkingSlotService();
     }
 
     // Save a new parking ticket
     public void save(ParkingTicket ticket) {
         String query = "INSERT INTO parking_ticket (user_id, parking_id, parking_slot_id, issuing_date, expiration_date, status) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = dbConnection.getInstance().getConn();PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, ticket.getUserID());
             stmt.setInt(2, ticket.getParkingID());
             stmt.setInt(3, ticket.getParkingSlotID());
@@ -34,8 +35,8 @@ public class ParkingTicketService {
                         System.out.println("Parking ticket saved with ID: " + ticket.getId());
                     }
                 }
-                // Update parking slot status to unavailable (false)
-                parkingSlotService.updateSlotStatus(ticket.getParkingSlotID(), false);
+
+                this.parkingSlotService.updateSlotStatus(ticket.getParkingSlotID(), false);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -45,7 +46,7 @@ public class ParkingTicketService {
     // Update an existing parking ticket
     public void update(ParkingTicket ticket) {
         String query = "UPDATE parking_ticket SET user_id=?, parking_id=?, parking_slot_id=?, issuing_date=?, expiration_date=?, status=? WHERE id=?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = dbConnection.getInstance().getConn();PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, ticket.getUserID());
             stmt.setInt(2, ticket.getParkingID());
             stmt.setInt(3, ticket.getParkingSlotID()); // New addition
@@ -87,7 +88,7 @@ public class ParkingTicketService {
     // Find a parking ticket by ID
     public ParkingTicket findById(int id) {
         String query = "SELECT * FROM parking_ticket WHERE id=?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = dbConnection.getInstance().getConn();PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -96,8 +97,8 @@ public class ParkingTicketService {
                         rs.getInt("parking_id"),
                         rs.getInt("parking_slot_id"), // New addition
                         rs.getTimestamp("issuing_date"),
-                        rs.getBoolean("status"),
-                        rs.getTimestamp("expiration_date")
+                        rs.getTimestamp("expiration_date"),
+                        rs.getBoolean("status")
                 );
             }
         } catch (SQLException e) {
@@ -110,7 +111,7 @@ public class ParkingTicketService {
     public List<ParkingTicket> findAll() {
         List<ParkingTicket> tickets = new ArrayList<>();
         String query = "SELECT * FROM parking_ticket";
-        try (Statement stmt = conn.createStatement();
+        try (Connection conn = dbConnection.getInstance().getConn();Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
@@ -119,8 +120,55 @@ public class ParkingTicketService {
                         rs.getInt("parking_id"),
                         rs.getInt("parking_slot_id"), // New addition
                         rs.getTimestamp("issuing_date"),
-                        rs.getBoolean("status"),
-                        rs.getTimestamp("expiration_date")
+                        rs.getTimestamp("expiration_date"),
+                        rs.getBoolean("status")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tickets;
+    }
+
+    public List<ParkingTicket> findByParkingId(int parkingId) {
+        List<ParkingTicket> tickets = new ArrayList<>();
+        String query = "SELECT * FROM parking_ticket WHERE parking_id = ?";
+
+        try (Connection conn = dbConnection.getInstance().getConn();PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, parkingId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                tickets.add(new ParkingTicket(
+                        rs.getInt("user_id"),
+                        rs.getInt("parking_id"),
+                        rs.getInt("parking_slot_id"),
+                        rs.getTimestamp("issuing_date"),
+                        rs.getTimestamp("expiration_date"),
+                        rs.getBoolean("status")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return tickets;
+    }
+
+    public List<ParkingTicket> findByUserId(int userId) {
+        List<ParkingTicket> tickets = new ArrayList<>();
+        String query = "SELECT * FROM parking_ticket WHERE user_id = ?";
+        try (Connection conn = dbConnection.getInstance().getConn();PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                tickets.add(new ParkingTicket(
+                        rs.getInt("user_id"),
+                        rs.getInt("parking_id"),
+                        rs.getInt("parking_slot_id"),
+                        rs.getTimestamp("issuing_date"),
+                        rs.getTimestamp("expiration_date"),
+                        rs.getBoolean("status")
                 ));
             }
         } catch (SQLException e) {

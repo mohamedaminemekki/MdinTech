@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.mdintech.Controller.userController.mainUserViewController"
+            prefHeight="400.0" prefWidth="600.0">
+
+    <MenuBar fx:id="menuBar" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <Menu text="Navigation">
+            <!-- Added fx:id attributes -->
+            <MenuItem fx:id="goToHomeView" text="Home" onAction="#goToHomeView" />
+            <MenuItem fx:id="goToParkings" text="Parkings" onAction="#goToParkings" />
+            <MenuItem fx:id="goToParkingTickets" text="Parking Tickets" onAction="#goToParkingTickets" />
+        </Menu>
+    </MenuBar>
+
+</AnchorPane>

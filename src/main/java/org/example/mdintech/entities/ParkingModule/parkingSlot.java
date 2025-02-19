@@ -47,6 +47,7 @@ public class parkingSlot {
         this.available = available;
     }
 
+
     @Override
     public String toString() {
         return "parkingSlot{" +

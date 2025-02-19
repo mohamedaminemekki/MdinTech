@@ -7,37 +7,47 @@ import java.sql.SQLException;
 public class dbConnection {
     private static dbConnection instance;
     private Connection connection;
-    private String dbPort="3306";
-    private String host="localhost";
-    private String dbName="mdintech";
-    private final String url = "jdbc:mysql://"+host+":"+dbPort+"/"+dbName;
+    private final String dbPort = "3306";
+    private final String host = "localhost";
+    private final String dbName = "mdintech";
+    private final String url = "jdbc:mysql://" + host + ":" + dbPort + "/" + dbName +
+            "?autoReconnect=true&useSSL=false"; // Added auto-reconnect
     private final String user = "root";
     private final String password = "";
 
-    // Private constructor to prevent external instantiation
-    private dbConnection() {
-        try {
-            connection = DriverManager.getConnection(url, user, password);
-            System.out.println("Database connected successfully!");
-        } catch (SQLException e) {
-            System.err.println("Connection failed: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+    private dbConnection() {} // Private constructor
 
-    // Method to get the single instance
-    public static dbConnection getInstance() {
+    public static synchronized dbConnection getInstance() {
         if (instance == null) {
-            synchronized (dbConnection.class) { // Thread-safe singleton
-                if (instance == null) {
-                    instance = new dbConnection();
-                }
-            }
+            instance = new dbConnection();
         }
         return instance;
     }
 
+    // Get a valid connection (reconnects if closed)
     public Connection getConn() {
+        try {
+            // Reconnect if the connection is closed or invalid
+            if (connection == null || connection.isClosed() || !connection.isValid(2)) {
+                reconnect();
+            }
+        } catch (SQLException e) {
+            System.err.println("Connection validation failed: " + e.getMessage());
+            reconnect();
+        }
         return connection;
+    }
+
+    // Reconnect explicitly
+    private void reconnect() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+            connection = DriverManager.getConnection(url, user, password);
+            System.out.println("Reconnected to database!");
+        } catch (SQLException e) {
+            System.err.println("Reconnection failed: " + e.getMessage());
+        }
     }
 }

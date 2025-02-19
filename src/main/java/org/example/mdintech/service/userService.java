@@ -2,8 +2,8 @@ package org.example.mdintech.service;
 
 import org.example.mdintech.entities.User;
 import org.example.mdintech.Singleton.dbConnection;
+import org.example.mdintech.utils.PasswordVerification;
 import org.example.mdintech.utils.UserRole;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -18,13 +18,15 @@ public class userService implements Iservice<User> {
     }
 
     @Override
-    public void save(User obj) {
+    public boolean save(User obj) {
+        if (!PasswordVerification.isStrongPassword(obj.getPassword())) {
+            throw new IllegalArgumentException("Password is not strong enough.");
+        }
+
+        String hashedPassword = PasswordVerification.hashPassword(obj.getPassword());
+
         String query = "INSERT INTO users (CIN, Name, Email, Password, Role, Phone, Address, City, State, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            String hashedPassword = passwordEncoder.encode(obj.getPassword());
-
+        try (Connection conn = dbConnection.getInstance().getConn();PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, obj.getCIN());
             stmt.setString(2, obj.getName());
             stmt.setString(3, obj.getEmail());
@@ -41,15 +43,16 @@ public class userService implements Iservice<User> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
+
 
     @Override
     public void update(User obj) {
         String query = "UPDATE users SET Name=?, Email=?, Password=?, Role=?, Phone=?, Address=?, City=?, State=?, status=? WHERE CIN=?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = dbConnection.getInstance().getConn();PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            String hashedPassword = passwordEncoder.encode(obj.getPassword());
+            String hashedPassword = PasswordVerification.hashPassword(obj.getPassword());
 
             stmt.setString(1, obj.getName());
             stmt.setString(2, obj.getEmail());
@@ -72,7 +75,7 @@ public class userService implements Iservice<User> {
     @Override
     public void delete(User obj) {
         String query = "DELETE FROM users WHERE CIN=?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = dbConnection.getInstance().getConn();PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, obj.getCIN());
             stmt.executeUpdate();
             System.out.println("User deleted successfully.");
@@ -84,7 +87,7 @@ public class userService implements Iservice<User> {
     @Override
     public User findById(int id) {
         String query = "SELECT * FROM users WHERE CIN=?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = dbConnection.getInstance().getConn();PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
@@ -111,7 +114,7 @@ public class userService implements Iservice<User> {
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
         String query = "SELECT * FROM users";
-        try (Statement stmt = conn.createStatement();
+        try (Connection conn = dbConnection.getInstance().getConn();Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
@@ -134,8 +137,7 @@ public class userService implements Iservice<User> {
     }
 
     public boolean verifyPassword(String rawPassword, String hashedPassword) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        return passwordEncoder.matches(rawPassword, hashedPassword);
+        return PasswordVerification.verifyPassword(rawPassword, hashedPassword);
     }
 
     public User login(String email, String password) {
@@ -147,13 +149,9 @@ public class userService implements Iservice<User> {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                // Retrieve stored hashed password from the database
                 String storedHashedPassword = rs.getString("Password");
 
-                // Verify the provided password with the stored hashed password
-                BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-                if (passwordEncoder.matches(password, storedHashedPassword)) {
-                    // If password matches, create and return User object
+                if (PasswordVerification.verifyPassword(password, storedHashedPassword)) {
                     return new User(
                             rs.getString("Name"),
                             rs.getInt("CIN"),
