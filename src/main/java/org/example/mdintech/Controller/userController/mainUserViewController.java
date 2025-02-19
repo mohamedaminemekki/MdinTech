@@ -1,5 +1,6 @@
 package org.example.mdintech.Controller.userController;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,6 +17,7 @@ public class mainUserViewController {
     @FXML private MenuItem goToHomeView;
     @FXML private MenuItem goToParkings;
     @FXML private MenuItem goToParkingTickets;
+    @FXML private MenuItem goToUpdateProfile;
 
     private void loadView(String fxmlFile) {
         try {
@@ -45,4 +47,6 @@ public class mainUserViewController {
     private void goToParkingTickets() {
         loadView("/org/example/mdintech/userModule/parking/display-tickets.fxml");
     }
+
+    public void goToUpdatePorfile(ActionEvent actionEvent) {loadView("/org/example/mdintech/userModule/update-user-view.fxml");}
 }

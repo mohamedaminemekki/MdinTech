@@ -97,7 +97,7 @@ public class userService implements Iservice<User> {
                         rs.getInt("CIN"),
                         rs.getString("Email"),
                         rs.getString("Password"),
-                        UserRole.valueOf(rs.getString("Role")), // Convert String to Enum
+                        UserRole.valueOf(rs.getString("Role")), 
                         rs.getString("Phone"),
                         rs.getString("Address"),
                         rs.getString("City"),

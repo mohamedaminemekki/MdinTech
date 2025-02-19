@@ -23,17 +23,32 @@ public class updateuserController {
 
     private userService userService = new userService();
     private User currentUser;
+    private User originalUser;  // Store original values for comparison
 
     @FXML
     public void initialize() {
         currentUser = loggedInUser.getInstance().getLoggedUser();
         if (currentUser != null) {
-            nameField.setText(currentUser.getName());
-            emailField.setText(currentUser.getEmail());
-            phoneField.setText(currentUser.getPhone());
-            addressField.setText(currentUser.getAddress());
-            cityField.setText(currentUser.getCity());
-            stateField.setText(currentUser.getState());
+            // Create a copy of the original user data
+            originalUser = new User(
+                    currentUser.getName(),
+                    currentUser.getCIN(),
+                    currentUser.getEmail(),
+                    currentUser.getPassword(),
+                    currentUser.getRole(),  // Include role
+                    currentUser.getPhone(),
+                    currentUser.getAddress(),
+                    currentUser.getCity(),
+                    currentUser.getState()// Include status if using second constructor
+            );
+
+            // Initialize fields with current values
+            nameField.setText(originalUser.getName());
+            emailField.setText(originalUser.getEmail());
+            phoneField.setText(originalUser.getPhone());
+            addressField.setText(originalUser.getAddress());
+            cityField.setText(originalUser.getCity());
+            stateField.setText(originalUser.getState());
         }
     }
 
@@ -44,22 +59,85 @@ public class updateuserController {
             return;
         }
 
-        // Get updated values
-        currentUser.setName(nameField.getText());
-        currentUser.setEmail(emailField.getText());
-        currentUser.setPhone(phoneField.getText());
-        currentUser.setAddress(addressField.getText());
-        currentUser.setCity(cityField.getText());
-        currentUser.setState(stateField.getText());
+        // Get field values with trim()
+        String newName = nameField.getText().trim();
+        String newEmail = emailField.getText().trim();
+        String newPhone = phoneField.getText().trim();
+        String newAddress = addressField.getText().trim();
+        String newCity = cityField.getText().trim();
+        String newState = stateField.getText().trim();
+        String newPassword = passwordField.getText().trim();
 
-        // Check if the password was changed
-        String newPassword = passwordField.getText();
-        if (!newPassword.isEmpty()) {
-            currentUser.setPassword(newPassword);
+        // Check for actual changes
+        boolean changesDetected = false;
+
+        // Check each field for changes
+        if (!newName.equals(originalUser.getName())) {
+            currentUser.setName(newName);
+            changesDetected = true;
         }
 
-        // Update in database
-        userService.update(currentUser);
-        statusLabel.setText("User updated successfully!");
+        if (!newEmail.equals(originalUser.getEmail())) {
+            currentUser.setEmail(newEmail);
+            changesDetected = true;
+        }
+
+        if (!newPhone.equals(originalUser.getPhone())) {
+            currentUser.setPhone(newPhone);
+            changesDetected = true;
+        }
+
+        if (!newAddress.equals(originalUser.getAddress())) {
+            currentUser.setAddress(newAddress);
+            changesDetected = true;
+        }
+
+        if (!newCity.equals(originalUser.getCity())) {
+            currentUser.setCity(newCity);
+            changesDetected = true;
+        }
+
+        if (!newState.equals(originalUser.getState())) {
+            currentUser.setState(newState);
+            changesDetected = true;
+        }
+
+        // Handle password change
+        if (!newPassword.isEmpty()) {
+            if (!newPassword.equals(currentUser.getPassword())) {
+                currentUser.setPassword(newPassword);
+                changesDetected = true;
+            } else {
+                // Password entered but same as original
+                passwordField.clear();
+            }
+        }
+
+        if (!changesDetected) {
+            statusLabel.setText("No changes detected.");
+            return;
+        }
+
+        // Perform update only if changes detected
+        try {
+            userService.update(currentUser);
+            // Update original user data after successful update
+            originalUser =  new User(
+                    currentUser.getName(),
+                    currentUser.getCIN(),
+                    currentUser.getEmail(),
+                    currentUser.getPassword(),
+                    currentUser.getRole(),
+                    currentUser.getPhone(),
+                    currentUser.getAddress(),
+                    currentUser.getCity(),
+                    currentUser.getState()
+            );
+
+            statusLabel.setText("User updated successfully!");
+            passwordField.clear();
+        } catch (Exception e) {
+            statusLabel.setText("Update failed: " + e.getMessage());
+        }
     }
 }

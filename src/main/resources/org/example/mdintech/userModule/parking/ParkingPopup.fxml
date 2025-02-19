@@ -13,6 +13,9 @@
     <VBox spacing="10" alignment="CENTER">
         <Label text="Select Expiration Date:"/>
         <DatePicker fx:id="expirationDatePicker"/>
+        <ComboBox fx:id="hourComboBox"/>
+        <ComboBox fx:id="minuteComboBox"/>
+
         <Button fx:id="confirmButton" text="Confirm" onAction="#confirmReservation"/>
     </VBox>
 </AnchorPane>
