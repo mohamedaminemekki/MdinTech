@@ -26,7 +26,9 @@ public class userService implements Iservice<User> {
         String hashedPassword = PasswordVerification.hashPassword(obj.getPassword());
 
         String query = "INSERT INTO users (CIN, Name, Email, Password, Role, Phone, Address, City, State, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = dbConnection.getInstance().getConn();PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = dbConnection.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
             stmt.setInt(1, obj.getCIN());
             stmt.setString(2, obj.getName());
             stmt.setString(3, obj.getEmail());
@@ -38,13 +40,19 @@ public class userService implements Iservice<User> {
             stmt.setString(9, obj.getState());
             stmt.setBoolean(10, obj.isStatus());
 
-            stmt.executeUpdate();
-            System.out.println("User saved successfully.");
+            int rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("User saved successfully.");
+                return true; // Indicate success
+            } else {
+                throw new SQLException("User could not be saved.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new RuntimeException("Database error: " + e.getMessage());
         }
-        return false;
     }
+
 
 
     @Override
@@ -67,6 +75,28 @@ public class userService implements Iservice<User> {
 
             stmt.executeUpdate();
             System.out.println("User updated successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateUserWithoutPassword(User obj) {
+        String query = "UPDATE users SET Name=?, Email=?, Role=?, Phone=?, Address=?, City=?, State=?, status=? WHERE CIN=?";
+        try (Connection conn = dbConnection.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, obj.getName());
+            stmt.setString(2, obj.getEmail());
+            stmt.setString(3, obj.getRole().name());
+            stmt.setString(4, obj.getPhone());
+            stmt.setString(5, obj.getAddress());
+            stmt.setString(6, obj.getCity());
+            stmt.setString(7, obj.getState());
+            stmt.setBoolean(8, obj.isStatus());
+            stmt.setInt(9, obj.getCIN());
+
+            stmt.executeUpdate();
+            System.out.println("User updated successfully (without password).");
         } catch (SQLException e) {
             e.printStackTrace();
         }

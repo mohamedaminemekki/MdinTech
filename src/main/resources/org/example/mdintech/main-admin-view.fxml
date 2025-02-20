@@ -18,6 +18,7 @@
             <MenuItem fx:id="goToParkingTickets" text="Parking Tickets" onAction="#goToParkingTickets" />
             <MenuItem fx:id="goToUsers" text="Users" onAction="#goToUsers" />
             <MenuItem fx:id="goToCreateParking" text="Createparking" onAction="#goToCreateParking" />
+            <MenuItem fx:id="Logout" text="logout" onAction="#logout" />
         </Menu>
     </MenuBar>
 </AnchorPane>

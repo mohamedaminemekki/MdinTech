@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
+import org.example.mdintech.Singleton.loggedInUser;
 
 import java.io.IOException;
 
@@ -53,4 +54,9 @@ public class mainAdminViewController {
     public void goToUsers(ActionEvent actionEvent) {loadView("/org/example/mdintech/userModule/display-users-view.fxml");}
 
     public void goToCreateParking(ActionEvent actionEvent) {loadView("/org/example/mdintech/ParkingModule/create-parking-view.fxml");}
+
+    public void logout(ActionEvent actionEvent) {
+        loggedInUser.clearSession();
+        loadView("/org/example/mdintech/userModule/login-view.fxml");
+    }
 }

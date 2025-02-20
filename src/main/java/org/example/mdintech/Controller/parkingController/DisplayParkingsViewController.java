@@ -31,7 +31,6 @@ public class DisplayParkingsViewController {
     public void initialize() {
         parkingService = new ParkingService();
 
-        // Load parking data
         parkings = parkingService.findAll();
         ObservableList<String> parkingNames = FXCollections.observableArrayList();
 
@@ -50,6 +49,7 @@ public class DisplayParkingsViewController {
                 goToDetailsView(event, selectedParking);
             }
         });
+
     }
 
     private void goToDetailsView(MouseEvent event, Parking parking) {

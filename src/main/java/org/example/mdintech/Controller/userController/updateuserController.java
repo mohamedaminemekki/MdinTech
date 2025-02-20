@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import org.example.mdintech.Singleton.loggedInUser;
 import org.example.mdintech.entities.User;
 import org.example.mdintech.service.userService;
+import org.example.mdintech.utils.PasswordVerification;
 import org.example.mdintech.utils.navigation;
 
 import java.io.IOException;
@@ -69,9 +70,8 @@ public class updateuserController {
         String newAddress = addressField.getText().trim();
         String newCity = cityField.getText().trim();
         String newState = stateField.getText().trim();
-        String newPassword = passwordField.getText().trim();
+        String newPassword = passwordField.getText().trim(); // New password input
 
-        // Check for actual changes
         boolean changesDetected = false;
 
         // Check each field for changes
@@ -105,14 +105,13 @@ public class updateuserController {
             changesDetected = true;
         }
 
-        // Handle password change
+        boolean passwordChanged = false;
         if (!newPassword.isEmpty()) {
-            if (!newPassword.equals(currentUser.getPassword())) {
-                currentUser.setPassword(newPassword);
+            if (!PasswordVerification.verifyPassword(newPassword, originalUser.getPassword())) {
+                passwordChanged = true;
                 changesDetected = true;
             } else {
-                // Password entered but same as original
-                passwordField.clear();
+                passwordField.clear(); // Clear field if password is unchanged
             }
         }
 
@@ -121,15 +120,18 @@ public class updateuserController {
             return;
         }
 
-        // Perform update only if changes detected
         try {
-            userService.update(currentUser);
-            // Update original user data after successful update
-            originalUser =  new User(
+            if (passwordChanged) {
+                userService.update(currentUser);
+            } else {
+                userService.updateUserWithoutPassword(currentUser);
+            }
+
+            originalUser = new User(
                     currentUser.getName(),
                     currentUser.getCIN(),
                     currentUser.getEmail(),
-                    currentUser.getPassword(),
+                    originalUser.getPassword(), // Use original password if not changed
                     currentUser.getRole(),
                     currentUser.getPhone(),
                     currentUser.getAddress(),
@@ -139,10 +141,12 @@ public class updateuserController {
 
             statusLabel.setText("User updated successfully!");
             passwordField.clear();
+            navigation.switchScene(event, "/org/example/mdintech/main-user-view.fxml");
         } catch (Exception e) {
             statusLabel.setText("Update failed: " + e.getMessage());
         }
     }
+
     public void handleBackButton(ActionEvent event) throws IOException {
         navigation.switchScene(event, "/org/example/mdintech/main-user-view.fxml");
     }

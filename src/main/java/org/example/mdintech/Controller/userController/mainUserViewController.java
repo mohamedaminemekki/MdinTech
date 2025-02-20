@@ -8,6 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
+import org.example.mdintech.Singleton.loggedInUser;
+
 import java.io.IOException;
 
 public class mainUserViewController {
@@ -18,6 +20,7 @@ public class mainUserViewController {
     @FXML private MenuItem goToParkings;
     @FXML private MenuItem goToParkingTickets;
     @FXML private MenuItem goToUpdateProfile;
+    @FXML private MenuItem logout;
 
     private void loadView(String fxmlFile) {
         try {
@@ -49,4 +52,9 @@ public class mainUserViewController {
     }
 
     public void goToUpdatePorfile(ActionEvent actionEvent) {loadView("/org/example/mdintech/userModule/update-user-view.fxml");}
+
+    public void logout(ActionEvent actionEvent) {
+        loggedInUser.clearSession();
+        loadView("/org/example/mdintech/userModule/login-view.fxml");
+    }
 }

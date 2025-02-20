@@ -1,11 +1,20 @@
 package org.example.mdintech.Controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import org.example.mdintech.entities.User;
 import org.example.mdintech.utils.PasswordVerification;
 import org.example.mdintech.utils.UserRole;
 import org.example.mdintech.service.userService;
+import org.example.mdintech.utils.navigation;
+
+import java.io.IOException;
 
 public class SignInController {
 
@@ -25,7 +34,7 @@ public class SignInController {
     private final userService userService = new userService(); // Service for saving users
 
     @FXML
-    private void handleSignIn() {
+    private void handleSignIn(ActionEvent event) { // Add ActionEvent parameter
         try {
             String name = nameField.getText();
             int cin = Integer.parseInt(cinField.getText());
@@ -35,7 +44,7 @@ public class SignInController {
             String address = addressField.getText();
             String city = cityField.getText();
             String state = stateField.getText();
-            UserRole role= UserRole.USER;
+            UserRole role = UserRole.USER;
 
             if (!PasswordVerification.isStrongPassword(password)) {
                 showAlert("Weak Password", "Password must be at least 8 characters long, contain at least one uppercase letter, " +
@@ -43,14 +52,34 @@ public class SignInController {
                 return;
             }
 
-            User newUser = new User(name, cin, email, password,role , phone, address, city, state);
+            User newUser = new User(name, cin, email, password, role, phone, address, city, state);
             userService.save(newUser);
             showAlert("Success", "User registered successfully!");
+
+            navigation.switchScene(event, "/org/example/mdintech/userModule/login-view.fxml");
 
         } catch (NumberFormatException e) {
             showAlert("Error", "CIN must be a valid number!");
         } catch (Exception e) {
             showAlert("Error", "An error occurred: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
+    private void goToDashboard(ActionEvent event, String fxmlPath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent dashboardRoot = loader.load();
+
+            // Get the current stage (window)
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            // Set the new scene
+            Scene scene = new Scene(dashboardRoot);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -74,5 +103,7 @@ public class SignInController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
+    public void handleBackButton(ActionEvent event) throws IOException {
+        navigation.switchScene(event, "/org/example/mdintech/userModule/login-view.fxml");
+    }
 }
