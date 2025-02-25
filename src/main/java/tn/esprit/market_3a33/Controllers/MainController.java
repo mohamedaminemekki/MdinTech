@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import tn.esprit.market_3a33.entities.Produit;
+import tn.esprit.market_3a33.entities.Product;
 import tn.esprit.market_3a33.utils.MyDatabase;
 
 import java.sql.Connection;
@@ -29,9 +29,9 @@ public class MainController {
     @FXML
     private Label totalPriceLabel;
 
-    private List<Produit> products = new ArrayList<>();
+    private List<Product> products = new ArrayList<>();
     private double totalPrice = 0.0;
-    private List<Produit> cartProducts = new ArrayList<>(); // Holds selected products
+    private List<Product> cartProducts = new ArrayList<>(); // Holds selected products
 
     @FXML
     public void initialize() {
@@ -40,17 +40,22 @@ public class MainController {
     }
 
     private void loadProductsFromDatabase() {
-        String query = "SELECT * FROM products";
-        try (Connection conn = MyDatabase.getInstance().getCon();
+        String query = "SELECT p.id, p.name, p.reference, p.price, p.stockLimit, COALESCE(s.quantity, 0) AS stock " +
+                "FROM products p " +
+                "LEFT JOIN stock s ON p.id = s.productId";
+        try (Connection conn = MyDatabase.getCon();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
+                String reference = rs.getString("reference");
                 double price = rs.getDouble("price");
+                int stockLimit = rs.getInt("stockLimit");
+                int stock = rs.getInt("stock");
                 String imagePath = "/tn/esprit/market_3a33/images/product" + id + ".jpg";
-                products.add(new Produit(id, name, price, imagePath));
+                products.add(new Product(id, name, reference, price, stockLimit, stock, imagePath));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -58,13 +63,13 @@ public class MainController {
     }
 
     private void displayProducts() {
-        for (Produit product : products) {
+        for (Product product : products) {
             VBox productCard = createProductCard(product);
             productContainer.getChildren().add(productCard);
         }
     }
 
-    private VBox createProductCard(Produit product) {
+    private VBox createProductCard(Product product) {
         VBox card = new VBox(10);
         card.getStyleClass().add("product-card");
 
@@ -78,32 +83,44 @@ public class MainController {
         Label priceLabel = new Label(String.format("%.2f dt", product.getPrice()));
         priceLabel.getStyleClass().add("product-price");
 
-        Spinner<Integer> quantitySpinner = new Spinner<>(1, 10, 1);
-        quantitySpinner.getStyleClass().add("quantity-spinner");
+        // Replace Spinner with TextField for quantity input
+        TextField quantityField = new TextField("1");
+        quantityField.getStyleClass().add("quantity-field");
 
         Button addButton = new Button("Add to Cart");
         addButton.getStyleClass().add("add-button");
-        addButton.setOnAction(e -> addToCart(product, quantitySpinner));
+        addButton.setOnAction(e -> addToCart(product, quantityField));
 
-        card.getChildren().addAll(imageView, nameLabel, priceLabel, quantitySpinner, addButton);
+        card.getChildren().addAll(imageView, nameLabel, priceLabel, quantityField, addButton);
         return card;
     }
 
-    private void addToCart(Produit product, Spinner<Integer> quantitySpinner) {
-        int quantity = quantitySpinner.getValue();
-        // Add the selected product the given number of times to the cartProducts list.
-        for (int i = 0; i < quantity; i++) {
-            cartProducts.add(product);
+    private void addToCart(Product product, TextField quantityField) {
+        try {
+            int quantity = Integer.parseInt(quantityField.getText());
+
+            if (quantity < 1 || quantity > product.getStock()) {
+                showAlert("Invalid Quantity", "Please enter a valid quantity between 1 and " + product.getStock() + ".");
+                return;
+            }
+
+            // Add the selected product the given number of times to the cartProducts list.
+            for (int i = 0; i < quantity; i++) {
+                cartProducts.add(product);
+            }
+            double totalProductPrice = product.getPrice() * quantity;
+            totalPrice += totalProductPrice;
+            totalPriceLabel.setText(String.format("Total: %.2f dt", totalPrice));
+
+            // Update the main page ListView to display a textual summary.
+            cartListView.getItems().add(product.getName() + " x" + quantity + " - " + String.format("%.2f dt", totalProductPrice));
+
+            // Reset the quantity field
+            quantityField.setText("1");
+
+        } catch (NumberFormatException e) {
+            showAlert("Invalid Input", "Please enter a valid number for quantity.");
         }
-        double totalProductPrice = product.getPrice() * quantity;
-        totalPrice += totalProductPrice;
-        totalPriceLabel.setText(String.format("Total: %.2f dt", totalPrice));
-
-        // Update the main page ListView to display a textual summary.
-        cartListView.getItems().add(product.getName() + " x" + quantity + " - " + String.format("%.2f dt", totalProductPrice));
-
-        // Reset the quantity spinner.
-        quantitySpinner.getValueFactory().setValue(1);
     }
 
     @FXML
@@ -123,12 +140,16 @@ public class MainController {
             stage.setScene(new Scene(root));
             stage.show();
 
-            // Optionally, if you want to update the main page cart display (e.g., add a note that the order has been sent)
-            // you may choose to leave cartProducts intact.
-            // In this example, both the main page and the cart page display the selected products.
-
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

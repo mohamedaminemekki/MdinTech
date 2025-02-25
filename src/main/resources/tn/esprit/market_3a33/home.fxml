@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" spacing="20" fx:controller="tn.esprit.market_3a33.Controllers.HomeController" stylesheets="@home.css">
+    <Label text="Home" styleClass="home-label" />
+
+    <!-- Cards Section -->
+    <HBox spacing="20">
+        <VBox styleClass="card">
+            <Label text="Total Products" styleClass="card-label" />
+            <Label fx:id="totalProductsLabel" text="0" styleClass="card-value" />
+        </VBox>
+        <VBox styleClass="card">
+            <Label text="Total Orders" styleClass="card-label" />
+            <Label fx:id="totalOrdersLabel" text="0" styleClass="card-value" />
+        </VBox>
+        <VBox styleClass="card">
+            <Label text="Low Stock" styleClass="card-label" />
+            <Label fx:id="lowStockLabel" text="0" styleClass="card-value" />
+        </VBox>
+        <VBox styleClass="card">
+            <Label text="Revenue" styleClass="card-label" />
+            <Label fx:id="revenueLabel" text="0dt" styleClass="card-value" />
+        </VBox>
+    </HBox>
+
+    <!-- Products List -->
+    <VBox spacing="10">
+        <Label text="Products" styleClass="section-label" />
+        <GridPane fx:id="productsGrid" styleClass="list-box" hgap="100" vgap="20">
+            <Label text="Name" styleClass="list-header" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Label text="Stock" styleClass="list-header" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <Label text="Price" styleClass="list-header" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+        </GridPane>
+    </VBox>
+</VBox>

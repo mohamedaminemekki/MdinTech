@@ -1,34 +1,50 @@
 package tn.esprit.market_3a33.utils;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class MyDatabase {
-    private static final String URL = "jdbc:mysql://localhost:3306/market_db";  // Remplace 'mdintech_db' par le vrai nom de ta base
-    private static final String USER = "root";  // Mets ton utilisateur MySQL
-    private static final String PASSWORD = "";  // Mets ton mot de passe MySQL
+    private static final String URL = "jdbc:mysql://localhost:3306/market_db";
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
 
-    private static MyDatabase instance;
-    private Connection con;
+    private static HikariDataSource dataSource;
+
+    static {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(URL);
+        config.setUsername(USER);
+        config.setPassword(PASSWORD);
+        config.setMaximumPoolSize(10); // Adjust pool size as needed
+        config.setMinimumIdle(2); // Minimum idle connections
+        config.setIdleTimeout(30000); // Idle timeout in milliseconds
+        config.setMaxLifetime(1800000); // Maximum lifetime of a connection
+        config.setConnectionTimeout(30000); // Connection timeout in milliseconds
+        config.setLeakDetectionThreshold(5000); // Detect leaks after 5 seconds
+
+        dataSource = new HikariDataSource(config);
+    }
 
     private MyDatabase() {
+        // Private constructor to prevent instantiation
+    }
+
+    public static Connection getCon() throws SQLException {
+        return dataSource.getConnection(); // Get a connection from the pool
+    }
+
+    public static void close(Connection conn, PreparedStatement stmt, ResultSet rs) {
         try {
-            con = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println(" Connexion établie avec succès !");
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (conn != null) conn.close(); // Return the connection to the pool
         } catch (SQLException e) {
-            System.err.println(" Erreur de connexion : " + e.getMessage());
+            e.printStackTrace();
         }
-    }
-
-    public static MyDatabase getInstance() {
-        if (instance == null) {
-            instance = new MyDatabase();
-        }
-        return instance;
-    }
-
-    public Connection getCon() {
-        return con;
     }
 }
