@@ -205,5 +205,19 @@ public class userService implements Iservice<User> {
         return null; // Return null if login fails
     }
 
+    public void updateUserStatus(int cin, boolean newStatus) {
+        String query = "UPDATE users SET status=? WHERE CIN=?";
+        try (Connection conn = dbConnection.getInstance().getConn();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setBoolean(1, newStatus);
+            stmt.setInt(2, cin);
+
+            stmt.executeUpdate();
+            System.out.println("User status updated successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.example.mdintech.entities.User;
+import org.example.mdintech.service.NotificationModule.mailNotificationService;
 import org.example.mdintech.utils.PasswordVerification;
 import org.example.mdintech.utils.UserRole;
 import org.example.mdintech.service.userService;
@@ -21,6 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Optional;
+import java.util.Random;
 
 public class SignInController {
 
@@ -65,6 +68,16 @@ public class SignInController {
 
             String profileImagePath = selectedImageFile != null ? selectedImageFile.getAbsolutePath() : "default.png";
 
+            String verificationCode = generateVerificationCode();
+            mailNotificationService mailService = new mailNotificationService();
+            mailService.sendEmail(email, "Verification Code", "Your verification code is: " + verificationCode);
+
+            String userEnteredCode = showVerificationPopup();
+            if (userEnteredCode == null || !userEnteredCode.equals(verificationCode)) {
+                showAlert("Error", "Incorrect verification code. Please try again.");
+                return;
+            }
+
             User newUser = new User(name, cin, email, password, role, phone, address, city, state);
             userService.save(newUser);
             showAlert("Success", "User registered successfully!");
@@ -77,6 +90,16 @@ public class SignInController {
             showAlert("Error", "An error occurred: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private String showVerificationPopup() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Email Verification");
+        dialog.setHeaderText("A verification code has been sent to your email.");
+        dialog.setContentText("Enter the code:");
+
+        Optional<String> result = dialog.showAndWait();
+        return result.orElse(null); // Returns null if the user cancels
     }
 
 
@@ -154,5 +177,9 @@ public class SignInController {
         }
     }
 
-
+    private String generateVerificationCode() {
+        Random random = new Random();
+        int code = 100000 + random.nextInt(900000); // Generates a 6-digit number
+        return String.valueOf(code);
+    }
 }
