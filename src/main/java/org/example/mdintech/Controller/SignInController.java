@@ -7,6 +7,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.example.mdintech.entities.User;
 import org.example.mdintech.utils.PasswordVerification;
@@ -14,7 +17,10 @@ import org.example.mdintech.utils.UserRole;
 import org.example.mdintech.service.userService;
 import org.example.mdintech.utils.navigation;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 public class SignInController {
 
@@ -29,6 +35,11 @@ public class SignInController {
 
     @FXML
     private Label passwordStrengthLabel;
+
+    @FXML
+    private ImageView profileImageView;
+
+    private File selectedImageFile;
 
 
     private final userService userService = new userService(); // Service for saving users
@@ -52,6 +63,8 @@ public class SignInController {
                 return;
             }
 
+            String profileImagePath = selectedImageFile != null ? selectedImageFile.getAbsolutePath() : "default.png";
+
             User newUser = new User(name, cin, email, password, role, phone, address, city, state);
             userService.save(newUser);
             showAlert("Success", "User registered successfully!");
@@ -72,10 +85,8 @@ public class SignInController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent dashboardRoot = loader.load();
 
-            // Get the current stage (window)
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-            // Set the new scene
             Scene scene = new Scene(dashboardRoot);
             stage.setScene(scene);
             stage.show();
@@ -106,4 +117,42 @@ public class SignInController {
     public void handleBackButton(ActionEvent event) throws IOException {
         navigation.switchScene(event, "/org/example/mdintech/userModule/login-view.fxml");
     }
+
+    @FXML
+    private void handleChooseImage() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose Profile Picture");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+        );
+
+        File file = fileChooser.showOpenDialog(null);
+        if (file != null) {
+            try {
+                String destinationDir = "C:\\Users\\amine\\Desktop\\PIDEV\\Mdintech\\assets\\ProfileImages";
+                File destFolder = new File(destinationDir);
+
+                if (!destFolder.exists()) {
+                    destFolder.mkdirs();
+                }
+
+                File destFile = new File(destFolder, file.getName());
+
+                Files.copy(file.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                selectedImageFile = destFile;
+
+                Image image = new Image(destFile.toURI().toString());
+                profileImageView.setImage(image);
+
+                showAlert("Success", "Profile image selected successfully!");
+
+            } catch (IOException e) {
+                showAlert("Error", "Failed to save the image: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }
