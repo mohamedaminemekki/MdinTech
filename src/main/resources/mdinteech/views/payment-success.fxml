@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="mdinteech.controllers.PaymentSuccessController" spacing="10" alignment="CENTER" style="-fx-padding: 20px;">
+    <Label fx:id="successMessageLabel" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    <Button text="Retour à l'accueil" onAction="#handleReturnHome" style="-fx-background-color: #1ABC9C; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px; -fx-background-radius: 8px;"/>
+</VBox>

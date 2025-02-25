@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.FontWeight?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.XYChart?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.effect.Glow?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="mdinteech.controllers.WeatherController" spacing="20" style="-fx-padding: 20px; -fx-background-color: linear-gradient(to bottom, #87CEEB, #FFFFFF);">
+    <!-- Titre -->
+    <Label text="🌤️ Météo pour votre trajet"
+           style="-fx-font-size: 28px; -fx-text-fill: #2C3E50; -fx-font-family: 'Segoe UI Emoji', 'Montserrat'; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 2);"/>
+
+    <!-- Message personnalisé -->
+    <Label fx:id="weatherMessage"
+           style="-fx-font-size: 20px; -fx-text-fill: #2C3E50; -fx-font-family: 'Segoe UI Emoji', 'Montserrat'; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 0, 0, 2);"
+           wrapText="true"/>
+
+    <!-- Cartes pour les villes -->
+    <HBox spacing="20">
+        <!-- Carte pour la ville de départ -->
+        <StackPane style="-fx-background-color: white; -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);">
+            <VBox spacing="10" style="-fx-padding: 15px;">
+                <Label fx:id="departureCityLabel"
+                       style="-fx-font-size: 18px; -fx-text-fill: #2C3E50; -fx-font-family: 'Segoe UI Emoji', 'Montserrat'; -fx-font-weight: bold;"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <ImageView fx:id="departureWeatherIcon" fitWidth="50" fitHeight="50"
+                               style="-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0.5, 0, 0);"/>
+                    <VBox spacing="5">
+                        <Label fx:id="departureWeatherLabel"
+                               style="-fx-font-size: 16px; -fx-text-fill: #2C3E50; -fx-font-family: 'Segoe UI Emoji', 'Montserrat';"/>
+                        <Label fx:id="departureTempLabel"
+                               style="-fx-font-size: 14px; -fx-text-fill: #2C3E50; -fx-font-family: 'Segoe UI Emoji', 'Montserrat';"/>
+                        <Label fx:id="departureHumidityLabel"
+                               style="-fx-font-size: 14px; -fx-text-fill: #2C3E50; -fx-font-family: 'Segoe UI Emoji', 'Montserrat';"/>
+                        <Label fx:id="departureWindLabel"
+                               style="-fx-font-size: 14px; -fx-text-fill: #2C3E50; -fx-font-family: 'Segoe UI Emoji', 'Montserrat';"/>
+                        <Label fx:id="departurePressureLabel"
+                               style="-fx-font-size: 14px; -fx-text-fill: #2C3E50; -fx-font-family: 'Segoe UI Emoji', 'Montserrat';"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </StackPane>
+
+        <!-- Carte pour la ville de destination -->
+        <StackPane style="-fx-background-color: white; -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);">
+            <VBox spacing="10" style="-fx-padding: 15px;">
+                <Label fx:id="destinationCityLabel"
+                       style="-fx-font-size: 18px; -fx-text-fill: #2C3E50; -fx-font-family: 'Segoe UI Emoji', 'Montserrat'; -fx-font-weight: bold;"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <ImageView fx:id="destinationWeatherIcon" fitWidth="50" fitHeight="50"
+                               style="-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0.5, 0, 0);"/>
+                    <VBox spacing="5">
+                        <Label fx:id="destinationWeatherLabel"
+                               style="-fx-font-size: 16px; -fx-text-fill: #2C3E50; -fx-font-family: 'Segoe UI Emoji', 'Montserrat';"/>
+                        <Label fx:id="destinationTempLabel"
+                               style="-fx-font-size: 14px; -fx-text-fill: #2C3E50; -fx-font-family: 'Segoe UI Emoji', 'Montserrat';"/>
+                        <Label fx:id="destinationHumidityLabel"
+                               style="-fx-font-size: 14px; -fx-text-fill: #2C3E50; -fx-font-family: 'Segoe UI Emoji', 'Montserrat';"/>
+                        <Label fx:id="destinationWindLabel"
+                               style="-fx-font-size: 14px; -fx-text-fill: #2C3E50; -fx-font-family: 'Segoe UI Emoji', 'Montserrat';"/>
+                        <Label fx:id="destinationPressureLabel"
+                               style="-fx-font-size: 14px; -fx-text-fill: #2C3E50; -fx-font-family: 'Segoe UI Emoji', 'Montserrat';"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </StackPane>
+    </HBox>
+
+    <!-- Graphique de température -->
+    <VBox spacing="10" style="-fx-padding: 15px; -fx-background-color: white; -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);">
+        <Label text="📈 Évolution de la température sur 24 heures"
+               style="-fx-font-size: 18px; -fx-text-fill: #2C3E50; -fx-font-family: 'Segoe UI Emoji', 'Montserrat'; -fx-font-weight: bold;"/>
+        <LineChart fx:id="temperatureChart" createSymbols="true" animated="true" legendVisible="false">
+            <xAxis>
+                <NumberAxis label="Heures" />
+            </xAxis>
+            <yAxis>
+                <NumberAxis label="Température (°C)" />
+            </yAxis>
+        </LineChart>
+    </VBox>
+
+    <!-- Animation de fond (effet de ciel) -->
+    <Rectangle width="600" height="50" arcWidth="15" arcHeight="15" fill="transparent" style="-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0.5, 0, 0);">
+        <effect>
+            <Glow level="0.8" />
+        </effect>
+    </Rectangle>
+</VBox>

@@ -18,7 +18,6 @@
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.FontWeight?>
-
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="mdinteech.controllers.MainController">
 
     <!-- Menu latéral avec icônes -->
@@ -32,13 +31,14 @@
             <Button text="🚆 Carte Train" onAction="#openTrainMap" style="-fx-background-color: transparent; -fx-text-fill: #ECF0F1; -fx-font-size: 16px; -fx-padding: 12px 20px; -fx-background-radius: 8px; -fx-border-color: transparent; -fx-cursor: hand;"/>
             <Button text="🚌 Carte Bus" onAction="#openBusMap" style="-fx-background-color: transparent; -fx-text-fill: #ECF0F1; -fx-font-size: 16px; -fx-padding: 12px 20px; -fx-background-radius: 8px; -fx-border-color: transparent; -fx-cursor: hand;"/>
             <Button text="🚇 Carte Métro" onAction="#openMetroMap" style="-fx-background-color: transparent; -fx-text-fill: #ECF0F1; -fx-font-size: 16px; -fx-padding: 12px 20px; -fx-background-radius: 8px; -fx-border-color: transparent; -fx-cursor: hand;"/>
+            <Button text="🌤️ Voir la météo" onAction="#showWeatherWindow" style="-fx-background-color: #2C3E50; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px; -fx-background-radius: 8px; -fx-cursor: hand;"/>
         </VBox>
     </left>
 
     <!-- Contenu principal -->
     <center>
         <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background: transparent; -fx-background-color: transparent;">
-            <VBox spacing="20" alignment="CENTER" style="-fx-padding: 30px; -fx-background-color: #F5F6F7;">
+            <VBox spacing="20" alignment="CENTER" style="-fx-padding: 30px; -fx-background-color: #F5F6F7;" BorderPane.alignment="CENTER">
 
                 <!-- Barre supérieure avec message de bienvenue -->
                 <HBox spacing="12" alignment="CENTER" style="-fx-padding: 10px; -fx-background-color: #2C3E50; -fx-background-radius: 10px;">
@@ -48,11 +48,11 @@
                 </HBox>
 
                 <!-- Bannière promotions avec icône et couleur -->
-                <HBox alignment="CENTER" style="-fx-background-color: #07914f; -fx-padding: 15px; -fx-background-radius: 10px;">
-                    <Label text="🎉 Promotion spéciale : -20% sur les trajets entre Tunis et Sousse !" style="-fx-text-fill: white; -fx-font-size: 18px;"/>
-                </HBox>
-
-                <!-- Barre de recherche -->
+                <!-- HBox alignment="CENTER" style="-fx-background-color: #07914f; -fx-padding: 15px; -fx-background-radius: 10px;">
+                   <Label text="🎉 Promotion spéciale : -20% sur les trajets entre Tunis et Sousse !" style="-fx-text-fill: white; -fx-font-size: 18px;"/>
+               </HBox>
+-->
+               <!-- Barre de recherche -->
                 <HBox spacing="12" alignment="CENTER" style="-fx-padding: 15px; -fx-background-color: #FFFFFF; -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 3, 0, 5);">
                     <ComboBox fx:id="departureField" promptText="Départ" style="-fx-font-size: 14px; -fx-background-color: #ffffff; -fx-border-radius: 8px; -fx-border-color: #BDC3C7; -fx-padding: 5px 10px;"/>
                     <ComboBox fx:id="destinationField" promptText="Destination" style="-fx-font-size: 14px; -fx-background-color: #ffffff; -fx-border-radius: 8px; -fx-border-color: #BDC3C7; -fx-padding: 5px 10px;"/>
@@ -68,13 +68,15 @@
                     <Rectangle width="600" height="200" arcWidth="15" arcHeight="15" fill="transparent" stroke="#2C3E50" strokeWidth="2"/>
                 </StackPane>
 
-                <!-- ListView des trajets sous les images -->
-                <ListView fx:id="tripListView" prefWidth="920" prefHeight="270" style="-fx-background-color: #193b59; -fx-border-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 3, 0, 5);"/>
+                <HBox spacing="20" alignment="CENTER" style="-fx-padding: 20px;">
+                    <!-- ListView des trajets -->
+                    <ListView fx:id="tripListView" prefWidth="900" prefHeight="750" style="-fx-background-color: #193b59; -fx-border-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 3, 0, 5);" VBox.vgrow="ALWAYS"/>
 
-                <!-- Panneau d’information dynamique -->
-                <VBox fx:id="infoPanel" spacing="12" alignment="CENTER" style="-fx-padding: 20px; -fx-background-color: #ECF0F1; -fx-border-radius: 10px;">
-                    <Label fx:id="infoLabel" text="Détails du trajet sélectionné" style="-fx-font-size: 18px; -fx-text-fill: #2C3E50;"/>
-                </VBox>
+                    <!-- Panneau d’information dynamique -->
+                    <VBox fx:id="infoPanel" spacing="12" alignment="CENTER" style="-fx-padding: 20px; -fx-background-color: #ECF0F1; -fx-border-radius: 10px;" visible="true">
+                        <Label fx:id="infoLabel" text="Détails du trajet sélectionné" style="-fx-font-size: 18px; -fx-text-fill: #2C3E50;"/>
+                    </VBox>
+                </HBox>
 
                 <!-- Bouton "Réserver" -->
                 <Button fx:id="reserveButton" text="🎟️ Réservez maintenant" onAction="#handleReserve"

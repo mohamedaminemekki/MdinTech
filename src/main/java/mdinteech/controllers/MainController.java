@@ -20,7 +20,9 @@ import mdinteech.entities.Reservation;
 import mdinteech.entities.Trip;
 import mdinteech.services.ReservationService;
 import mdinteech.services.TripService;
+import mdinteech.services.WeatherService;
 import mdinteech.utils.DatabaseConnection;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -61,7 +63,7 @@ public class MainController {
     private final String[] sliderImages = {"/images/bus2.jpg", "/images/book2.jpg", "/images/book.jpg", "/images/metro3.jpg", "/images/bus3.jpg", "/images/bus.jpg", "/images/train.jpg", "/images/metro.jpg"};
     private int sliderIndex = 0;
 
-    private int currentUserId = 9; // ID de l'utilisateur connecté
+    private int currentUserId = 9;
 
     public MainController() {
         try {
@@ -215,8 +217,70 @@ public class MainController {
                 "Prix: " + trip.getPrice() + " DT\n" +
                 "Heure Départ: " + trip.getDepartureTime() + "\n" +
                 "Heure Arrivée: " + trip.getArrivalTime());
+
     }
 
+    @FXML
+    private void showWeatherWindow(ActionEvent event) {
+        HBox selectedCard = tripListView.getSelectionModel().getSelectedItem();
+        if (selectedCard != null) {
+            Trip selectedTrip = (Trip) selectedCard.getUserData();
+
+            // Récupérer les données météo pour les villes de départ et de destination
+            JSONObject departureData = WeatherService.getWeatherData(selectedTrip.getDeparture());
+            JSONObject destinationData = WeatherService.getWeatherData(selectedTrip.getDestination());
+
+            if (departureData != null && destinationData != null) {
+                // Données pour la ville de départ
+                String departureWeather = departureData.getJSONArray("weather").getJSONObject(0).getString("description");
+                double departureTemp = departureData.getJSONObject("main").getDouble("temp") - 273.15; // Conversion de Kelvin à Celsius
+                double departureHumidity = departureData.getJSONObject("main").getDouble("humidity");
+                double departureWindSpeed = departureData.getJSONObject("wind").getDouble("speed");
+                double departurePressure = departureData.getJSONObject("main").getDouble("pressure");
+                String departureIconUrl = WeatherService.getWeatherIconUrl(departureData.getJSONArray("weather").getJSONObject(0).getString("icon"));
+
+                // Données pour la ville de destination
+                String destinationWeather = destinationData.getJSONArray("weather").getJSONObject(0).getString("description");
+                double destinationTemp = destinationData.getJSONObject("main").getDouble("temp") - 273.15; // Conversion de Kelvin à Celsius
+                double destinationHumidity = destinationData.getJSONObject("main").getDouble("humidity");
+                double destinationWindSpeed = destinationData.getJSONObject("wind").getDouble("speed");
+                double destinationPressure = destinationData.getJSONObject("main").getDouble("pressure");
+                String destinationIconUrl = WeatherService.getWeatherIconUrl(destinationData.getJSONArray("weather").getJSONObject(0).getString("icon"));
+
+                // Coordonnées géographiques des villes (exemple pour Tunis et Sousse)
+                double departureLat = 36.8; // Latitude de Tunis
+                double departureLon = 10.18; // Longitude de Tunis
+                double destinationLat = 35.8; // Latitude de Sousse
+                double destinationLon = 10.6; // Longitude de Sousse
+
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdinteech/views/WeatherView.fxml"));
+                    Parent root = loader.load();
+
+                    WeatherController controller = loader.getController();
+                    controller.setWeather(
+                            selectedTrip.getDeparture(), departureWeather, departureIconUrl,
+                            departureData.getJSONObject("main").getDouble("temp"), // Température en Kelvin
+                            departureHumidity, departureWindSpeed, departurePressure,
+                            selectedTrip.getDestination(), destinationWeather, destinationIconUrl,
+                            destinationData.getJSONObject("main").getDouble("temp"), // Température en Kelvin
+                            destinationHumidity, destinationWindSpeed, destinationPressure
+                    );
+
+                    Stage stage = new Stage();
+                    stage.setTitle("Météo pour votre trajet");
+                    stage.setScene(new Scene(root));
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                showAlert("Erreur", "Impossible de récupérer les données météo pour une ou plusieurs villes.");
+            }
+        } else {
+            showAlert("Aucun trajet sélectionné", "Veuillez sélectionner un trajet avant de voir la météo.");
+        }
+    }
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -280,4 +344,8 @@ public class MainController {
             e.printStackTrace();
         }
     }
-}
+    private void showWeather(String cityName) {
+        String weatherInfo = String.valueOf(WeatherService.getWeatherData(cityName));
+        infoLabel.setText(infoLabel.getText() + "\n\n" + weatherInfo);
+    }
+} 

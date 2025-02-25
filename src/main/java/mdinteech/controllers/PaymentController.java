@@ -7,12 +7,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import mdinteech.entities.Reservation;
+import mdinteech.services.PaymeeService;
+import mdinteech.services.PaymentService;
 import mdinteech.services.ReservationService;
-import mdinteech.services.TripService;
 import mdinteech.utils.DatabaseConnection;
-
+import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class PaymentController {
@@ -42,7 +42,6 @@ public class PaymentController {
     public PaymentController() {
         try {
             Connection connection = DatabaseConnection.getInstance().getConnection();
-
             reservationService = new ReservationService(connection);
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,7 +52,6 @@ public class PaymentController {
         this.reservation = reservation;
         displayPaymentDetails();
     }
-
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
@@ -73,56 +71,31 @@ public class PaymentController {
             System.err.println("Erreur : paymentDetailsLabel est null.");
         }
     }
+
     @FXML
-    private void handleConfirmPayment() {
-        // Récupérer les données du formulaire
-        String cardNumber = cardNumberField.getText();
-        String expirationDate = expirationDateField.getText();
-        String securityCode = securityCodeField.getText();
-        String cardHolderName = cardHolderNameField.getText();
+    private void handleConfirmPayment() throws IOException {
+        String orderReference = "CMD-" + reservation.getId();
+        String customerName = cardHolderNameField.getText();
+        double amount = totalPrice;
 
+        String paymentUrl = PaymeeService.createTransaction(amount, orderReference, customerName, "https://monapp.com/success");
 
-        if (cardNumber.isEmpty() || expirationDate.isEmpty() || securityCode.isEmpty() || cardHolderName.isEmpty()) {
-            showAlert("Erreur", "Veuillez remplir tous les champs du formulaire de paiement.");
-            return;
-        }
+        if (paymentUrl != null) {
+            java.awt.Desktop.getDesktop().browse(java.net.URI.create(paymentUrl));
 
-
-        boolean paymentSuccess = processPayment(cardNumber, expirationDate, securityCode, cardHolderName);
-
-        if (paymentSuccess) {
-
-            reservation.setPaymentStatus("Paid");
-            reservation.setStatus("Confirmed");
-
+            // Attendre 10 secondes avant de vérifier le paiement
             try {
-
-                reservationService.add(reservation);
-
-
-                showAlert("Paiement réussi", "Votre paiement a été effectué avec succès. Votre réservation est confirmée.");
-
-
-                Stage stage = (Stage) confirmPaymentButton.getScene().getWindow();
-                stage.close();
-            } catch (SQLException e) {
+                Thread.sleep(10000);
+                String status = PaymeeService.checkPaymentStatus(orderReference);
+                if ("paid".equals(status)) {
+                    showAlert("Paiement réussi", "Votre paiement a été confirmé !");
+                } else {
+                    showAlert("En attente", "Le paiement est en cours de validation.");
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
-                showAlert("Erreur", "Une erreur est survenue lors de l'ajout de la réservation à la base de données.");
             }
-        } else {
-            showAlert("Paiement échoué", "Le paiement n'a pas pu être effectué. Veuillez réessayer.");
         }
-    }
-
-    private boolean processPayment(String cardNumber, String expirationDate, String securityCode, String cardHolderName) {
-
-        System.out.println("Traitement du paiement...");
-        System.out.println("Numéro de carte : " + cardNumber);
-        System.out.println("Date d'expiration : " + expirationDate);
-        System.out.println("Code de sécurité : " + securityCode);
-        System.out.println("Nom du titulaire : " + cardHolderName);
-
-        return true;
     }
 
     private void showAlert(String title, String message) {

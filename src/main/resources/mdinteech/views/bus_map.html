@@ -3,45 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carte des Trains</title>
+    <title>Carte des Bus</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
-        #map { height: 100vh; width: 100%; }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
-    <div id="map"></div>
-    <script>
-        // Initialisation de la carte
-        var map = L.map('map').setView([36.8065, 10.1815], 13); // Centrer sur Tunis
+<div id="map"></div>
+<script>
+    // Initialisation de la carte
+    var map = L.map('map').setView([36.8065, 10.1815], 13); // Centrer sur Tunis
 
-        // Ajouter une couche de tuiles OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
+    // Ajouter une couche de tuiles OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
 
-        // Ajouter des marqueurs pour les arrêts de train
-        var trainStops = [
-            { name: "Gare Tunis", lat: 36.8065, lng: 10.1815 },
-            { name: "Gare Ariana", lat: 36.8625, lng: 10.1956 },
-            { name: "Gare Manouba", lat: 36.8081, lng: 10.0972 }
-        ];
-
-        trainStops.forEach(function(stop) {
-            L.marker([stop.lat, stop.lng])
-                .addTo(map)
-                .bindPopup(stop.name);
+    // Fonction pour mettre à jour la carte avec les données des bus
+    function updateBusMap(busStops) {
+        // Supprimer les anciens marqueurs et trajets
+        map.eachLayer(function(layer) {
+            if (layer instanceof L.Marker || layer instanceof L.Polyline) {
+                map.removeLayer(layer);
+            }
         });
 
-        // Ajouter une ligne pour représenter le trajet de train
-        var trainRoute = [
-            [36.8065, 10.1815], // Gare Tunis
-            [36.8625, 10.1956], // Gare Ariana
-            [36.8081, 10.0972]  // Gare Manouba
-        ];
+        // Ajouter les nouveaux marqueurs et trajets
+        busStops.forEach(function(stop) {
+            var departureCoords = getCoordinates(stop.departure);
+            var destinationCoords = getCoordinates(stop.destination);
 
-        L.polyline(trainRoute, { color: 'red' }).addTo(map);
-    </script>
+            if (departureCoords && destinationCoords) {
+                // Ajouter des marqueurs pour les arrêts de bus
+                L.marker(departureCoords).addTo(map).bindPopup(stop.departure);
+                L.marker(destinationCoords).addTo(map).bindPopup(stop.destination);
+
+                // Ajouter une ligne pour représenter le trajet de bus
+                L.polyline([departureCoords, destinationCoords], { color: 'blue' }).addTo(map);
+            }
+        });
+    }
+
+    // Fonction pour obtenir les coordonnées d'une station
+    function getCoordinates(stationName) {
+        // Simuler des coordonnées pour chaque station
+        var coordinates = {
+            "Tunis": [36.8065, 10.1815],
+            "Manouba": [36.8081, 10.0972],
+            "Hammamet": [36.4000, 10.6167],
+            "Ariana": [36.8625, 10.1956],
+            "Sfax": [34.7406, 10.7603],
+            "Sousse": [35.8254, 10.6360],
+            "Monastir": [35.7833, 10.8333],
+            "Passage": [36.8625, 10.1956],
+            "Bardo": [36.8097, 10.1361],
+            "La Marsa": [36.8782, 10.3247],
+            "Ben Arous": [36.7531, 10.2189],
+            "Barcelone": [41.3851, 2.1734],
+            "Nabeul": [36.4561, 10.7376],
+            "Bizerte": [37.2744, 9.8739],
+            "Zaghouan": [36.4027, 10.1429],
+            "Gabès": [33.8815, 10.0983],
+            "Kef": [36.1822, 8.7148]
+        };
+        return coordinates[stationName];
+    }
+</script>
 </body>
 </html>
