@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Stage;
 import services.RendezVousServices;
 
 import java.sql.SQLException;
@@ -20,6 +21,8 @@ public class RendezvousViewController {
 
     @FXML
     private ListView<RendezVous> appointmentsListView;
+    @FXML
+    private Button retourButton;
 
     private final RendezVousServices rendezVousServices = new RendezVousServices();
 
@@ -27,6 +30,21 @@ public class RendezvousViewController {
     public void initialize() {
         loadAppointments();
         appointmentsListView.setCellFactory(param -> new RendezVousCell());
+        //setFullScreenMode();
+    }
+
+   /* @FXML
+    private void setFullScreenMode() {
+        Stage stage = (Stage) appointmentsListView.getScene().getWindow();
+        stage.setMaximized(true); // Mode maximisé
+        stage.setFullScreen(true); // Mode plein écran
+    }*/
+    @FXML
+    private void onRetour() {
+        // Fermer la fenêtre actuelle
+        Node source = (Node) retourButton;
+        Stage stage = (Stage) source.getScene().getWindow();
+        stage.close();
     }
 
     // Charger les rendez-vous dans la ListView
@@ -66,7 +84,7 @@ public class RendezvousViewController {
         dialog.setTitle("Modifier un Rendez-vous");
         dialog.setHeaderText("Modification des informations du rendez-vous");
 
-        // Ajout des boutons
+
         ButtonType updateButtonType = new ButtonType("Modifier", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(updateButtonType, ButtonType.CANCEL);
 
@@ -76,7 +94,6 @@ public class RendezvousViewController {
         grid.setVgap(10);
         grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
 
-        // ComboBox pour le lieu (salle A, salle B, salle C)
         ComboBox<String> salleComboBox = new ComboBox<>();
         salleComboBox.getItems().addAll("Salle A", "Salle B", "Salle C");
         salleComboBox.setValue(rendezVous.getLieu()); // Valeur par défaut
@@ -229,5 +246,8 @@ public class RendezvousViewController {
                 setGraphic(gridPane);
             }
         }
+
+
+
     }
 }
