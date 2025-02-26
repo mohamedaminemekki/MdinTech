@@ -2,6 +2,8 @@ package org.example.mdintech.entities;
 
 import org.example.mdintech.utils.UserRole;
 
+import java.util.Date;
+
 public class User {
     private int CIN;
     private String Name;
@@ -13,8 +15,10 @@ public class User {
     private String City;
     private String State;
     private boolean status;
+    private String pathtopic;
+    private Date birthday;
 
-    public User(String name, int CIN, String email, String password, UserRole role, String phone, String address, String city, String state) {
+    public User(String name, int CIN, String email, String password, UserRole role, String phone, String address, String city, String state,String pathtopic, Date birthday) {
         Name = name;
         this.CIN = CIN;
         Email = email;
@@ -25,9 +29,11 @@ public class User {
         City = city;
         State = state;
         status = false;
+        this.pathtopic = pathtopic;
+        this.birthday = birthday;
     }
 
-    public User(String name, int CIN, String email, String password, UserRole role, String phone, String address, String city, String state, boolean status) {
+    public User(String name, int CIN, String email, String password, UserRole role, String phone, String address, String city, String state, boolean status,String pathtopic, Date birthday) {
         Name = name;
         this.CIN = CIN;
         Email = email;
@@ -38,6 +44,8 @@ public class User {
         City = city;
         State = state;
         this.status = status;
+        this.pathtopic = pathtopic;
+        this.birthday = birthday;
     }
 
     public User(){}
@@ -46,11 +54,26 @@ public class User {
         return Name;
     }
 
-
-
     public void setName(String name) {
         Name = name;
     }
+
+    public String getPathtopic() {
+        return pathtopic;
+    }
+
+    public void setPathtopic(String pathtopic) {
+        this.pathtopic = pathtopic;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
 
     public String getEmail() {
         return Email;

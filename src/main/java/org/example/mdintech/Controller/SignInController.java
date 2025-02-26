@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 
@@ -59,6 +60,7 @@ public class SignInController {
             String city = cityField.getText();
             String state = stateField.getText();
             UserRole role = UserRole.USER;
+            Date birthday=new Date(System.currentTimeMillis());
 
             if (!PasswordVerification.isStrongPassword(password)) {
                 showAlert("Weak Password", "Password must be at least 8 characters long, contain at least one uppercase letter, " +
@@ -78,7 +80,7 @@ public class SignInController {
                 return;
             }
 
-            User newUser = new User(name, cin, email, password, role, phone, address, city, state);
+            User newUser = new User(name, cin, email, password, role, phone, address, city, state,profileImagePath,birthday);
             userService.save(newUser);
             showAlert("Success", "User registered successfully!");
 

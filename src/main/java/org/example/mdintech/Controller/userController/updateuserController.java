@@ -43,7 +43,9 @@ public class updateuserController {
                     currentUser.getPhone(),
                     currentUser.getAddress(),
                     currentUser.getCity(),
-                    currentUser.getState()// Include status if using second constructor
+                    currentUser.getState(),
+                    currentUser.getPathtopic(),
+                    currentUser.getBirthday()// Include status if using second constructor
             );
 
             // Initialize fields with current values
@@ -136,7 +138,9 @@ public class updateuserController {
                     currentUser.getPhone(),
                     currentUser.getAddress(),
                     currentUser.getCity(),
-                    currentUser.getState()
+                    currentUser.getState(),
+                    currentUser.getPathtopic(),
+                    currentUser.getBirthday()
             );
 
             statusLabel.setText("User updated successfully!");

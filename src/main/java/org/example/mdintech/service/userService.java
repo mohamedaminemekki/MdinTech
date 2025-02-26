@@ -132,7 +132,9 @@
                             rs.getString("Address"),
                             rs.getString("City"),
                             rs.getString("State"),
-                            rs.getBoolean("status")
+                            rs.getBoolean("status"),
+                            rs.getString("pathtopic"),
+                            rs.getDate("birthday")
                     );
                 }
             } catch (SQLException e) {
@@ -159,7 +161,9 @@
                             rs.getString("Address"),
                             rs.getString("City"),
                             rs.getString("State"),
-                            rs.getBoolean("Status")
+                            rs.getBoolean("Status"),
+                            rs.getString("pathtopic"),
+                            rs.getDate("birthday")
                     ));
                 }
             } catch (SQLException e) {
@@ -193,7 +197,9 @@
                                 rs.getString("Phone"),
                                 rs.getString("Address"),
                                 rs.getString("City"),
-                                rs.getString("State")
+                                rs.getString("State"),
+                                rs.getString("pathtopic"),
+                                rs.getDate("birthday")
                         );
                     } else {
                         System.out.println("Incorrect password.");
@@ -254,7 +260,9 @@
                             rs.getString("Address"),
                             rs.getString("City"),
                             rs.getString("State"),
-                            rs.getBoolean("status")
+                            rs.getBoolean("status"),
+                            rs.getString("pathtopic"),
+                            rs.getDate("birthday")
                     ));
                 }
             } catch (SQLException e) {

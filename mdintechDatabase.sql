@@ -3,13 +3,16 @@ CREATE TABLE users (
                        Name VARCHAR(100) NOT NULL,  -- User's full name
                        Email VARCHAR(255) UNIQUE NOT NULL,  -- Email should be unique
                        Password VARCHAR(255) NOT NULL,  -- Hashed password (BCrypt)
-                       Role ENUM('ADMIN', 'USER', 'TRAINER', 'MANAGER') NOT NULL,  -- User roles
-                       Phone VARCHAR(20),  -- User's phone number
-                       Address VARCHAR(255),  -- Address field
-                       City VARCHAR(100),  -- City of residence
-                       State VARCHAR(100),  -- State of residence
-                       Status BOOLEAN DEFAULT TRUE  -- User status (active/inactive)
+                       Role ENUM('ADMIN', 'USER') NOT NULL,  -- User roles (previously had 'TRAINER', 'MANAGER' but now removed)
+                       Phone VARCHAR(20) NULL,  -- User's phone number (nullable)
+                       Address VARCHAR(255) NULL,  -- Address field (nullable)
+                       City VARCHAR(100) NULL,  -- City of residence (nullable)
+                       State VARCHAR(100) NULL,  -- State of residence (nullable)
+                       Status TINYINT(1) DEFAULT 1,  -- User status (active/inactive), using TINYINT instead of BOOLEAN
+                       pathtopic TEXT NULL,  -- New column to store path topic
+                       birthday DATE NULL  -- New column to store user's birth date
 );
+
 CREATE TABLE parking (
                          ID INT AUTO_INCREMENT PRIMARY KEY,   -- Unique identifier for each parking
                          Name VARCHAR(255) NOT NULL,          -- Name of the parking lot

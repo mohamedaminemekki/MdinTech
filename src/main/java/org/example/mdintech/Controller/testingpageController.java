@@ -7,6 +7,8 @@ import org.example.mdintech.entities.User;
 import org.example.mdintech.utils.UserRole;
 import org.example.mdintech.service.userService;
 
+import java.util.Date;
+
 public class testingpageController {
 
     @FXML private Button createAdminButton;
@@ -18,10 +20,11 @@ public class testingpageController {
 
     @FXML
     private void handleCreateAdmin() {
+        Date birthday=new Date(System.currentTimeMillis());
         // Creating an admin user
         User adminUser = new User(
                 "Admin User", 12345678, "admin@gmail.com", "Snprb120401#",
-                UserRole.ADMIN, "123456789", "123 Admin Street", "Admin City", "Admin State"
+                UserRole.ADMIN, "123456789", "123 Admin Street", "Admin City", "Admin State","",birthday
         );
 
         // Saving the admin user to the database
