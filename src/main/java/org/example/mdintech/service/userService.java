@@ -222,4 +222,46 @@
             }
         }
 
+        public List<User> searchUsers(Integer minAge, Integer maxAge, String name, Integer cin, String address) {
+            List<User> users = new ArrayList<>();
+            String query = "SELECT * FROM users WHERE 1=1";
+
+            if (minAge != null) query += " AND Age >= ?";
+            if (maxAge != null) query += " AND Age <= ?";
+            if (name != null && !name.isEmpty()) query += " AND Name LIKE ?";
+            if (cin != null) query += " AND CIN = ?";
+            if (address != null && !address.isEmpty()) query += " AND Address LIKE ?";
+
+            try (Connection conn = dbConnection.getInstance().getConn();
+                 PreparedStatement stmt = conn.prepareStatement(query)) {
+
+                int index = 1;
+                if (minAge != null) stmt.setInt(index++, minAge);
+                if (maxAge != null) stmt.setInt(index++, maxAge);
+                if (name != null && !name.isEmpty()) stmt.setString(index++, "%" + name + "%");
+                if (cin != null) stmt.setInt(index++, cin);
+                if (address != null && !address.isEmpty()) stmt.setString(index++, "%" + address + "%");
+
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next()) {
+                    users.add(new User(
+                            rs.getString("Name"),
+                            rs.getInt("CIN"),
+                            rs.getString("Email"),
+                            rs.getString("Password"),
+                            UserRole.valueOf(rs.getString("Role")),
+                            rs.getString("Phone"),
+                            rs.getString("Address"),
+                            rs.getString("City"),
+                            rs.getString("State"),
+                            rs.getBoolean("status")
+                    ));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return users;
+        }
+
+
     }

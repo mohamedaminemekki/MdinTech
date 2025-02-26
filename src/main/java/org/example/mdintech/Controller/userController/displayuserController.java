@@ -4,10 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Callback;
@@ -22,6 +19,9 @@ public class displayuserController {
 
     @FXML
     private ListView<User> usersList;
+
+    @FXML
+    private TextField minAgeField, maxAgeField, nameField, cinField, addressField;
 
     private userService us = new userService();
 
@@ -94,6 +94,19 @@ public class displayuserController {
         });
     }
 
+    @FXML
+    public void searchUsers() {
+        Integer minAge = parseInteger(minAgeField.getText());
+        Integer maxAge = parseInteger(maxAgeField.getText());
+        String name = nameField.getText().trim();
+        Integer cin = parseInteger(cinField.getText());
+        String address = addressField.getText().trim();
+
+        List<User> filteredUsers = us.searchUsers(minAge, maxAge, name, cin, address);
+        ObservableList<User> observableUsers = FXCollections.observableArrayList(filteredUsers);
+        usersList.setItems(observableUsers);
+    }
+
     private void showUserDetailsPopup(User user) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("User Details");
@@ -112,5 +125,13 @@ public class displayuserController {
     }
     public void handleBackButton(ActionEvent event) throws IOException {
         navigation.switchScene(event, "/org/example/mdintech/main-admin-view.fxml");
+    }
+
+    private Integer parseInteger(String value) {
+        try {
+            return value.isEmpty() ? null : Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }
