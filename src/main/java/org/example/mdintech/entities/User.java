@@ -27,6 +27,19 @@ public class User {
         status = false;
     }
 
+    public User(String name, int CIN, String email, String password, UserRole role, String phone, String address, String city, String state, boolean status) {
+        Name = name;
+        this.CIN = CIN;
+        Email = email;
+        Password = password;
+        Role = role;
+        Phone = phone;
+        Address = address;
+        City = city;
+        State = state;
+        this.status = status;
+    }
+
     public User(){}
 
     public String getName() {

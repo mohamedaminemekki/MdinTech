@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -35,12 +36,13 @@ public class displayuserController {
         ObservableList<User> observableUsers = FXCollections.observableArrayList(users);
         usersList.setItems(observableUsers);
 
-        // Custom ListView Cell Renderer
+        // Custom ListView Cell Renderer with Block/Unblock button
         usersList.setCellFactory(new Callback<>() {
             @Override
             public ListCell<User> call(ListView<User> param) {
                 return new ListCell<>() {
                     private final ImageView profileImageView = new ImageView();
+                    private final Button blockButton = new Button();
 
                     @Override
                     protected void updateItem(User user, boolean empty) {
@@ -52,22 +54,42 @@ public class displayuserController {
                         } else {
                             setText(user.getName() + " - " + user.getPhone() + " - " + user.getEmail() + " - CIN: " + user.getCIN());
 
-                            // Dummy profile image (Replace with real image if available)
+                            // Profile Image Placeholder
                             profileImageView.setImage(new Image("file:src/main/resources/profile_placeholder.png"));
                             profileImageView.setFitWidth(40);
                             profileImageView.setFitHeight(40);
+
+                            // Configure Block/Unblock Button
+                            updateBlockButton(user);
+
+                            // Button Click Action
+                            blockButton.setOnAction(event -> toggleUserStatus(user));
+
                             setGraphic(profileImageView);
+                            setGraphic(blockButton);
                         }
                     }
-                };
-            }
-        });
 
-        // Handle user selection
-        usersList.setOnMouseClicked(event -> {
-            User selectedUser = usersList.getSelectionModel().getSelectedItem();
-            if (selectedUser != null) {
-                showUserDetailsPopup(selectedUser);
+                    // Updates button text and style based on user's status
+                    private void updateBlockButton(User user) {
+                        if (user.isStatus()) {
+                            blockButton.setText("Block");
+                            blockButton.setStyle("-fx-background-color: red; -fx-text-fill: white;");
+                        } else {
+                            blockButton.setText("Unblock");
+                            blockButton.setStyle("-fx-background-color: green; -fx-text-fill: white;");
+                        }
+                    }
+
+                    // Toggle user status and update in DB
+                    private void toggleUserStatus(User user) {
+                        boolean newStatus = !user.isStatus();
+                        user.setStatus(newStatus); // Update the local object
+
+                        us.updateUserStatus(user.getCIN(), newStatus); // Update DB
+                        updateBlockButton(user); // Refresh button
+                    }
+                };
             }
         });
     }
