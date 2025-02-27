@@ -83,7 +83,6 @@ public class AddReservationController {
                     0, // L'ID sera généré par la base de données
                     Integer.parseInt(userIdField.getText()),
                     Integer.parseInt(tripIdField.getText()),
-                    Integer.parseInt(transportIdField.getText()),
                     new Timestamp(System.currentTimeMillis()), // Date actuelle
                     "Pending", // Statut par défaut
                     Integer.parseInt(seatNumberField.getText()),

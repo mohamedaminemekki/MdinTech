@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface Moderne</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<!-- Barre latérale -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <div class="avatar">
+            <img src="https://via.placeholder.com/50" alt="Avatar">
+        </div>
+        <h2>Mdintech</h2>
+    </div>
+    <ul class="sidebar-menu">
+        <li class="active">
+            <i class="fas fa-home"></i>
+            <span>Accueil</span>
+        </li>
+        <li>
+            <i class="fas fa-ticket-alt"></i>
+            <span>Réserver</span>
+        </li>
+        <li>
+            <i class="fas fa-list"></i>
+            <span>Mes Réservations</span>
+        </li>
+        <li>
+            <i class="fas fa-phone"></i>
+            <span>Support</span>
+        </li>
+        <li>
+            <i class="fas fa-train"></i>
+            <span>Carte Train</span>
+        </li>
+        <li>
+            <i class="fas fa-bus"></i>
+            <span>Carte Bus</span>
+        </li>
+        <li>
+            <i class="fas fa-subway"></i>
+            <span>Carte Métro</span>
+        </li>
+        <li>
+            <i class="fas fa-sun"></i>
+            <span>Mode Sombre</span>
+        </li>
+    </ul>
+</div>
+
+<!-- Contenu principal -->
+<div class="main-content">
+    <!-- Barre de recherche -->
+    <div class="search-container">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Rechercher un trajet...">
+            <button id="searchButton" class="search-button">
+                <i class="fas fa-search"></i>
+            </button>
+            <button id="clearButton" class="clear-button">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Cartes de trajets -->
+    <div class="trip-cards">
+        <div class="trip-card">
+            <div class="trip-icon">
+                <i class="fas fa-bus"></i>
+            </div>
+            <div class="trip-details">
+                <h3>Bus</h3>
+                <p>Départ : Tunis</p>
+                <p>Destination : Sousse</p>
+                <p>Prix : 10 DT</p>
+            </div>
+            <div class="trip-status available">
+                <i class="fas fa-check"></i>
+            </div>
+        </div>
+        <div class="trip-card">
+            <div class="trip-icon">
+                <i class="fas fa-train"></i>
+            </div>
+            <div class="trip-details">
+                <h3>Train</h3>
+                <p>Départ : Tunis</p>
+                <p>Destination : Gabès</p>
+                <p>Prix : 15 DT</p>
+            </div>
+            <div class="trip-status unavailable">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

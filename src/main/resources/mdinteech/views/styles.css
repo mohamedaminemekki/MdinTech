@@ -1,0 +1,41 @@
+/* styles.css */
+
+/* Effet Neumorphism pour les boutons */
+.button {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 5);
+    -fx-text-fill: #212121;
+    -fx-font-family: 'Montserrat';
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #EEEEEE;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+}
+
+/* Effet Neumorphism pour les cartes */
+.card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 5);
+    -fx-padding: 15px;
+}
+
+/* Style pour les labels */
+.label {
+    -fx-text-fill: #212121;
+    -fx-font-family: 'Montserrat';
+    -fx-font-size: 14px;
+}
+
+/* Style pour les titres */
+.title {
+    -fx-text-fill: #1976D2;
+    -fx-font-family: 'Montserrat';
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}

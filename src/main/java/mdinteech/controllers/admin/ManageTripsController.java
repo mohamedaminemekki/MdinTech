@@ -75,7 +75,7 @@ public class ManageTripsController {
         });
 
 
-        filterComboBox.getItems().addAll("Tous", "Départ", "Destination", "Transport ID");
+        filterComboBox.getItems().addAll("Tous", "Départ", "Destination" );
         filterComboBox.setValue("Tous"); // Valeur par défaut
 
 
@@ -114,9 +114,7 @@ public class ManageTripsController {
                     break;
                 case "Destination":
                     trips = tripService.searchByDestination(keyword);
-                    break;
-                case "Transport ID":
-                    trips = tripService.searchByTransportId(keyword);
+
                     break;
                 default:
                     trips = tripService.searchTrips(keyword);

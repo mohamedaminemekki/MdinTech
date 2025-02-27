@@ -67,9 +67,7 @@ public class Trip {
         this.price = price;
     }
 
-    public String getDeparture() {
-        return departure;
-    }
+    public String getDeparture() {return departure;}
 
     public void setDeparture(String departure) {
         this.departure = departure;

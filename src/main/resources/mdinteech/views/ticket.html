@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket de Réservation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .ticket {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            text-align: center;
+        }
+        .ticket h1 {
+            color: #333;
+        }
+        .ticket p {
+            color: #555;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="ticket">
+    <h1>Ticket de Réservation</h1>
+    <p><strong>ID Réservation:</strong> <span id="reservationId"></span></p>
+    <p><strong>Utilisateur:</strong> <span id="userId"></span></p>
+    <p><strong>Trajet:</strong> <span id="tripId"></span></p>
+    <p><strong>Nombre de sièges:</strong> <span id="seatNumber"></span></p>
+    <p><strong>Type de siège:</strong> <span id="seatType"></span></p>
+    <p><strong>Statut:</strong> <span id="status"></span></p>
+    <p><strong>Date de réservation:</strong> <span id="reservationTime"></span></p>
+</div>
+
+<script>
+    // Fonction pour extraire les informations du QR code
+    function displayReservationDetails(qrCodeContent) {
+        try {
+            const reservation = JSON.parse(qrCodeContent);
+            document.getElementById('reservationId').textContent = reservation["ID Réservation"];
+            document.getElementById('userId').textContent = reservation["Utilisateur"];
+            document.getElementById('tripId').textContent = reservation["Trajet"];
+            document.getElementById('seatNumber').textContent = reservation["Nombre de sièges"];
+            document.getElementById('seatType').textContent = reservation["Type de siège"];
+            document.getElementById('status').textContent = reservation["Statut"];
+            document.getElementById('reservationTime').textContent = reservation["Date de réservation"];
+        } catch (error) {
+            console.error("Erreur lors de l'affichage des informations :", error);
+        }
+    }
+
+    // Simuler la récupération du contenu du QR code (à remplacer par le vrai contenu)
+    const qrCodeContent = `{
+        "ID Réservation": "123",
+        "Utilisateur": "9",
+        "Trajet": "456",
+        "Nombre de sièges": "2",
+        "Type de siège": "Standard",
+        "Statut": "Confirmed",
+        "Date de réservation": "2023-10-25T14:30:00"
+    }`;
+
+    // Afficher les informations
+    displayReservationDetails(qrCodeContent);
+</script>
+</body>
+</html>

@@ -80,6 +80,12 @@ public class MainController {
             List<Trip> trips = tripService.readList();
             originalTrips = FXCollections.observableArrayList(trips);
 
+            // Log pour vérifier les données chargées
+            System.out.println("Nombre de trajets chargés : " + trips.size());
+            for (Trip trip : trips) {
+                System.out.println("Départ : " + trip.getDeparture() + ", Destination : " + trip.getDestination());
+            }
+
             departureField.setItems(FXCollections.observableArrayList(trips.stream().map(Trip::getDeparture).distinct().collect(Collectors.toList())));
             destinationField.setItems(FXCollections.observableArrayList(trips.stream().map(Trip::getDestination).distinct().collect(Collectors.toList())));
 
@@ -100,6 +106,7 @@ public class MainController {
             e.printStackTrace();
         }
     }
+
     private void refreshTripListView(List<Trip> trips) {
         tripListView.getItems().clear();
         for (Trip trip : trips) {
@@ -107,13 +114,29 @@ public class MainController {
             tripCard.setUserData(trip); // Associer le Trip à la HBox
             tripListView.getItems().add(tripCard);
         }
+
     }
 
     private HBox createTripCard(Trip trip) {
         HBox tripCard = new HBox();
         tripCard.setSpacing(10);
         tripCard.setStyle("-fx-padding: 10px; -fx-background-color: #193b59; -fx-border-radius: 10px; -fx-border-color: #a0acb6; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);");
+
+        // Ajouter des labels pour afficher les informations du voyage
+        Label departureLabel = new Label("Départ : " + trip.getDeparture());
+        departureLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+
+        Label destinationLabel = new Label("Destination : " + trip.getDestination());
+        destinationLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+
+        Label priceLabel = new Label("Prix : " + trip.getPrice() + " DT");
+        priceLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+
+        // Ajouter les labels à la HBox
+        tripCard.getChildren().addAll(departureLabel, destinationLabel, priceLabel);
+
         return tripCard;
+
     }
 
     private void startImageSlider() {
@@ -217,7 +240,6 @@ public class MainController {
                 "Prix: " + trip.getPrice() + " DT\n" +
                 "Heure Départ: " + trip.getDepartureTime() + "\n" +
                 "Heure Arrivée: " + trip.getArrivalTime());
-
     }
 
     @FXML
@@ -281,6 +303,7 @@ public class MainController {
             showAlert("Aucun trajet sélectionné", "Veuillez sélectionner un trajet avant de voir la météo.");
         }
     }
+
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -344,8 +367,10 @@ public class MainController {
             e.printStackTrace();
         }
     }
+
     private void showWeather(String cityName) {
         String weatherInfo = String.valueOf(WeatherService.getWeatherData(cityName));
         infoLabel.setText(infoLabel.getText() + "\n\n" + weatherInfo);
     }
-} 
+
+}

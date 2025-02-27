@@ -44,14 +44,14 @@ public class TripService implements Services<Trip> {
     public List<Trip> readList() throws SQLException {
         List<Trip> trips = new ArrayList<>();
         String query = "SELECT t.id, t.transport_id, t.departure_time, t.arrival_time, t.price, t.departure, t.destination, " +
-                "tt.name AS transport_name, t.date " + // Ajout du champ date
+                "tt.name AS transport_name, t.date " +
                 "FROM trips t " +
                 "JOIN transport_types tt ON t.transport_id = tt.transport_id";
 
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
             while (resultSet.next()) {
-                LocalDate date = resultSet.getDate("date") != null ? resultSet.getDate("date").toLocalDate() : LocalDate.now(); // Récupération de la date
+                LocalDate date = resultSet.getDate("date") != null ? resultSet.getDate("date").toLocalDate() : LocalDate.now();
                 Trip trip = new Trip(
                         resultSet.getInt("id"),
                         resultSet.getInt("transport_id"),
@@ -63,11 +63,15 @@ public class TripService implements Services<Trip> {
                         resultSet.getString("transport_name")
                 );
                 trips.add(trip);
+
+                // Log pour vérifier les données récupérées
+                System.out.println("Voyage récupéré : Départ = " + trip.getDeparture() + ", Destination = " + trip.getDestination());
             }
         } catch (SQLException e) {
             System.err.println("Erreur lors de la récupération des voyages : " + e.getMessage());
             throw e;
         }
+
         return trips;
     }
 

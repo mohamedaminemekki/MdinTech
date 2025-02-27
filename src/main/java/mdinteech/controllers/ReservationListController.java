@@ -1,7 +1,14 @@
 package mdinteech.controllers;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -17,7 +24,10 @@ import mdinteech.services.ReservationService;
 import mdinteech.services.TripService;
 import mdinteech.utils.DatabaseConnection;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -50,13 +60,10 @@ public class ReservationListController {
 
     @FXML
     public void initialize() {
-
         filterComboBox.getItems().addAll("Toutes", "Confirmed", "Pending", "Cancelled");
         filterComboBox.setValue("Toutes");
 
-
         loadReservations();
-
 
         searchField.textProperty().addListener((observable, oldValue, newValue) -> filterReservations());
         filterComboBox.valueProperty().addListener((observable, oldValue, newValue) -> filterReservations());
@@ -79,41 +86,36 @@ public class ReservationListController {
         AnchorPane card = new AnchorPane();
         card.setStyle("-fx-background-color: #ffffff; -fx-border-color: #cccccc; -fx-border-radius: 5px; -fx-padding: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);");
 
-
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setLayoutX(10);
         grid.setLayoutY(10);
 
-
+        // Add reservation details
         ImageView tripIcon = loadIcon("/images/trip.png", 20, 20);
         if (tripIcon != null) {
             grid.add(tripIcon, 0, 0);
         }
-
 
         Label tripLabel = new Label("Trajet : " + reservation.getTripId());
         tripLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
         tripLabel.setTextFill(Color.DARKBLUE);
         grid.add(tripLabel, 1, 0);
 
-
         Label passengersLabel = new Label("Passagers : " + reservation.getSeatNumber());
         passengersLabel.setFont(Font.font("Arial", 12));
         grid.add(passengersLabel, 1, 1);
-
 
         Label seatTypeLabel = new Label("Siège : " + reservation.getSeatType());
         seatTypeLabel.setFont(Font.font("Arial", 12));
         grid.add(seatTypeLabel, 1, 2);
 
-
         Label statusLabel = new Label("Statut : " + reservation.getStatus());
         statusLabel.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         grid.add(statusLabel, 1, 3);
 
-
+        // Apply styles based on status
         if (reservation.getStatus().equals("Cancelled")) {
             card.setStyle("-fx-background-color: #f0f0f0; -fx-border-color: #cccccc; -fx-border-radius: 5px; -fx-padding: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);");
             statusLabel.setTextFill(Color.RED);
@@ -123,16 +125,14 @@ public class ReservationListController {
             statusLabel.setTextFill(Color.GREEN);
         }
 
-
+        // Add buttons
         HBox buttonBox = new HBox(10);
         buttonBox.setLayoutX(300);
         buttonBox.setLayoutY(10);
 
-
         Button detailsButton = new Button("Détails", loadIcon("/images/details.png", 16, 16));
         detailsButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5px 10px; -fx-border-radius: 5px;");
         detailsButton.setOnAction(event -> showReservationDetails(reservation));
-
 
         if (reservation.getStatus().equals("Confirmed") || reservation.getStatus().equals("Pending")) {
             Button modifyButton = new Button("Modifier", loadIcon("/images/edit.png", 16, 16));
@@ -141,7 +141,6 @@ public class ReservationListController {
             buttonBox.getChildren().add(modifyButton);
         }
 
-
         if (reservation.getStatus().equals("Confirmed") || reservation.getStatus().equals("Pending")) {
             Button cancelButton = new Button("Annuler", loadIcon("/images/cancel.png", 16, 16));
             cancelButton.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5px 10px; -fx-border-radius: 5px;");
@@ -149,8 +148,48 @@ public class ReservationListController {
             buttonBox.getChildren().add(cancelButton);
         }
 
+        // Add the "Generate QR Code" button
+        Button qrCodeButton = new Button("Générer QR Code", loadIcon("/images/qrcode.png", 16, 16));
+        qrCodeButton.setStyle("-fx-background-color: #5f036e; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5px 10px; -fx-border-radius: 5px;");
+        qrCodeButton.setUserData(reservation); // Associer la réservation au bouton
+        qrCodeButton.setOnAction(event -> {
+            Reservation res = (Reservation) qrCodeButton.getUserData();
 
-        card.getChildren().addAll(grid, buttonBox);
+            // Convertir les informations de la réservation en JSON
+            String reservationDetails = String.format(
+                    "{\n" +
+                            "  \"ID Réservation\": \"%d\",\n" +
+                            "  \"Utilisateur\": \"%d\",\n" +
+                            "  \"Trajet\": \"%d\",\n" +
+                            "  \"Nombre de sièges\": \"%d\",\n" +
+                            "  \"Type de siège\": \"%s\",\n" +
+                            "  \"Statut\": \"%s\",\n" +
+                            "  \"Date de réservation\": \"%s\"\n" +
+                            "}",
+                    res.getId(), res.getUserId(), res.getTripId(), res.getSeatNumber(), res.getSeatType(), res.getStatus(), res.getReservationTime()
+            );
+
+            // Générer le QR code avec ces informations
+            try {
+                // Générer le QR code
+                byte[] qrCodeImage = generateQRCode(reservationDetails, 300, 300);
+
+                // Sauvegarder l'image du QR code temporairement
+                Path tempFile = Files.createTempFile("qrcode", ".png");
+                Files.write(tempFile, qrCodeImage);
+
+                // Afficher le QR code dans une nouvelle fenêtre
+                showQRCodeWindow(tempFile.toUri().toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert("Erreur", "Impossible de générer le QR code.");
+            }
+        });
+        buttonBox.getChildren().add(qrCodeButton);
+
+        // Add grid and buttonBox to the card
+        card.getChildren().addAll(grid, buttonBox); // Ensure this is called only once
+
         return card;
     }
 
@@ -180,7 +219,7 @@ public class ReservationListController {
 
     private void modifyReservation(Reservation reservation) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdinteech/views/ModifyReservation.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdintech/views/ModifyReservation.fxml"));
             Parent root = loader.load();
 
             ModifyReservationController modifyController = loader.getController();
@@ -242,5 +281,37 @@ public class ReservationListController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    // Méthode pour générer un QR code
+    private byte[] generateQRCode(String text, int width, int height) throws WriterException, IOException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
+
+        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+        return pngOutputStream.toByteArray();
+    }
+
+    private void showQRCodeWindow(String qrCodeImageUrl) {
+        Stage qrCodeStage = new Stage();
+        qrCodeStage.setTitle("QR Code de la Réservation");
+
+        // Charger l'image du QR code
+        Image qrCodeImage = new Image(qrCodeImageUrl);
+        ImageView qrCodeImageView = new ImageView(qrCodeImage);
+        qrCodeImageView.setFitWidth(300);
+        qrCodeImageView.setFitHeight(300);
+
+        // Créer une mise en page simple
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(20));
+        layout.getChildren().add(qrCodeImageView);
+
+        // Afficher la fenêtre
+        Scene scene = new Scene(layout, 350, 350);
+        qrCodeStage.setScene(scene);
+        qrCodeStage.show();
     }
 }

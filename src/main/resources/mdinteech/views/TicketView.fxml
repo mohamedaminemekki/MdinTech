@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.FontWeight?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="mdinteech.controllers.TicketViewController" spacing="10" style="-fx-padding: 20px; -fx-background-color: #f9f9f9; -fx-border-color: #cccccc; -fx-border-radius: 5px;">
+    <Label text="Ticket Virtuel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2196F3;"/>
+    <HBox spacing="10">
+        <ImageView fx:id="tripIcon" fitWidth="50" fitHeight="50"/>
+        <VBox spacing="5">
+            <Label fx:id="departureLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            <Label fx:id="destinationLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        </VBox>
+    </HBox>
+    <Label fx:id="dateLabel" style="-fx-font-size: 14px;"/>
+    <Label fx:id="priceLabel" style="-fx-font-size: 14px;"/>
+    <Label fx:id="seatTypeLabel" style="-fx-font-size: 14px;"/>
+    <Label fx:id="statusLabel" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+</VBox>

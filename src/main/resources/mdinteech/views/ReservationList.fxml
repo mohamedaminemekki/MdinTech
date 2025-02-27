@@ -3,6 +3,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.paint.*?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="mdinteech.controllers.ReservationListController">
     <top>
@@ -17,6 +21,7 @@
     <center>
         <ScrollPane style="-fx-background-color: transparent;">
             <VBox fx:id="reservationContainer" spacing="10" style="-fx-padding: 10px;"/>
+
         </ScrollPane>
     </center>
 </BorderPane>

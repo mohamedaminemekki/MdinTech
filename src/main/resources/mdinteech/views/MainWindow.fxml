@@ -52,7 +52,7 @@
                    <Label text="🎉 Promotion spéciale : -20% sur les trajets entre Tunis et Sousse !" style="-fx-text-fill: white; -fx-font-size: 18px;"/>
                </HBox>
 -->
-               <!-- Barre de recherche -->
+                <!-- Barre de recherche -->
                 <HBox spacing="12" alignment="CENTER" style="-fx-padding: 15px; -fx-background-color: #FFFFFF; -fx-background-radius: 10px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 3, 0, 5);">
                     <ComboBox fx:id="departureField" promptText="Départ" style="-fx-font-size: 14px; -fx-background-color: #ffffff; -fx-border-radius: 8px; -fx-border-color: #BDC3C7; -fx-padding: 5px 10px;"/>
                     <ComboBox fx:id="destinationField" promptText="Destination" style="-fx-font-size: 14px; -fx-background-color: #ffffff; -fx-border-radius: 8px; -fx-border-color: #BDC3C7; -fx-padding: 5px 10px;"/>
