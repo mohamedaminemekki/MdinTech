@@ -38,6 +38,8 @@
                         style="-fx-background-color: #2980B9; -fx-text-fill: white; -fx-font-size: 14px;"/>
                 <Button fx:id="appointmentListButton" text="📅 Liste Rendez-vous"
                         style="-fx-background-color: #E67E22; -fx-text-fill: white; -fx-font-size: 14px;"/>
+                <Button fx:id="statsButton" text="📊 Statistique des rendez-vous"
+                        style="-fx-background-color: #8E44AD; -fx-text-fill: white; -fx-font-size: 14px;"/>
             </HBox>
         </VBox>
     </center>

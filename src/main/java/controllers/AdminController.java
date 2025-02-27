@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -30,12 +31,31 @@ public class AdminController {
     @FXML
     public void initialize() {
         loadServices();
+        statsButton.setOnAction(this::showStatistics);
+
 
         // Gestion des boutons
 
         addServiceButton.setOnAction(this::handleAddService);
         doctorListButton.setOnAction(event -> openWindow("/listeMedecins.fxml", "Liste des médecins"));
         appointmentListButton.setOnAction(event -> openWindow("/listeRendezVous.fxml", "Liste des rendez-vous"));
+    }
+    @FXML
+    private Button statsButton;
+
+    @FXML
+    private void showStatistics(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/StatsView.fxml"));
+            Parent root = loader.load();
+
+            Stage statsStage = new Stage();
+            statsStage.setTitle("📊 Statistique des Rendez-vous");
+            statsStage.setScene(new Scene(root));
+            statsStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadServices() {
