@@ -6,7 +6,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import main.MainFX;
-import services.EmailService;
 import utils.MyDataBase;
 
 import java.sql.PreparedStatement;
@@ -45,14 +44,7 @@ public class LoginController {
                             if (role.equals("user")) {
                                 mainApp.showServiceView();
 
-                                // Récupérer l'email du patient depuis la base de données (simulé ici)
-                                String userEmail = getUserEmail(userId);
 
-                                if (userEmail != null) {
-                                    sendAppointmentReminder(userEmail);
-                                } else {
-                                    System.err.println("Aucune adresse email trouvée pour cet utilisateur.");
-                                }
                             } else if (role.equals("admin")) {
                                 mainApp.showAdminView();
                             }
@@ -88,13 +80,7 @@ public class LoginController {
         return email;
     }
 
-    // Fonction pour envoyer un rappel de rendez-vous
-    private void sendAppointmentReminder(String email) {
-        String subject = "Rappel de votre rendez-vous";
-        String body = "Bonjour,\n\nCeci est un rappel de votre rendez-vous prévu dans une heure.\n\nMerci !";
 
-        EmailService.sendEmail(email, subject, body);
-    }
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

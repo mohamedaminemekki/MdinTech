@@ -68,29 +68,9 @@ public class RendezVousServices implements IService<RendezVous> {
         ServiceHospitalierServices serviceService = new ServiceHospitalierServices();
         serviceService.deleteServiceIfLowAppointments(idService);
 
-        LocalDate dateRendezVous = rendezVous.getDateRendezVous();
-        LocalTime timeRendezVous = rendezVous.getTimeRendezVous();
-        LocalDateTime rendezVousDateTime = LocalDateTime.of(dateRendezVous, timeRendezVous);
-        LocalDateTime emailSendTime = rendezVousDateTime.minusHours(1);  // Envoyer une heure avant
 
-        // Vérifier si l'heure d'envoi est dans le futur
-        if (emailSendTime.isAfter(LocalDateTime.now())) {
-            long delay = ChronoUnit.SECONDS.between(LocalDateTime.now(), emailSendTime);  // Calculer le retard en secondes
+    }
 
-            // Planifier l'envoi de l'email après le délai calculé
-            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-            scheduler.schedule(() -> sendEmail(rendezVous), delay, TimeUnit.SECONDS);
-        }
-    }
-    private void sendEmail(RendezVous rendezVous) {
-        // Informations du rendez-vous
-        String recipient = "ines.rahrah@esprit.tn";  // Remplace avec l'email du patient (tu peux le récupérer depuis la base de données)
-        String subject = "Rappel de votre rendez-vous médical";
-        String content = "Bonjour,\n\nNous vous rappelons que votre rendez-vous est prévu pour le " +
-                rendezVous.getDateRendezVous() + " à " + rendezVous.getTimeRendezVous() + ".\n\nCordialement,\nL'équipe médicale.";
-        // Appel à la méthode sendEmail du service EmailService
-        EmailService.sendEmail(recipient, subject, content);
-    }
 
     private int getServiceIdByMedecin(int idMedecin) throws SQLException {
         String query = "SELECT idService FROM medecin WHERE idMedecin = ?";

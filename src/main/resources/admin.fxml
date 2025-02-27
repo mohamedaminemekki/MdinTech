@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.Pos?> <!-- Importer le Pos pour l'alignement -->
+<?import javafx.geometry.Pos?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.AdminController"
@@ -43,5 +42,4 @@
             </HBox>
         </VBox>
     </center>
-
 </BorderPane>
