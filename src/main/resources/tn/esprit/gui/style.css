@@ -93,3 +93,125 @@
 .list-cell:selected {
     -fx-background-color: #e3f2fd;
 }
+/* Pour les scrollbars */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:horizontal, .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical .track {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #c1c1c1;
+    -fx-background-radius: 5em;
+}
+.post-card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);
+    -fx-border-radius: 15;
+}
+
+.interaction-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #606770;
+    -fx-font-size: 14;
+    -fx-cursor: hand;
+}
+
+.interaction-btn:hover {
+    -fx-text-fill: #1877f2;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+    -fx-cursor: hand;
+}
+
+#feedContainer {
+    -fx-background-color: #f0f2f5;
+    -fx-padding: 20;
+    -fx-alignment: center;
+}
+/* Police générale et fond */
+.root {
+    -fx-font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    -fx-background-color: #f0f2f5;
+}
+
+/* Container principal du post */
+.post-card {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-padding: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);
+    -fx-spacing: 10;
+}
+
+/* Header du post */
+.post-card .header {
+    -fx-alignment: center-left;
+    -fx-spacing: 10;
+}
+
+/* Infos de l'auteur */
+.post-card .author-info {
+    -fx-spacing: 2;
+}
+
+/* Bouton d'options (les 3 points) */
+.options-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #606770;
+    -fx-font-size: 16;
+    -fx-cursor: hand;
+}
+.options-button:hover {
+    -fx-background-color: #e4e6eb;
+    -fx-background-radius: 50%;
+}
+
+/* Boutons d'interaction (like et commentaire) */
+.interaction-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #606770;
+    -fx-font-size: 14;
+    -fx-cursor: hand;
+}
+
+/* Style pour le container de commentaires */
+.comments-container {
+    -fx-spacing: 5;
+    -fx-padding: 5 0 0 0;
+}
+
+/* Style pour une carte de commentaire */
+.comment-box {
+    -fx-background-color: #f0f2f5;
+    -fx-background-radius: 8;
+    -fx-padding: 8;
+    -fx-spacing: 5;
+}
+
+/* Boutons dans les commentaires */
+.comment-box .button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #606770;
+    -fx-font-size: 12;
+    -fx-cursor: hand;
+}
+
+/* Bouton pour publier un post */
+.button-publish {
+    -fx-background-color: #1877f2;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+}

@@ -6,7 +6,17 @@ public class User {
     private String prenom;
     private String email;
     private String password;
-    private String role; // ADMIN/USER
+    private String role;
+    private String avatarUrl; // Ajouter ce champ
+
+    // Ajouter le getter/setter
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }// ADMIN/USER
 
     public User(String cin, String nom, String prenom, String email, String password, String role) {
         this.cin = cin;

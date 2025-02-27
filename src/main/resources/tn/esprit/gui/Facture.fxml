@@ -20,6 +20,12 @@
             </graphic>
             <text>Dashboard</text>
         </Button>
+            <Button mnemonicParsing="false" styleClass="icon-btn" onAction="#loadBlogManagement">
+            <graphic>
+                <SVGPath content="M4 9h16v2H4zm0 4h10v2H4z"/>
+            </graphic>
+            <text>Gestion Blog</text>
+        </Button>
             <Button mnemonicParsing="false" styleClass="icon-btn">
                 <graphic>
                     <SVGPath content="M2 20h20v-2H2v2zm2-3h2v-5H4v5zm5 0h2V4H9v13zm5 0h2V9h-2v8z"

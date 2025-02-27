@@ -224,4 +224,13 @@ public class UserController {
         paidList.setVisible(true);
         paidList.setManaged(true);
     }
+    @FXML
+    private void loadBlogPosts() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/tn/esprit/gui/blog_posts.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) unpaidList.getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.setTitle("Blog Communautaire");
+        stage.show();
+    }
 }

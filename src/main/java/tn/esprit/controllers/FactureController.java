@@ -18,6 +18,7 @@ import tn.esprit.services.FactureServices;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -37,6 +38,7 @@ public class FactureController {
         insertAddButtonAboveList();
         addColumnHeaders();
     }
+
 
     private void addColumnHeaders() {
         GridPane header = new GridPane();
@@ -467,4 +469,14 @@ public class FactureController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    @FXML
+    private void loadBlogManagement() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/tn/esprit/gui/admin_blog.fxml"));
+        Parent root = loader.load();
+        Stage stage = (Stage) factureList.getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.setTitle("Gestion du Blog");
+        stage.show();
+    }
+
 }
