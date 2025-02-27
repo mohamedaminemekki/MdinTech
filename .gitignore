@@ -11,6 +11,10 @@ target/
 *.iws
 *.iml
 *.ipr
+<<<<<<< HEAD
+=======
+.env
+>>>>>>> a433f676d98f8ade75838ac595396a41f00c44e7
 
 ### Eclipse ###
 .apt_generated
