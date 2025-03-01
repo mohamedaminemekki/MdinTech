@@ -68,7 +68,7 @@ public class TripService implements Services<Trip> {
                 System.out.println("Voyage récupéré : Départ = " + trip.getDeparture() + ", Destination = " + trip.getDestination());
             }
         } catch (SQLException e) {
-            System.err.println("Erreur lors de la récupération des voyages : " + e.getMessage());
+           System.err.println("Erreur lors de la récupération des voyages : " + e.getMessage());
             throw e;
         }
 
@@ -268,5 +268,53 @@ public class TripService implements Services<Trip> {
             }
         }
         return trips;
+    }
+    public String getTransportType(int tripId) {
+        String query = "SELECT transport_name FROM trips WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, tripId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next() ? rs.getString("transport_name") : "unknown";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "unknown";
+        }
+    }
+
+    public LocalDate getTripDate(int tripId) {
+        String query = "SELECT date FROM trips WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, tripId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next() ? rs.getDate("date").toLocalDate() : LocalDate.now();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return LocalDate.now();
+        }
+    }
+
+    public double getTripDistance(int tripId) throws SQLException {
+        String query = "SELECT distance FROM trips WHERE id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setInt(1, tripId);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next() ? rs.getDouble("distance") : 0;
+        }
+    }
+    public int getTripHour(int tripId) throws SQLException {
+        String query = "SELECT HOUR(departure_time) as hour FROM trips WHERE id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setInt(1, tripId);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next() ? rs.getInt("hour") : -1;
+        }
+    }
+    public int getTripIdByDate(LocalDate date) throws SQLException {
+        String query = "SELECT id FROM trips WHERE date = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setDate(1, Date.valueOf(date));
+            ResultSet rs = ps.executeQuery();
+            return rs.next() ? rs.getInt("id") : -1;
+        }
     }
 }

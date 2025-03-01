@@ -121,4 +121,9 @@ public class Trip {
                 ", date=" + getFormattedDate() +
                 '}';
     }
+
+
+    public String getVehicleImage() {
+        return "";
+    }
 }

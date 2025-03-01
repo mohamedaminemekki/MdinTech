@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/16"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="mdinteech.controllers.ChatController"
+      spacing="10"
+      style="-fx-padding: 20px; -fx-background-color: #f0f8ff;">
+
+    <ListView fx:id="chatHistory"
+              style="-fx-background-color: white; -fx-border-color: #4682b4;"
+              VBox.vgrow="ALWAYS"/>
+
+    <HBox spacing="10">
+        <TextField fx:id="messageInput"
+                   HBox.hgrow="ALWAYS"
+                   promptText="Posez votre question..."
+                   style="-fx-background-radius: 15; -fx-padding: 8px;"/>
+
+        <Button text="Envoyer"
+                style="-fx-background-color: #4682b4; -fx-text-fill: white; -fx-background-radius: 15;"
+                onAction="#envoyerMessage"/>
+    </HBox>
+</VBox>

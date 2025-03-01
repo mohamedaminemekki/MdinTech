@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
@@ -13,17 +14,37 @@
 
             <!-- Formulaire de paiement -->
             <GridPane hgap="10" vgap="10" alignment="CENTER">
+                <!-- Numéro de carte -->
                 <Label text="Numéro de carte :" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                <TextField fx:id="cardNumberField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                <TextField fx:id="cardNumberField" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="1234 5678 9012 3456">
+                    <GridPane.margin>
+                        <Insets bottom="10"/>
+                    </GridPane.margin>
+                </TextField>
 
+                <!-- Date d'expiration -->
                 <Label text="Date d'expiration :" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                <TextField fx:id="expirationDateField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                <DatePicker fx:id="expirationDatePicker" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="MM/AA">
+                    <GridPane.margin>
+                        <Insets bottom="10"/>
+                    </GridPane.margin>
+                </DatePicker>
 
+                <!-- Code de sécurité -->
                 <Label text="Code de sécurité :" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                <TextField fx:id="securityCodeField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                <TextField fx:id="securityCodeField" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="123">
+                    <GridPane.margin>
+                        <Insets bottom="10"/>
+                    </GridPane.margin>
+                </TextField>
 
+                <!-- Nom du titulaire -->
                 <Label text="Nom du titulaire :" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                <TextField fx:id="cardHolderNameField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                <TextField fx:id="cardHolderNameField" GridPane.rowIndex="3" GridPane.columnIndex="1" promptText="John Doe">
+                    <GridPane.margin>
+                        <Insets bottom="10"/>
+                    </GridPane.margin>
+                </TextField>
             </GridPane>
 
             <!-- Bouton de confirmation -->

@@ -70,8 +70,14 @@ public class ReservationListController {
     }
 
     private void loadReservations() {
-        List<Reservation> reservations = reservationService.getReservationsByUserId(currentUserId);
-        displayReservations(reservations);
+        try {
+            List<Reservation> reservations = reservationService.getReservationsByUserId(currentUserId);
+            System.out.println("Nombre de réservations chargées : " + reservations.size());
+            displayReservations(reservations);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible de charger les réservations.");
+        }
     }
 
     private void displayReservations(List<Reservation> reservations) {
@@ -219,7 +225,7 @@ public class ReservationListController {
 
     private void modifyReservation(Reservation reservation) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdintech/views/ModifyReservation.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdinteech/views/ModifyReservation.fxml"));
             Parent root = loader.load();
 
             ModifyReservationController modifyController = loader.getController();

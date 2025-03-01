@@ -1,26 +1,26 @@
 package mdinteech.controllers;
 
-import javafx.animation.PauseTransition;
-import javafx.animation.ScaleTransition;
+import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import mdinteech.entities.Reservation;
 import mdinteech.entities.Trip;
-import mdinteech.services.ReservationService;
-import mdinteech.services.TripService;
-import mdinteech.services.WeatherService;
+import mdinteech.services.*;
 import mdinteech.utils.DatabaseConnection;
 import org.json.JSONObject;
 
@@ -32,43 +32,31 @@ import java.util.stream.Collectors;
 
 public class MainController {
 
-    @FXML
-    private ListView<HBox> tripListView;
+    // Déclarations FXML
+    @FXML private ListView<HBox> tripListView;
+    @FXML private ComboBox<String> departureField, destinationField;
+    @FXML private DatePicker dateField;
+    @FXML private TextField priceField;
+    @FXML private Button reserveButton, clearButton;
+    @FXML private Label infoLabel;
+    @FXML private StackPane rootStack;
+    @FXML private StackPane carouselContainer;
+    @FXML private ImageView carouselImage1, carouselImage2;
+    @FXML private HBox carouselIndicators;
+    // Champs du chatbot
+    @FXML private VBox chatContainer;
+    @FXML private TextField chatInput;
+    @FXML private ScrollPane chatScrollPane;
 
-    @FXML
-    private ComboBox<String> departureField, destinationField;
-
-    @FXML
-    private DatePicker dateField;
-
-    @FXML
-    private TextField priceField;
-
-    @FXML
-    private ImageView sliderImage;
-
-    @FXML
-    private Button reserveButton;
-
-    @FXML
-    private Label infoLabel;
-
-    @FXML
-    private VBox infoPanel;
-
+    // Variables d'instance
     private TripService tripService;
-    private ReservationService reservationService;
     private ObservableList<Trip> originalTrips;
-
-    private final String[] sliderImages = {"/images/bus2.jpg", "/images/book2.jpg", "/images/book.jpg", "/images/metro3.jpg", "/images/bus3.jpg", "/images/bus.jpg", "/images/train.jpg", "/images/metro.jpg"};
-    private int sliderIndex = 0;
-
-    private int currentUserId = 9;
+    private final String[] carouselImages = {"/images/carousel1.jpeg", "/images/carousel2.jpeg", "/images/carousel3.jpeg"};
+    private int currentCarouselIndex = 0;
 
     public MainController() {
         try {
             tripService = new TripService(DatabaseConnection.getInstance().getConnection());
-            reservationService = new ReservationService(DatabaseConnection.getInstance().getConnection());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -76,36 +64,146 @@ public class MainController {
 
     @FXML
     public void initialize() {
+        initializeCarousel();
+        setupPriceListener();
+        loadInitialData();
+        setupTripList();
+        animateReserveButton();
+    }
+
+    private void initializeCarousel() {
+        // Initialisation des indicateurs
+        for (int i = 0; i < carouselImages.length; i++) {
+            Circle indicator = new Circle(4);
+            indicator.getStyleClass().add("carousel-indicator");
+            indicator.setUserData(i);
+            indicator.setOnMouseClicked(e -> showCarouselSlide((int) indicator.getUserData()));
+            carouselIndicators.getChildren().add(indicator);
+        }
+
+        // Configuration de l'animation
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.seconds(3), e -> showNextCarouselSlide())
+        );
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+        showCarouselSlide(0);
+    }
+
+    private void showNextCarouselSlide() {
+        currentCarouselIndex = (currentCarouselIndex + 1) % carouselImages.length;
+        updateCarousel();
+    }
+
+    private void showCarouselSlide(int index) {
+        currentCarouselIndex = index;
+        updateCarousel();
+    }
+
+    private void updateCarousel() {
+        Image image = new Image(getClass().getResourceAsStream(carouselImages[currentCarouselIndex]));
+
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(500), carouselImage1);
+        fadeOut.setFromValue(1.0);
+        fadeOut.setToValue(0.0);
+
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(500), carouselImage2);
+        fadeIn.setFromValue(0.0);
+        fadeIn.setToValue(1.0);
+
+        fadeOut.setOnFinished(e -> {
+            carouselImage2.setImage(image);
+            carouselImage2.setVisible(true);
+            fadeIn.play();
+        });
+
+        fadeOut.play();
+        updateIndicators();
+    }
+
+    private void updateIndicators() {
+        carouselIndicators.getChildren().forEach(node -> {
+            node.getStyleClass().remove("active");
+            if ((int) node.getUserData() == currentCarouselIndex) {
+                node.getStyleClass().add("active");
+            }
+        });
+    }
+
+    private void setupPriceListener() {
+        priceField.textProperty().addListener((obs, oldVal, newVal) ->
+                clearButton.setVisible(!newVal.isEmpty()));
+    }
+
+    private void loadInitialData() {
         try {
             List<Trip> trips = tripService.readList();
             originalTrips = FXCollections.observableArrayList(trips);
-
-            // Log pour vérifier les données chargées
-            System.out.println("Nombre de trajets chargés : " + trips.size());
-            for (Trip trip : trips) {
-                System.out.println("Départ : " + trip.getDeparture() + ", Destination : " + trip.getDestination());
-            }
-
-            departureField.setItems(FXCollections.observableArrayList(trips.stream().map(Trip::getDeparture).distinct().collect(Collectors.toList())));
-            destinationField.setItems(FXCollections.observableArrayList(trips.stream().map(Trip::getDestination).distinct().collect(Collectors.toList())));
-
-            tripListView.setCellFactory(listView -> new TripCell());
-
+            populateComboBoxes(trips);
             refreshTripListView(trips);
-            startImageSlider();
-            animateReserveButton();
-
-            tripListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-                reserveButton.setDisable(newSelection == null);
-                if (newSelection != null) {
-                    showTripDetails(newSelection.getUserData());
-                }
-            });
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    private void populateComboBoxes(List<Trip> trips) {
+        departureField.setItems(FXCollections.observableArrayList(
+                trips.stream().map(Trip::getDeparture).distinct().collect(Collectors.toList())));
+        destinationField.setItems(FXCollections.observableArrayList(
+                trips.stream().map(Trip::getDestination).distinct().collect(Collectors.toList())));
+    }
+
+    private void setupTripList() {
+        tripListView.setCellFactory(lv -> new TripCell());
+        tripListView.getSelectionModel().selectedItemProperty().addListener(
+                (obs, oldVal, newVal) -> handleTripSelection(newVal));
+    }
+
+    private void handleTripSelection(HBox selectedCard) {
+        if (selectedCard != null) {
+            Trip trip = (Trip) selectedCard.getUserData();
+            reserveButton.setDisable(false);
+            showTripDetails(trip);
+        }
+    }
+
+    private HBox createTripCard(Trip trip) {
+        HBox tripCard = new HBox();
+        tripCard.getStyleClass().add("card");
+        tripCard.setSpacing(10);
+        tripCard.setAlignment(Pos.CENTER_LEFT);
+
+        // Labels pour les informations du trajet
+        Label departureLabel = new Label("Départ : " + trip.getDeparture());
+        departureLabel.getStyleClass().add("card-label");
+
+        Label destinationLabel = new Label("Destination : " + trip.getDestination());
+        destinationLabel.getStyleClass().add("card-label");
+
+        Label priceLabel = new Label("Prix : " + trip.getPrice() + " DT");
+        priceLabel.getStyleClass().add("card-label");
+
+        // Ajouter les labels à la carte
+        tripCard.getChildren().addAll(departureLabel, destinationLabel, priceLabel);
+
+        return tripCard;
+    }
+
+    private void setupCardHoverEffect(HBox card) {
+        DropShadow shadow = new DropShadow();
+        shadow.setColor(Color.rgb(0, 0, 0, 0.1));
+
+        card.setOnMouseEntered(e -> {
+            card.setEffect(shadow);
+            card.setTranslateY(-2);
+        });
+
+        card.setOnMouseExited(e -> {
+            card.setEffect(null);
+            card.setTranslateY(0);
+        });
+    }
+
 
     private void refreshTripListView(List<Trip> trips) {
         tripListView.getItems().clear();
@@ -116,39 +214,6 @@ public class MainController {
         }
 
     }
-
-    private HBox createTripCard(Trip trip) {
-        HBox tripCard = new HBox();
-        tripCard.setSpacing(10);
-        tripCard.setStyle("-fx-padding: 10px; -fx-background-color: #193b59; -fx-border-radius: 10px; -fx-border-color: #a0acb6; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);");
-
-        // Ajouter des labels pour afficher les informations du voyage
-        Label departureLabel = new Label("Départ : " + trip.getDeparture());
-        departureLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
-
-        Label destinationLabel = new Label("Destination : " + trip.getDestination());
-        destinationLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
-
-        Label priceLabel = new Label("Prix : " + trip.getPrice() + " DT");
-        priceLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
-
-        // Ajouter les labels à la HBox
-        tripCard.getChildren().addAll(departureLabel, destinationLabel, priceLabel);
-
-        return tripCard;
-
-    }
-
-    private void startImageSlider() {
-        PauseTransition pause = new PauseTransition(Duration.seconds(3));
-        pause.setOnFinished(event -> {
-            sliderIndex = (sliderIndex + 1) % sliderImages.length;
-            sliderImage.setImage(new Image(getClass().getResourceAsStream(sliderImages[sliderIndex])));
-            startImageSlider();
-        });
-        pause.play();
-    }
-
     private void animateReserveButton() {
         ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.3), reserveButton);
         scaleTransition.setFromX(1);
@@ -330,12 +395,27 @@ public class MainController {
         destinationField.setValue(null);
         dateField.setValue(null);
         priceField.clear();
+        clearButton.setVisible(false);
 
         try {
             refreshTripListView(tripService.readList());
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert("Erreur", "Une erreur est survenue lors du chargement des trajets.");
+        }
+    }
+
+    @FXML
+    private void showStats() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdinteech/views/stats.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Mes Statistiques");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -373,4 +453,35 @@ public class MainController {
         infoLabel.setText(infoLabel.getText() + "\n\n" + weatherInfo);
     }
 
-}
+
+    public void toggleTheme(ActionEvent event) {
+        // Basculer entre les thèmes sur le StackPane racine
+        if (rootStack.getStyleClass().contains("dark")) {
+            rootStack.getStyleClass().removeAll("dark");
+            rootStack.getStyleClass().add("light");
+        } else {
+            rootStack.getStyleClass().removeAll("light");
+            rootStack.getStyleClass().add("dark");
+        }
+
+        // Forcer la mise à jour des styles
+        Platform.runLater(() -> {
+            Scene scene = rootStack.getScene();
+            if (scene != null) {
+                scene.getRoot().applyCss();
+                scene.getRoot().layout();
+            }
+        });
+
+    }
+
+
+
+    @FXML
+    private void showChatbot() {
+        openMap("/mdinteech/views/Chat.fxml", "Chatbot");
+    }
+
+
+
+    }

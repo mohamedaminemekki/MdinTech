@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="rootStack" xmlns:fx="http://javafx.com/fxml"
+           fx:controller="mdinteech.controllers.StatsController"
+           stylesheets="@styles.css"
+           style="-fx-background-image: url('images/game.jpg'); -fx-background-size: cover; -fx-background-position: center center;">
+
+    <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-border-color: transparent;">
+        <VBox fx:id="rootContainer" spacing="25" alignment="TOP_CENTER" prefWidth="800" maxWidth="800" style="-fx-padding: 20;">
+            <!-- En-tête -->
+            <HBox alignment="CENTER" spacing="15" styleClass="header">
+                <ImageView fitWidth="40" fitHeight="40">
+                    <image>
+                        <Image url="@/images/logo.png"/>
+                    </image>
+                </ImageView>
+                <Label text="Mes Statistiques" styleClass="header-title"/>
+                <ComboBox fx:id="periodFilterCombo" promptText="Ce mois" styleClass="combo-box"/>
+                <Button fx:id="darkModeToggleButton" styleClass="dark-mode-button">
+                    <graphic>
+                        <ImageView fx:id="modeIcon" fitWidth="20" fitHeight="20">
+                            <image>
+                                <Image url="@/images/sun.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+
+            <!-- Contenu par onglets -->
+            <TabPane styleClass="modern-tab-pane">
+                <!-- Onglet Activité -->
+                <Tab text="Activité" closable="false">
+                    <graphic>
+                        <ImageView fitWidth="20" fitHeight="20">
+                            <image>
+                                <Image url="@/images/activity.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                    <ScrollPane fitToWidth="true">
+                        <VBox spacing="20" style="-fx-padding: 25;">
+                            <!-- Carte Activité Globale -->
+                            <VBox styleClass="stats-card" spacing="10">
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <ImageView fitWidth="30" fitHeight="30">
+                                        <image>
+                                            <Image url="@/images/activity.png"/>
+                                        </image>
+                                    </ImageView>
+                                    <Label text="Activité Globale" styleClass="section-title"/>
+                                </HBox>
+                                <HBox styleClass="stat-item" spacing="10" alignment="CENTER_LEFT">
+                                    <ImageView fitWidth="20" fitHeight="20">
+                                        <image>
+                                            <Image url="@/images/points.png"/>
+                                        </image>
+                                    </ImageView>
+                                    <Label text="Points de Fidélité :" styleClass="stats-text"/>
+                                    <Label fx:id="loyaltyPointsLabel" styleClass="stats-value"/>
+                                </HBox>
+                                <VBox spacing="8">
+                                    <HBox styleClass="stat-item" spacing="10" alignment="CENTER_LEFT">
+                                        <ImageView fitWidth="20" fitHeight="20">
+                                            <image>
+                                                <Image url="@/images/trip.png"/>
+                                            </image>
+                                        </ImageView>
+                                        <Label text="Trajets Effectués :" styleClass="stats-text"/>
+                                        <Label fx:id="tripsCountLabel" styleClass="stats-value"/>
+                                    </HBox>
+                                    <HBox styleClass="stat-item" spacing="10" alignment="CENTER_LEFT">
+                                        <ImageView fitWidth="20" fitHeight="20">
+                                            <image>
+                                                <Image url="@/images/transport1.png"/>
+                                            </image>
+                                        </ImageView>
+                                        <Label text="Transport Favori :" styleClass="stats-text"/>
+                                        <Label fx:id="favoriteTransportLabel" styleClass="stats-value"/>
+                                    </HBox>
+                                    <VBox fx:id="transportDistributionBox" spacing="3"/>
+                                    <HBox styleClass="stat-item" spacing="10" alignment="CENTER_LEFT">
+                                        <ImageView fitWidth="20" fitHeight="20">
+                                            <image>
+                                                <Image url="@/images/badges/distance_100.png"/>
+                                            </image>
+                                        </ImageView>
+                                        <Label text="Distance Totale :" styleClass="stats-text"/>
+                                        <Label fx:id="totalDistanceLabel" styleClass="stats-value"/>
+                                    </HBox>
+                                    <HBox styleClass="stat-item" spacing="10" alignment="CENTER_LEFT">
+                                        <ImageView fitWidth="20" fitHeight="20">
+                                            <image>
+                                                <Image url="@/images/eco_mover.png"/>
+                                            </image>
+                                        </ImageView>
+                                        <Label text="CO₂ Économisé :" styleClass="stats-text"/>
+                                        <Label fx:id="co2SavedLabel" styleClass="stats-value"/>
+                                    </HBox>
+                                </VBox>
+                            </VBox>
+
+                            <!-- Carte Graphique Activité Mensuelle -->
+                            <VBox styleClass="stats-card" spacing="10">
+                                <LineChart fx:id="monthlyActivityChart" animated="true">
+                                    <xAxis>
+                                        <CategoryAxis label="Mois"/>
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis label="Trajets"/>
+                                    </yAxis>
+                                </LineChart>
+                            </VBox>
+
+                            <!-- Onglet Série Actuelle -->
+                            <VBox styleClass="stats-card" spacing="10">
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <ImageView fitWidth="30" fitHeight="30">
+                                        <image>
+                                            <Image url="@/images/streak.png"/>
+                                        </image>
+                                    </ImageView>
+                                    <Label text="Série Actuelle" styleClass="section-title"/>
+                                </HBox>
+                                <HBox alignment="CENTER" spacing="15">
+                                    <Label fx:id="currentStreakLabel" styleClass="streak-counter"/>
+                                    <ProgressBar progress="0.7" styleClass="streak-progress"/>
+                                </HBox>
+                            </VBox>
+
+                            <!-- Carte Répartition des Transports -->
+                            <VBox styleClass="stats-card" spacing="10">
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <ImageView fitWidth="30" fitHeight="30">
+                                        <image>
+                                            <Image url="@/images/transport1.png"/>
+                                        </image>
+                                    </ImageView>
+                                    <Label text="Répartition des Transports" styleClass="section-title"/>
+                                </HBox>
+                                <PieChart fx:id="transportPieChart"/>
+                            </VBox>
+                        </VBox>
+                    </ScrollPane>
+                </Tab>
+
+                <!-- Onglet Badges -->
+                <Tab text="Badges" closable="false">
+                    <graphic>
+                        <ImageView fitWidth="20" fitHeight="20">
+                            <image>
+                                <Image url="@/images/badge.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                    <ScrollPane fitToWidth="true">
+                        <VBox spacing="20" style="-fx-padding: 25;">
+                            <VBox styleClass="stats-card" spacing="15">
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <ImageView fitWidth="30" fitHeight="30">
+                                        <image>
+                                            <Image url="@/images/badge.png"/>
+                                        </image>
+                                    </ImageView>
+                                    <Label text="Badges Obtenus" styleClass="section-title"/>
+                                </HBox>
+                                <FlowPane fx:id="badgesContainer" hgap="15" vgap="15"/>
+                            </VBox>
+                        </VBox>
+                    </ScrollPane>
+                </Tab>
+
+                <!-- Onglet Défis -->
+                <Tab text="Défis" closable="false">
+                    <graphic>
+                        <ImageView fitWidth="20" fitHeight="20">
+                            <image>
+                                <Image url="@/images/challenges.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                    <ScrollPane fitToWidth="true">
+                        <VBox spacing="20" style="-fx-padding: 25;">
+                            <!-- Titre et explication pour les défis -->
+                            <VBox styleClass="stats-card" spacing="10">
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <ImageView fitWidth="30" fitHeight="30">
+                                        <image>
+                                            <Image url="@/images/challenges.png"/>
+                                        </image>
+                                    </ImageView>
+                                    <Label text="Défis en Cours" styleClass="section-title"/>
+                                </HBox>
+                                <Label text="Relevez ces défis pour gagner des points et débloquer des récompenses. Votre progression est affichée ci-dessous."
+                                       style="-fx-font-size: 14px; -fx-text-fill: #2d3436; -fx-wrap-text: true;"/>
+                                <VBox fx:id="challengesContainer" spacing="10"/>
+                            </VBox>
+                        </VBox>
+                    </ScrollPane>
+                </Tab>
+
+                <!-- Onglet Jardin (Jardin de progression et impact environnemental) -->
+                <Tab text="Jardin" closable="false">
+                    <graphic>
+                        <ImageView fitWidth="20" fitHeight="20">
+                            <image>
+                                <Image url="@/images/garden.jpg"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                    <ScrollPane fitToWidth="true">
+                        <VBox spacing="20" style="-fx-padding: 25;">
+                            <!-- Titre et description pour le jardin -->
+                            <Label text="Mon Jardin Virtuel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2d3436;"/>
+                            <Label text="Chaque trajet effectué plante un nouvel arbre dans votre jardin. Plus vous voyagez, plus votre forêt grandit et plus vous contribuez à l'environnement !"
+                                   style="-fx-font-size: 14px; -fx-text-fill: #2d3436; -fx-wrap-text: true;"/>
+                            <VBox styleClass="stats-card" spacing="10" alignment="CENTER">
+                                <Label text="Impact Environnemental" styleClass="section-title"/>
+                                <Label fx:id="envImpactLabel" style="-fx-font-size: 16px; -fx-text-fill: #27ae60; -fx-font-weight: bold;"/>
+                            </VBox>
+                            <FlowPane fx:id="gardenContainer" hgap="10" vgap="10" prefWrapLength="300" styleClass="garden-container"/>
+                        </VBox>
+                    </ScrollPane>
+                </Tab>
+            </TabPane>
+        </VBox>
+    </ScrollPane>
+</StackPane>

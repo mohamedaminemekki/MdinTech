@@ -15,7 +15,6 @@ import mdinteech.utils.DatabaseConnection;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
@@ -35,7 +34,6 @@ public class ReservationSummaryController {
     public ReservationSummaryController() {
         try {
             Connection connection = DatabaseConnection.getInstance().getConnection();
-
             reservationService = new ReservationService(connection);
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,7 +68,6 @@ public class ReservationSummaryController {
 
             ReservationDetailsController controller = loader.getController();
 
-
             Trip currentTrip = new Trip(
                     reservation.getTripId(),
                     reservation.getTransportId(),
@@ -82,10 +79,7 @@ public class ReservationSummaryController {
                     selectedTransportName
             );
 
-
             controller.setTripDetails(currentTrip);
-
-
             controller.setPassengerSpinnerValue(reservation.getSeatNumber());
             controller.setSeatTypeComboBoxValue(reservation.getSeatType());
 
@@ -93,7 +87,6 @@ public class ReservationSummaryController {
             stage.setTitle("Modifier la Réservation");
             stage.setScene(new Scene(root));
             stage.show();
-
 
             Stage currentStage = (Stage) reservationDetailsLabel.getScene().getWindow();
             currentStage.close();
@@ -106,27 +99,23 @@ public class ReservationSummaryController {
     private void handleConfirm() {
         try {
             if (reservation.getPaymentStatus().equals("Pending")) {
-
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdinteech/views/PaymentPage.fxml"));
                 Parent root = loader.load();
 
-
                 PaymentController paymentController = loader.getController();
                 paymentController.setReservation(reservation);
-                paymentController.setTotalPrice(selectedTripPrice); // Transmettre le prix total
+                paymentController.setTotalPrice(selectedTripPrice);
 
                 Stage stage = new Stage();
                 stage.setTitle("Paiement");
                 stage.setScene(new Scene(root));
                 stage.show();
 
-
                 Stage currentStage = (Stage) reservationDetailsLabel.getScene().getWindow();
                 currentStage.close();
             } else {
-
                 if (!reservationService.isReservationExists(reservation.getTripId(), reservation.getUserId())) {
-                    reservation.setStatus("Pending"); // Statut "Pending" si le paiement n'est pas effectué
+                    reservation.setStatus("Pending"); // Statut mis à "Pending" si la réservation est créée mais non payée
                     reservationService.add(reservation);
                     showConfirmationMessage();
                 } else {
@@ -142,6 +131,7 @@ public class ReservationSummaryController {
             alert.showAndWait();
         }
     }
+
     private void showConfirmationMessage() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Confirmation de Réservation");
