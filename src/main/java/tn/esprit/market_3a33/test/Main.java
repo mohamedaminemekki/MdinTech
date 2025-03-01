@@ -16,7 +16,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         // Simulate a CIN (you can get this from a login screen or other input)
-        int CIN = 87654321; // Replace with actual CIN from your application logic
+        int CIN = 12345678; // Replace with actual CIN from your application logic
 
         // Fetch user role using UserService
         UserService userService = new UserService();

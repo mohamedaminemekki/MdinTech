@@ -9,8 +9,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tn.esprit.market_3a33.entities.Product;
+import tn.esprit.market_3a33.services.NotificationService;
 import tn.esprit.market_3a33.utils.MyDatabase;
 
 import java.sql.Connection;
@@ -21,13 +23,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainController {
-
+    private int userCIN = 87654321; // Store the CIN of the logged-in user
     @FXML
     private FlowPane productContainer;
     @FXML
     private ListView<String> cartListView;  // Main page cart view (displays text details)
     @FXML
     private Label totalPriceLabel;
+    @FXML
+    private ListView<String> notificationListView;
+    @FXML
+    private VBox notificationBox; // Reference to the notification VBox
+    @FXML
+    private ScrollPane mainScrollPane; // Reference to the main ScrollPane
+
+    @FXML
+    private void toggleNotifications() {
+        // Toggle visibility of the notification section
+        boolean isVisible = notificationBox.isVisible();
+        notificationBox.setVisible(!isVisible);
+        notificationBox.setManaged(!isVisible);
+
+        // Scroll to the top if notifications are made visible
+        if (!isVisible) {
+            mainScrollPane.setVvalue(0);
+        }
+    }
 
     private List<Product> products = new ArrayList<>();
     private double totalPrice = 0.0;
@@ -35,8 +56,130 @@ public class MainController {
 
     @FXML
     public void initialize() {
+        // Check for confirmed orders for the logged-in user
+        checkForConfirmedOrders();
+
+        // Load products and display them
         loadProductsFromDatabase();
         displayProducts();
+    }
+
+    private void checkForConfirmedOrders() {
+        // Query to fetch confirmed orders for the logged-in user
+        String query = "SELECT id FROM orders WHERE userId = ? AND status = 'Confirmed'";
+        try (Connection conn = MyDatabase.getCon();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, userCIN);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                int orderId = rs.getInt("id");
+
+                // Calculate the total price for this order by summing up the priceTotal of all orderItems
+                double totalPrice = calculateTotalPriceForOrder(orderId);
+
+                // Add a notification for each confirmed order
+                String notification = "Order #" + orderId + " has been confirmed. Total: " + String.format("%.2f dt", totalPrice);
+                receiveNotification(notification);
+
+                // Show a notification alert
+                NotificationService.showNotification(notification);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private double calculateTotalPriceForOrder(int orderId) {
+        String query = "SELECT SUM(priceTotal) AS totalPrice FROM orderItems WHERE orderId = ?";
+        try (Connection conn = MyDatabase.getCon();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, orderId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getDouble("totalPrice"); // Return the sum of priceTotal for the order
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0; // Return 0 if no orderItems are found or an error occurs
+    }
+
+    /**
+     * Adds a notification to the notification list.
+     *
+     * @param message The notification message.
+     */
+    public void receiveNotification(String message) {
+        // Ensure the notificationListView is initialized
+        if (notificationListView != null) {
+            notificationListView.getItems().add(message);
+        }
+    }
+
+    @FXML
+    private void handleNotificationClick() {
+        String selectedNotification = notificationListView.getSelectionModel().getSelectedItem();
+        if (selectedNotification != null) {
+            showOrderDetailsModal(selectedNotification);
+        }
+    }
+
+    /**
+     * Displays a modal with order details.
+     *
+     * @param notification The notification message.
+     */
+    private void showOrderDetailsModal(String notification) {
+        try {
+            // Extract the orderId from the notification message
+            int orderId = extractOrderIdFromNotification(notification);
+
+            // Load the modal FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/tn/esprit/market_3a33/orderDetailsModal.fxml"));
+            Parent root = loader.load();
+
+            // Pass the notification message and orderId to the modal controller
+            OrderDetailsModalController modalController = loader.getController();
+            modalController.setNotification(notification);
+            modalController.setOrderId(orderId);
+
+            // Create and show the modal
+            Stage stage = new Stage();
+            stage.setTitle("Order Details");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL); // Make the modal block other windows
+
+            // Refresh notifications after the modal is closed
+            stage.setOnHidden(event -> refreshNotifications());
+
+            stage.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int extractOrderIdFromNotification(String notification) {
+        // Assuming the notification message is in the format: "Order #123 has been confirmed. Total: 100.00 dt"
+        String[] parts = notification.split(" ");
+        if (parts.length > 1) {
+            String orderIdStr = parts[1].replace("#", "");
+            return Integer.parseInt(orderIdStr);
+        }
+        return -1; // Return -1 if the orderId cannot be extracted
+    }
+
+    private void refreshNotifications() {
+        // Clear the current notifications
+        notificationListView.getItems().clear();
+
+        // Re-fetch confirmed orders and update the notification list
+        checkForConfirmedOrders();
     }
 
     private void loadProductsFromDatabase() {

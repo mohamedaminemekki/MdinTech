@@ -5,8 +5,22 @@
 <?import javafx.geometry.Insets?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" stylesheets="@styles.css" fx:controller="tn.esprit.market_3a33.Controllers.MainController">
+    <top>
+        <VBox>
+            <MenuBar>
+                <Menu text="Menu">
+                    <MenuItem text="Notifications" onAction="#toggleNotifications"/>
+                </Menu>
+            </MenuBar>
+            <!-- Notification Section (initially hidden) -->
+            <VBox fx:id="notificationBox" styleClass="notification-pane" spacing="10" prefWidth="300" visible="false" managed="false">
+                <Label text="Notifications" styleClass="notification-title"/>
+                <ListView fx:id="notificationListView" styleClass="notification-list" onMouseClicked="#handleNotificationClick"/>
+            </VBox>
+        </VBox>
+    </top>
     <center>
-        <ScrollPane fitToWidth="true">
+        <ScrollPane fx:id="mainScrollPane" fitToWidth="true">
             <content>
                 <VBox spacing="30" alignment="center" styleClass="background">
                     <Label text="Welcome to Mdintech's Market" styleClass="title"/>
@@ -17,13 +31,12 @@
             </content>
         </ScrollPane>
     </center>
-
-    <right>
+    <left>
         <VBox styleClass="cart-sidebar" spacing="10" prefWidth="300">
             <Label text="Your Cart" styleClass="cart-title"/>
             <ListView fx:id="cartListView" styleClass="cart-list"/>
             <Label fx:id="totalPriceLabel" text="Total: 0.00dt" styleClass="total-price"/>
             <Button text="Confirm Order" styleClass="confirm-button" onAction="#confirmOrder"/>
         </VBox>
-    </right>
+    </left>
 </BorderPane>

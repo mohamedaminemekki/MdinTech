@@ -131,28 +131,97 @@
     -fx-scale-y: 1.05;
 }
 
-/* Quantity Spinner */
-.quantity-spinner {
-    -fx-font-size: 16px;
+/* Notification Pane */
+.notification-pane {
     -fx-background-color: #ffffff;
-    -fx-border-color: #0288d1;
-    -fx-border-radius: 5px;
-    -fx-padding: 5px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 10, 0, 0, 0);
 }
 
-.quantity-spinner .increment-arrow-button,
-.quantity-spinner .decrement-arrow-button {
-    -fx-background-color: #0288d1;
+.notification-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e3c72;
+    -fx-padding: 5px;
+    -fx-background-color: #f0f7ff;
+    -fx-border-radius: 5px;
     -fx-background-radius: 5px;
 }
 
-.quantity-spinner .increment-arrow,
-.quantity-spinner .decrement-arrow {
-    -fx-background-color: white;
+.notification-list {
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 0);
 }
 
-.quantity-spinner .text-field {
-    -fx-alignment: center;
+.notification-list .list-cell {
+    -fx-padding: 10px;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-margin: 5px;
+}
+
+.notification-list .list-cell:filled:hover {
+    -fx-background-color: #f0f7ff;
+    -fx-cursor: hand;
+}
+
+.notification-list .list-cell:filled:selected {
+    -fx-background-color: #0288d1;
+    -fx-text-fill: white;
+}
+
+/* Modal Styles */
+.modal-title {
+    -fx-font-size: 20px;
     -fx-font-weight: bold;
     -fx-text-fill: #1e3c72;
+}
+
+.modal-text {
+    -fx-font-size: 16px;
+    -fx-text-fill: #0288d1;
+}
+
+.modal-button {
+    -fx-background-color: #4caf50;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+}
+
+.modal-button:hover {
+    -fx-background-color: #388e3c;
+}
+
+/* Discount Label */
+.discount-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-background-color: #e74c3c;
+    -fx-padding: 5px 10px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
+}
+
+/* Highlight Discounted Products */
+.product-card:hover {
+    -fx-background-color: #f0f7ff;
+    -fx-scale-x: 1.07;
+    -fx-scale-y: 1.07;
+}
+
+.product-card {
+    -fx-transition: all 0.3s ease-in-out;
 }

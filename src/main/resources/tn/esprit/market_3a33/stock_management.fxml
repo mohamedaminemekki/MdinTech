@@ -31,9 +31,9 @@
         <Label text="Add Stock:" styleClass="input-label" />
         <TextField fx:id="stockInput" promptText="Enter quantity" prefWidth="150" styleClass="text-field" />
         <Button text="Add Stock" onAction="#handleAddStock" styleClass="action-button" />
+        <Button text="Refresh" onAction="#handleRefresh" styleClass="action-button" />
     </HBox>
 
-    <!-- Invoice Section -->
     <!-- Invoice Section -->
     <VBox spacing="10" styleClass="invoice-section">
         <Label text="Invoice" styleClass="section-title" />

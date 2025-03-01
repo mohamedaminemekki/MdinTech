@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="tn.esprit.market_3a33.Controllers.CartController">
+<VBox xmlns:fx="http://javafx.com/fxml/1" stylesheets="@cart.css" fx:controller="tn.esprit.market_3a33.Controllers.CartController" spacing="10">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
     <Label text="Your Cart" styleClass="cart-title"/>
-    <TableView fx:id="cartTable">
-        <columns>
-            <TableColumn fx:id="nameColumn" text="Product Name"/>
-            <TableColumn fx:id="priceColumn" text="Price"/>
-        </columns>
-    </TableView>
+    <ListView fx:id="cartListView" styleClass="cart-list"/>
+    <Label fx:id="totalPriceLabel" text="Total: 0.00 dt" styleClass="total-price"/>
     <HBox spacing="10">
-        <Button fx:id="payButton" text="Pay" onAction="#handlePayOrder"/>
-        <Button fx:id="deleteButton" text="Delete" onAction="#handleDeleteOrder"/>
+        <Button text="Delete" fx:id="deleteButton" onAction="#handleDeleteOrder" styleClass="delete-button"/>
+        <Button text="Confirm" fx:id="payButton" onAction="#handleConfirmOrder" styleClass="pay-button"/>
     </HBox>
 </VBox>

@@ -8,6 +8,8 @@ module tn.esprit.market_3a33 {
     requires layout;
     requires com.zaxxer.hikari;
     requires java.sql;
+    requires java.persistence;
+    requires stripe.java;
 
     exports tn.esprit.market_3a33.test;
     opens tn.esprit.market_3a33.test to javafx.graphics, javafx.fxml;
