@@ -271,5 +271,56 @@
             return users;
         }
 
+        public boolean doesEmailExist(String email) {
+            String query = "SELECT * FROM users WHERE Email=?";
+            try (Connection conn = dbConnection.getInstance().getConn();
+                 PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, email);
+                ResultSet rs = stmt.executeQuery();
+                return rs.next();
+            }catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
 
+        public void updatePassword(String email , String newPassword) {
+            String query = "UPDATE users SET Password=? WHERE Email=?";
+            try (Connection conn = dbConnection.getInstance().getConn();
+                 PreparedStatement stmt = conn.prepareStatement(query)) {
+                String hashedpassword=PasswordVerification.hashPassword(newPassword);
+                stmt.setString(1, hashedpassword);
+                stmt.setString(2, email);
+                stmt.executeUpdate();
+            }catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public User findByEmail(String email) {
+            String query = "SELECT * FROM users WHERE email=?";
+            try (Connection conn = dbConnection.getInstance().getConn();PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, email);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    return new User(
+                            rs.getString("Name"),
+                            rs.getInt("CIN"),
+                            rs.getString("Email"),
+                            rs.getString("Password"),
+                            UserRole.valueOf(rs.getString("Role")),
+                            rs.getString("Phone"),
+                            rs.getString("Address"),
+                            rs.getString("City"),
+                            rs.getString("State"),
+                            rs.getBoolean("status"),
+                            rs.getString("pathtopic"),
+                            rs.getDate("birthday")
+                    );
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }

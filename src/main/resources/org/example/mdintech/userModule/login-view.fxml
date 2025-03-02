@@ -23,5 +23,7 @@
       </VBox>
       <Button fx:id="loginButton" layoutX="190.0" layoutY="250.0" mnemonicParsing="false" onAction="#login" text="Login" prefWidth="100.0" />
       <Hyperlink layoutX="170.0" layoutY="300.0" onAction="#gotoSignIn" text="Create account ?" />
+      <Hyperlink layoutX="180.0" layoutY="330.0" onAction="#forgotPassword" text="Forgot Password?" />
+
    </children>
 </AnchorPane>

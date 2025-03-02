@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.mdintech.Controller.VerificationController">
+    <children>
+        <Label layoutX="130.0" layoutY="40.0" text="Enter Verification Code" />
+        <TextField fx:id="codeField" layoutX="100.0" layoutY="100.0" prefWidth="200.0" />
+        <Button layoutX="150.0" layoutY="160.0" onAction="#verifyCode" text="Verify" />
+    </children>
+</AnchorPane>
