@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Label?>
+
+
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.layout.HBox?>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.RendezVousController" spacing="10" style="-fx-padding: 20;">
+
+    <!-- Titre de la page -->
+    <Text text="Prendre un Rendez-vous" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+
+
+    <!-- Sélection de la salle -->
+    <Label text="Sélectionner la salle" />
+    <ComboBox fx:id="salleComboBox" prefWidth="200" />
+
+    <!-- Sélection de la date -->
+    <Label text="Choisir la date du rendez-vous" />
+    <DatePicker fx:id="datePicker" prefWidth="200" />
+
+    <!-- Champ de texte pour l'heure -->
+    <Label text="Choisir l'heure du rendez-vous" />
+    <HBox spacing="10">
+        <Spinner fx:id="heureSpinner" prefWidth="80" />
+        <Label text=":" />
+        <Spinner fx:id="minuteSpinner" prefWidth="80" />
+    </HBox>
+
+    <!-- Bouton pour confirmer le rendez-vous -->
+    <Button fx:id="confirmButton" text="Confirmer le rendez-vous" onAction="#handleConfirmRendezVous" />
+
+</VBox>

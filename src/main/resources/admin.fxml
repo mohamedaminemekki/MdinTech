@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Pos?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.AdminController"
+            prefWidth="900" prefHeight="600"
+            stylesheets="@styles.css">
+
+    <!-- Barre de navigation à gauche -->
+    <left>
+        <VBox prefHeight="600" prefWidth="200" spacing="15" style="-fx-background-color: #2C3E50; -fx-padding: 20;">
+            <Button text="📦 Transport" style="-fx-background-color: #2C3E50; -fx-text-fill: white;"/>
+            <Button text="🧾 Factures" style="-fx-background-color: #2C3E50; -fx-text-fill: white;"/>
+            <Button text="👤 User" style="-fx-background-color: #2C3E50; -fx-text-fill: white;"/>
+            <Button text="🛒 Market" style="-fx-background-color: #2C3E50; -fx-text-fill: white;"/>
+            <Button text="🚗 Parking" style="-fx-background-color: #2C3E50; -fx-text-fill: white;"/>
+            <Button text="⚠️ Réclamation" style="-fx-background-color: #2C3E50; -fx-text-fill: white;"/>
+        </VBox>
+    </left>
+
+    <!-- Contenu principal -->
+    <center>
+        <VBox prefHeight="600" prefWidth="700" spacing="20" style="-fx-padding: 30;">
+            <Label text="🛠️ Interface Admin"
+                   style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #34495E;"/>
+
+            <ListView fx:id="serviceListView" prefWidth="800" prefHeight="650"
+                      style="-fx-background-color: #ECF0F1; -fx-border-color: #BDC3C7;"/>
+
+            <!-- Utilisation de HBox pour centrer les boutons -->
+            <HBox spacing="20" alignment="CENTER" style="-fx-padding: 20;">
+                <Button fx:id="addServiceButton" text="➕ Ajouter Service"
+                        style="-fx-background-color: #27AE60; -fx-text-fill: white; -fx-font-size: 14px;"/>
+                <Button fx:id="doctorListButton" text="👨‍⚕️ Liste Médecins"
+                        style="-fx-background-color: #2980B9; -fx-text-fill: white; -fx-font-size: 14px;"/>
+                <Button fx:id="appointmentListButton" text="📅 Liste Rendez-vous"
+                        style="-fx-background-color: #E67E22; -fx-text-fill: white; -fx-font-size: 14px;"/>
+                <Button fx:id="statsButton" text="📊 Statistique des rendez-vous"
+                        style="-fx-background-color: #8E44AD; -fx-text-fill: white; -fx-font-size: 14px;"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

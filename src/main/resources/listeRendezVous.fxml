@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.ListeRendezVousController"
+            prefWidth="900" prefHeight="600"
+            stylesheets="@styles.css">
+
+    <!-- Barre de navigation à gauche (sans les boutons) -->
+    <left>
+        <VBox prefHeight="600" prefWidth="200" spacing="15" style="-fx-background-color: #2C3E50; -fx-padding: 20;">
+            <!-- Navbar vide sans les boutons -->
+        </VBox>
+    </left>
+
+    <!-- Contenu principal -->
+    <center>
+        <VBox prefHeight="600" prefWidth="700" spacing="20" style="-fx-padding: 30;">
+            <Label text="Liste des Rendez-vous"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #34495E;"/>
+
+            <!-- Liste des Rendez-vous -->
+            <ListView fx:id="rendezVousListView" prefWidth="800" prefHeight="650"
+                      style="-fx-background-color: #ECF0F1; -fx-border-color: #BDC3C7;"/>
+
+            <!-- Boutons principaux centrés -->
+            <HBox spacing="20" alignment="CENTER">
+                <Button fx:id="addRendezVousButton" text="Ajouter Rendez-vous" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                <Button fx:id="backButton" text="Retour" style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>
