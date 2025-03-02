@@ -22,6 +22,9 @@
          </padding>
       </VBox>
       <Button fx:id="loginButton" layoutX="190.0" layoutY="250.0" mnemonicParsing="false" onAction="#login" text="Login" prefWidth="100.0" />
+      <Button fx:id="googleLoginButton" layoutX="170.0" layoutY="290.0" mnemonicParsing="false"
+              onAction="#handleGoogleLogin" text="Login with Google" prefWidth="130.0"
+              style="-fx-background-color: #db4a39; -fx-text-fill: white; -fx-font-weight: bold;"/>
       <Hyperlink layoutX="170.0" layoutY="300.0" onAction="#gotoSignIn" text="Create account ?" />
       <Hyperlink layoutX="180.0" layoutY="330.0" onAction="#forgotPassword" text="Forgot Password?" />
 

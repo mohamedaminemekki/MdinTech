@@ -18,6 +18,7 @@ import org.example.mdintech.Singleton.loggedInUser;
 import org.example.mdintech.entities.User;
 import org.example.mdintech.service.NotificationModule.mailNotificationService;
 import org.example.mdintech.service.userService;
+import org.example.mdintech.utils.GoogleCallbackServer;
 import org.example.mdintech.utils.UserRole;
 import org.example.mdintech.utils.VerificationCodeStorage;
 
@@ -156,6 +157,26 @@ public class loginController {
         Random random = new Random();
         int code = 100000 + random.nextInt(900000); // Ensures a 6-digit number
         return String.valueOf(code);
+    }
+    @FXML
+    private void handleGoogleLogin(ActionEvent event) {
+        try {
+            GoogleCallbackServer.startServer(); // Start local server
+
+            GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+                    new NetHttpTransport(),
+                    GsonFactory.getDefaultInstance(),
+                    CLIENT_ID,
+                    CLIENT_SECRET,
+                    SCOPES
+            ).setAccessType("offline").build();
+
+            String authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build();
+            java.awt.Desktop.getDesktop().browse(new java.net.URI(authorizationUrl));
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Login Error", "Failed to initiate Google login.");
+        }
     }
 //    @FXML
 //    private void handleGoogleLogin(ActionEvent event) {

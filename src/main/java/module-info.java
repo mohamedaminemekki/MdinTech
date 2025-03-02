@@ -11,6 +11,9 @@ module org.example.mdintech {
     requires com.google.api.client.auth;
 
     requires javafx.controls;
+    requires java.desktop;
+    requires org.apache.httpcomponents.httpcore;
+    requires jdk.httpserver;
     // requires javafx.web;
 
     // Open the Controller package to javafx.fxml for reflection
