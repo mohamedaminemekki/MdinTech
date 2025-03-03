@@ -208,7 +208,7 @@ public class UserController {
 
     // Methods called by the drawer buttons:
     @FXML
-    private void showUnpaid() {
+    void showUnpaid() {
         pageTitle.setText("Mes Factures à Payer");
         unpaidList.setVisible(true);
         unpaidList.setManaged(true);
@@ -217,7 +217,7 @@ public class UserController {
     }
 
     @FXML
-    private void showPaid() {
+    void showPaid() {
         pageTitle.setText("Historique des Paiements");
         unpaidList.setVisible(false);
         unpaidList.setManaged(false);

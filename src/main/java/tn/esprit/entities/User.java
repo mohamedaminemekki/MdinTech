@@ -7,7 +7,9 @@ public class User {
     private String email;
     private String password;
     private String role;
-    private String avatarUrl; // Ajouter ce champ
+    private String avatarUrl;
+
+// Ajouter ce champ
 
     // Ajouter le getter/setter
     public String getAvatarUrl() {
@@ -26,6 +28,7 @@ public class User {
         this.password = password;
         this.role = role;
     }
+    public User() {}
 
     // Getters & Setters
     public String getCin() { return cin; }
@@ -37,4 +40,6 @@ public class User {
 
     public void setPassword(String password) { this.password = password; }
     public void setEmail(String email) { this.email = email; }
+    public void setCin(String cin) { this.cin = cin; }
+    public void setNom(String nom) { this.nom = nom; }
 }

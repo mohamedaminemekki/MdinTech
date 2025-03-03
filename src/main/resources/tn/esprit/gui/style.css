@@ -1,217 +1,438 @@
-/* Style des boutons icônes */
-.icon-btn {
-    -fx-background-color: transparent;
-    -fx-padding: 5px;
+/* ============================= */
+/*         Global Styles         */
+/* ============================= */
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: #f5f7fa;  /* Fond très clair */
 }
 
-.icon-btn:hover {
-    -fx-background-color: #eeeeee;
-    -fx-cursor: hand;
+/* Palette de Couleurs */
+.root {
+    -primary-color: #2c3e50;       /* Bleu foncé élégant */
+    -secondary-color: #2980b9;     /* Bleu vif */
+    -accent-color: #27ae60;        /* Vert accent */
+    -danger-color: #e74c3c;        /* Rouge */
+    -light-background: #ffffff;    /* Blanc pur */
 }
 
-/* Style du tableau */
-.table-view {
-    -fx-background-color: white;
-    -fx-border-radius: 5px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
+/* ============================= */
+/*      Menu de Navigation       */
+/* ============================= */
+.drawer {
+    -fx-background-color: -primary-color;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
 }
-
-.table-row-cell:even {
-    -fx-background-color: #f8f9fa;
-}
-
-.column-header {
+.drawer-title {
     -fx-text-fill: white;
+    -fx-font-size: 24px;
     -fx-font-weight: bold;
 }
-/* styles.css */
-.list-cell {
-    -fx-padding: 10px;
-    -fx-background-color: #ffffff;
+.nav-btn graphic {
+    -fx-fit-height: 20px;
+    -fx-fit-width: 20px;
+    -fx-padding: 0 8px 0 0;
 }
-
-.list-cell:even {
-    -fx-background-color: #f8f9fa;
-}
-
-.list-cell:filled:hover {
-    -fx-background-color: #e9ecef;
-}
-
-.grid-header {
-    -fx-background-color: #3f51b5;
-    -fx-padding: 10px;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-}
-.icon-btn {
-    -fx-background-color: transparent;
-    -fx-text-fill: white;
+.nav-button {
+    -fx-text-fill: #bdc3c7;
     -fx-font-size: 14px;
-    -fx-alignment: CENTER_LEFT;
-    -fx-padding: 10 15;
-    -fx-border-radius: 4px;
-}
-
-.icon-btn:hover {
-    -fx-background-color: rgba(255,255,255,0.1);
-}
-
-.icon-btn SVGPath {
-    -fx-fill: white;
-    -fx-scale-x: 0.8;
-    -fx-scale-y: 0.8;
-    -fx-padding: 0 10 0 0;
-}
-.icon-btn {
-    -fx-background-color: transparent;
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-alignment: CENTER_LEFT;
-    -fx-padding: 10 15;
-    -fx-border-radius: 4px;
+    -fx-padding: 12px 20px;
     -fx-cursor: hand;
 }
-
-.icon-btn:hover {
-    -fx-background-color: rgba(255,255,255,0.1);
+.nav-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10px 15px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-cursor: hand;
 }
-
-.icon-btn {
+.nav-button:hover, .icon-btn:hover {
     -fx-background-color: rgba(255,255,255,0.2);
 }
+.nav-button.active {
+    -fx-background-color: -secondary-color;
+    -fx-text-fill: white;
+}
 
-.list-cell {
+/* ============================= */
+/*       Barre de Recherche      */
+/* ============================= */
+.search-field {
+    -fx-background-radius: 25;
+    -fx-padding: 10px;
+    -fx-pref-width: 220px;
+    -fx-border-color: -secondary-color;
+    -fx-border-radius: 25;
+}
+.search-btn {
+    -fx-background-color: -secondary-color;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 25;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+}
+
+/* ============================= */
+/*      Création de Post         */
+/* ============================= */
+.create-post-box {
+    -fx-background-color: -light-background;
+    -fx-background-radius: 10;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+    -fx-max-width: 650px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 3);
+}
+.rounded-textfield {
+    -fx-background-radius: 25;
+    -fx-padding: 10px;
+    -fx-pref-width: 420px;
+}
+.post-content-area {
+    -fx-background-color: #ecf0f1;
+    -fx-background-radius: 10;
+    -fx-padding: 10px;
+    -fx-wrap-text: true;
+}
+.generate-btn, .secondary-btn {
+    -fx-background-color: #bdc3c7;
+    -fx-text-fill: -primary-color;
+    -fx-background-radius: 25;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+}
+.publish-btn {
+    -fx-background-color: -secondary-color;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 25;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+}
+.rounded-combo {
+    -fx-background-radius: 25;
+}
+
+/* ============================= */
+/*     Titres et Sections        */
+/* ============================= */
+.section-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-color;
+    -fx-padding: 10px 0;
+}
+
+/* ============================= */
+/*       Conteneur Principal     */
+/* ============================= */
+#feedContainer, #postsContainer {
+    -fx-background-color: transparent;
+    -fx-padding: 20px;
+    -fx-alignment: center;
+}
+
+/* ============================= */
+/*          Post Card            */
+/* ============================= */
+.post-card {
+    -fx-background-color: linear-gradient(to bottom, -light-background, #e0eafc);
+    -fx-background-radius: 10;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+    -fx-max-width: 600px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 4);
+    -fx-alignment: center;
+}
+.post-card:hover {
+    -fx-background-color: #fdfdfd !important;
+    -fx-cursor: hand;
+}
+
+/* ----------------------------- */
+/*        En-tête de Post        */
+/* ----------------------------- */
+.header {
+    -fx-alignment: center-left;
+    -fx-spacing: 10px;
+}
+.author-info {
+    -fx-spacing: 5px;
+    -fx-alignment: center-left;
+}
+.author-name {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-color;
+}
+.post-time {
+    -fx-font-size: 12px;
+    -fx-text-fill: #7f8c8d;
+}
+
+/* ----------------------------- */
+/*       Titre et Contenu        */
+/* ----------------------------- */
+.post-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-text-alignment: center;
+}
+.post-content {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-wrap-text: true;
+}
+
+/* ----------------------------- */
+/*    Bouton de Suppression      */
+/* ----------------------------- */
+.delete-btn {
+    -fx-background-color: -danger-color;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-padding: 8px 20px;
+    -fx-cursor: hand;
+}
+
+/* ----------------------------- */
+/*    Boutons d'Interaction      */
+/* ----------------------------- */
+.interaction-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: -primary-color;
+    -fx-font-size: 15px;
+    -fx-cursor: hand;
+}
+.interaction-btn:hover {
+    -fx-text-fill: -secondary-color;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+/* Tooltip */
+.tooltip {
     -fx-background-color: white;
+    -fx-text-fill: -primary-color;
+    -fx-border-color: -secondary-color;
+    -fx-border-width: 1px;
+}
+
+/* ============================= */
+/*   TitledPane pour Commentaires  */
+/* ============================= */
+.titled-pane {
+    -fx-background-color: -light-background;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+.titled-pane > .title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-color;
+}
+.titled-pane > .content {
     -fx-padding: 10px;
 }
 
-.list-cell:odd {
-    -fx-background-color: #f8f9fa;
-}
-
-.list-cell:selected {
-    -fx-background-color: #e3f2fd;
-}
-/* Pour les scrollbars */
-.scroll-pane {
-    -fx-background-color: transparent;
-}
-
-.scroll-bar:horizontal, .scroll-bar:vertical {
-    -fx-background-color: transparent;
-}
-
-.scroll-bar:vertical .track {
-    -fx-background-color: #f0f0f0;
-    -fx-border-color: transparent;
-}
-
-.scroll-bar .thumb {
-    -fx-background-color: #c1c1c1;
-    -fx-background-radius: 5em;
-}
-.post-card {
-    -fx-background-color: white;
-    -fx-background-radius: 15;
-    -fx-padding: 20;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);
-    -fx-border-radius: 15;
-}
-
-.interaction-btn {
-    -fx-background-color: transparent;
-    -fx-text-fill: #606770;
-    -fx-font-size: 14;
-    -fx-cursor: hand;
-}
-
-.interaction-btn:hover {
-    -fx-text-fill: #1877f2;
-    -fx-scale-x: 1.1;
-    -fx-scale-y: 1.1;
-    -fx-cursor: hand;
-}
-
-#feedContainer {
-    -fx-background-color: #f0f2f5;
-    -fx-padding: 20;
-    -fx-alignment: center;
-}
-/* Police générale et fond */
-.root {
-    -fx-font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    -fx-background-color: #f0f2f5;
-}
-
-/* Container principal du post */
-.post-card {
-    -fx-background-color: white;
-    -fx-background-radius: 8;
-    -fx-padding: 15;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);
-    -fx-spacing: 10;
-}
-
-/* Header du post */
-.post-card .header {
-    -fx-alignment: center-left;
-    -fx-spacing: 10;
-}
-
-/* Infos de l'auteur */
-.post-card .author-info {
-    -fx-spacing: 2;
-}
-
-/* Bouton d'options (les 3 points) */
-.options-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: #606770;
-    -fx-font-size: 16;
-    -fx-cursor: hand;
-}
-.options-button:hover {
-    -fx-background-color: #e4e6eb;
-    -fx-background-radius: 50%;
-}
-
-/* Boutons d'interaction (like et commentaire) */
-.interaction-btn {
-    -fx-background-color: transparent;
-    -fx-text-fill: #606770;
-    -fx-font-size: 14;
-    -fx-cursor: hand;
-}
-
-/* Style pour le container de commentaires */
+/* ============================= */
+/*         Commentaires          */
+/* ============================= */
 .comments-container {
-    -fx-spacing: 5;
-    -fx-padding: 5 0 0 0;
+    -fx-spacing: 10px;
+    -fx-padding: 10px;
 }
-
-/* Style pour une carte de commentaire */
 .comment-box {
-    -fx-background-color: #f0f2f5;
-    -fx-background-radius: 8;
-    -fx-padding: 8;
-    -fx-spacing: 5;
+    -fx-background-color: -light-background;
+    -fx-background-radius: 5;
+    -fx-padding: 10px;
+    -fx-spacing: 5px;
+    -fx-border-color: #ecf0f1;
+    -fx-border-width: 1px;
 }
-
-/* Boutons dans les commentaires */
+.comment-box .label {
+    -fx-font-size: 13px;
+}
 .comment-box .button {
     -fx-background-color: transparent;
-    -fx-text-fill: #606770;
-    -fx-font-size: 12;
+    -fx-text-fill: -secondary-color;
+    -fx-font-size: 13px;
     -fx-cursor: hand;
 }
 
-/* Bouton pour publier un post */
-.button-publish {
-    -fx-background-color: #1877f2;
-    -fx-text-fill: white;
+/* ============================= */
+/*         ListView / Table      */
+/* ============================= */
+.modern-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 10px 0;
+}
+.modern-list .scroll-bar:vertical {
+    -fx-pref-width: 12px;
+    -fx-background-color: transparent;
+}
+
+/* ============================= */
+/*          Dialogs              */
+/* ============================= */
+.dialog-pane {
+    -fx-background-color: -light-background;
+    -fx-border-color: #ecf0f1;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+}
+.dialog-pane .button {
+    -fx-pref-width: 120px;
+    -fx-pref-height: 40px;
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-background-radius: 20;
-    -fx-padding: 8 16;
+    -fx-background-radius: 4px;
+}
+.dialog-pane .text-field,
+.dialog-pane .date-picker {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-font-size: 14px;
+}
+
+/* ============================= */
+/*         Autres Styles         */
+/* ============================= */
+.icon-btn, .icon-btn-active {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 15px;
     -fx-cursor: hand;
+}
+.icon-btn-active {
+    -fx-background-color: #34495e;
+}
+.post-card {
+    -fx-background-color: linear-gradient(to bottom, -light-background, #e0eafc);
+    -fx-background-radius: 10px;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+    -fx-max-width: 600px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 4);
+    -fx-alignment: center;
+}
+.post-card:hover {
+    -fx-background-color: #fdfdfd !important;
+    -fx-cursor: hand;
+}
+
+/* En-tête du Post */
+.post-header, .header {
+    -fx-alignment: center-left;
+    -fx-spacing: 10px;
+}
+.author-info {
+    -fx-spacing: 5px;
+}
+.post-author {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-color;
+}
+.post-date {
+    -fx-font-size: 13px;
+    -fx-text-fill: #7f8c8d;
+}
+
+/* Titre et Contenu */
+.post-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-text-alignment: center;
+}
+.post-content {
+    -fx-font-size: 15px;
+    -fx-text-fill: #333333;
+    -fx-wrap-text: true;
+}
+
+/* Boutons d'Interaction */
+.interaction-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: -primary-color;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+}
+.interaction-btn:hover {
+    -fx-text-fill: -secondary-color;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+/* Bouton de Suppression */
+.delete-btn {
+    -fx-background-color: -danger-color;
+    -fx-text-fill: white;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+}
+
+/* ============================= */
+/*          Dialogs              */
+/* ============================= */
+.dialog-pane {
+    -fx-background-color: -light-background;
+    -fx-border-color: #ecf0f1;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);
+}
+
+/* ============================= */
+/*    TitledPane (Commentaires)  */
+/* ============================= */
+.titled-pane {
+    -fx-background-color: -light-background;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+.titled-pane > .title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-color;
+}
+.titled-pane > .content {
+    -fx-padding: 10px;
+}
+
+/* ============================= */
+/*        Commentaires           */
+/* ============================= */
+.comments-container {
+    -fx-spacing: 15px;
+    -fx-padding: 15px;
+}
+.comment-box {
+    -fx-background-color: -light-background;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px;
+    -fx-spacing: 8px;
+    -fx-border-color: #ecf0f1;
+    -fx-border-width: 1px;
+}
+
+/* ============================= */
+/*         Tooltips              */
+/* ============================= */
+.tooltip {
+    -fx-background-color: white;
+    -fx-text-fill: -primary-color;
+    -fx-border-color: -secondary-color;
+    -fx-border-width: 1px;
 }

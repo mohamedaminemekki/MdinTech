@@ -16,19 +16,13 @@ import javafx.stage.Stage;
 import tn.esprit.entities.BlogPost;
 import tn.esprit.entities.SessionManager;
 import tn.esprit.entities.User;
-import tn.esprit.services.BlogServices;
-import tn.esprit.services.CommentServices;
-import tn.esprit.services.LikeServices;
-import tn.esprit.services.PostTextGeneratorServices;
-import tn.esprit.utils.MyDatabase;
+import tn.esprit.services.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -37,22 +31,15 @@ import java.util.Optional;
 
 public class UserBlogController {
 
-    @FXML
-    private VBox feedContainer;
-    @FXML
-    private TextArea postContent;
-    @FXML
-    private Label fileNameLabel;
-    @FXML
-    private TextField postTitle;
-    @FXML
-    private ComboBox<String> categoryCombo;
-    @FXML
-    private ImageView userAvatar;
-    @FXML
-    private ImageView imagePreview;
-    @FXML
-    private Button generatePostTextButton;
+    @FXML private VBox feedContainer;
+    @FXML private TextArea postContent;
+    @FXML private Label fileNameLabel;
+    @FXML private TextField postTitle;
+    @FXML private ComboBox<String> categoryCombo;
+    @FXML private ImageView userAvatar;
+    @FXML private ImageView imagePreview;
+    @FXML private Button generatePostTextButton;
+    @FXML private TextField searchField;
 
     private String imagePath;
     private final BlogServices blogService = new BlogServices();
@@ -65,18 +52,16 @@ public class UserBlogController {
         setupCategoryCombo();
         loadPosts();
         generatePostTextButton.setOnAction(e -> handleGeneratePostText());
-
     }
+
     private void handleGeneratePostText() {
         String title = postTitle.getText();
         if (title == null || title.trim().isEmpty()) {
             showAlert("Erreur", "Veuillez saisir un titre pour générer le texte du post.");
             return;
         }
-
         generatePostTextButton.setText("Génération en cours...");
         generatePostTextButton.setDisable(true);
-
         new Thread(() -> {
             String generatedText = PostTextGeneratorServices.generatePostText(title);
             javafx.application.Platform.runLater(() -> {
@@ -108,15 +93,35 @@ public class UserBlogController {
         userAvatar.setClip(clip);
     }
 
+    @FXML
+    private void handleSearch() {
+        String keyword = searchField.getText().trim().toLowerCase();
+        if (keyword.isEmpty()) {
+            loadPosts();
+            return;
+        }
+        try {
+            feedContainer.getChildren().clear();
+            List<BlogPost> allPosts = blogService.getApprovedPosts();
+            for (BlogPost post : allPosts) {
+                if (post.getTitle() != null && post.getTitle().toLowerCase().contains(keyword)) {
+                    feedContainer.getChildren().add(createPostCard(post));
+                }
+            }
+        } catch (Exception e) {
+            showAlert("Erreur", "Impossible de rechercher les posts : " + e.getMessage());
+        }
+    }
+
     private void loadDefaultAvatar() {
         try {
-            InputStream is = getClass().getResourceAsStream("images/logo_plus.png");
+            InputStream is = getClass().getResourceAsStream("/images/logo_plus.png");
             if (is != null) {
                 Image image = new Image(is);
                 userAvatar.setImage(image);
             } else {
                 System.err.println("Avatar par défaut non trouvé !");
-                Image backupImage = new Image(new File("images/logo_plus.png").toURI().toString());
+                Image backupImage = new Image(new File("/images/logo_plus.png").toURI().toString());
                 userAvatar.setImage(backupImage);
             }
         } catch (Exception e) {
@@ -125,21 +130,13 @@ public class UserBlogController {
     }
 
     private void setupCategoryCombo() {
-        categoryCombo.getItems().addAll(
-                "Actualité",
-                "Événement",
-                "Astuce",
-                "Question",
-                "Autre"
-        );
+        categoryCombo.getItems().addAll("Actualité", "Événement", "Astuce", "Question", "Autre");
     }
 
     @FXML
     private void handleAddImage() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif")
-        );
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif"));
         File file = fileChooser.showOpenDialog(null);
         if (file != null) {
             try {
@@ -164,18 +161,17 @@ public class UserBlogController {
             return;
         }
         BlogPost post = new BlogPost();
+        post.setAuthorAvatarUrl(SessionManager.getCurrentUser().getAvatarUrl());
         post.setTitle(postTitle.getText());
         post.setContent(postContent.getText());
-        post.setAuthor(SessionManager.getCurrentUser().getCin());
+        post.setAuthor(SessionManager.getCurrentUser().getNom());
+        post.setAuthor_cin(SessionManager.getCurrentUser().getCin());
         post.setImageUrl(imagePath);
         post.setCategory(categoryCombo.getValue());
         post.setCreatedAt(LocalDateTime.now());
-        post.setApproved(true); // Post approuvé pour affichage immédiat
-
         try {
             blogService.createPost(post);
             clearForm();
-            // Ajout direct du post en haut du flux
             feedContainer.getChildren().add(0, createPostCard(post));
         } catch (Exception e) {
             showAlert("Erreur", "Échec de la publication");
@@ -222,7 +218,9 @@ public class UserBlogController {
         card.setMaxWidth(600);
         card.setUserData(post.getId());
 
+        // ---------------------------
         // Header
+        // ---------------------------
         HBox header = new HBox(10);
         header.getStyleClass().add("header");
         header.setAlignment(Pos.CENTER_LEFT);
@@ -232,7 +230,7 @@ public class UserBlogController {
             Image avatarImage = new Image(new File(post.getAuthorAvatarUrl()).toURI().toString());
             avatar.setImage(avatarImage);
         } catch (Exception e) {
-            avatar.setImage(new Image("https://via.placeholder.com/40"));
+            avatar.setImage(new Image("https://fr.vecteezy.com/art-vectoriel/1840618-image-profil-icon-male-icon-human-or-people-sign-and-symbol-vector"));
         }
         avatar.setFitHeight(40);
         avatar.setFitWidth(40);
@@ -247,9 +245,9 @@ public class UserBlogController {
         postTime.setStyle("-fx-text-fill: #606770; -fx-font-size: 12;");
         userInfo.getChildren().addAll(authorName, postTime);
 
-        // Bouton options (si l'auteur est l'utilisateur connecté)
+        // Bouton options si l'utilisateur est l'auteur
         Node optionsButton = null;
-        if (SessionManager.getCurrentUser().getCin().equals(post.getAuthor())) {
+        if (SessionManager.getCurrentUser().getCin().equals(post.getAuthorCin())) {
             Button btnOptions = new Button("⋮");
             btnOptions.getStyleClass().add("options-button");
             ContextMenu contextMenu = new ContextMenu();
@@ -270,24 +268,108 @@ public class UserBlogController {
             header.getChildren().addAll(spacer, optionsButton);
         }
 
-        // Titre et contenu
+        // ---------------------------
+        // Titre et Contenu
+        // ---------------------------
         Label title = new Label(post.getTitle());
         title.setStyle("-fx-font-weight: bold; -fx-font-size: 16;");
         Label content = new Label(post.getContent());
         content.setWrapText(true);
         content.setStyle("-fx-font-size: 14; -fx-text-fill: #050505;");
 
+        // ---------------------------
         // Boutons d'interaction
+        // ---------------------------
         HBox interactions = new HBox(15);
         Button likeBtn = new Button("❤ " + post.getLikeCount());
         likeBtn.getStyleClass().add("interaction-btn");
         likeBtn.setOnAction(e -> handleLike(post));
+        Tooltip likeTooltip = new Tooltip();
+        likeBtn.setTooltip(likeTooltip);
+        likeBtn.hoverProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                try {
+                    List<User> likedUsers = likeService.getUsersWhoLikedPost(post.getId());
+                    StringBuilder sb = new StringBuilder();
+                    if (likedUsers.isEmpty()) {
+                        sb.append("Aucun like");
+                    } else {
+                        for (User u : likedUsers) {
+                            sb.append(u.getNom()).append("\n");
+                        }
+                    }
+                    likeTooltip.setText(sb.toString());
+                } catch (Exception ex) {
+                    likeTooltip.setText("Erreur de récupération");
+                }
+            }
+        });
+        // Clic droit pour afficher la liste des utilisateurs ayant liké
+        likeBtn.setOnMouseClicked(e -> {
+            if (e.isSecondaryButtonDown()) {
+                try {
+                    List<User> likedUsers = likeService.getUsersWhoLikedPost(post.getId());
+                    ContextMenu usersMenu = new ContextMenu();
+                    for (User u : likedUsers) {
+                        HBox userItem = new HBox(5);
+                        ImageView userAvatar = new ImageView();
+                        try {
+                            userAvatar.setImage(new Image(new File(u.getAvatarUrl()).toURI().toString()));
+                        } catch (Exception ex) {
+                            userAvatar.setImage(new Image("https://fr.vecteezy.com/art-vectoriel/1840618-image-profil-icon-male-icon-human-or-people-sign-and-symbol-vector"));
+                        }
+                        userAvatar.setFitWidth(20);
+                        userAvatar.setFitHeight(20);
+                        Label nameLabel = new Label(u.getNom());
+                        userItem.getChildren().addAll(userAvatar, nameLabel);
+                        CustomMenuItem menuItem = new CustomMenuItem(userItem, false);
+                        usersMenu.getItems().add(menuItem);
+                    }
+                    usersMenu.show(likeBtn, Side.TOP, 0, 0);
+                } catch (Exception ex) {
+                    showAlert("Erreur", "Impossible de récupérer la liste des likes");
+                }
+            }
+        });
         Button commentBtn = new Button("💬 " + post.getCommentCount());
         commentBtn.getStyleClass().add("interaction-btn");
-        commentBtn.setOnAction(e -> showCommentDialog(post));
+
+        // ---------------------------
+        // Zone de saisie inline pour commentaire
+        // ---------------------------
+        HBox commentInputContainer = new HBox(10);
+        commentInputContainer.setAlignment(Pos.CENTER_LEFT);
+        commentInputContainer.setVisible(false);
+        commentInputContainer.setManaged(false);
+        TextField newCommentField = new TextField();
+        newCommentField.setPromptText("Écrire un commentaire...");
+        Button publishCommentBtn = new Button("Publier");
+        publishCommentBtn.setOnAction(ev -> {
+            String commentText = newCommentField.getText().trim();
+            if (!commentText.isEmpty()) {
+                addCommentIfAppropriate(post, commentText);
+                newCommentField.clear();
+            }
+        });
+
+        commentInputContainer.getChildren().addAll(newCommentField, publishCommentBtn);
+
+        // Le bouton "commenter" bascule l'affichage de la zone de saisie inline
+        commentBtn.setOnAction(e -> {
+            commentInputContainer.setVisible(!commentInputContainer.isVisible());
+            commentInputContainer.setManaged(!commentInputContainer.isManaged());
+        });
+
         interactions.getChildren().addAll(likeBtn, commentBtn);
 
-        // Container des commentaires
+        // ---------------------------
+        // Affichage de l'image associée
+        // ---------------------------
+        Node imageNode = createImageContainer(post.getImageUrl());
+
+        // ---------------------------
+        // Conteneur des commentaires existants
+        // ---------------------------
         VBox commentsContainer = new VBox(5);
         commentsContainer.getStyleClass().add("comments-container");
         if (post.getComments() != null) {
@@ -296,12 +378,10 @@ public class UserBlogController {
             }
         }
 
-        card.getChildren().addAll(header, title, content, createImageContainer(post.getImageUrl()), new Separator(), interactions, commentsContainer);
+        // Assemblage final de la carte
+        card.getChildren().addAll(header, title, content, imageNode, new Separator(), interactions, commentInputContainer, commentsContainer);
         return card;
     }
-
-
-    // Assemblage final de la carte
 
     private void handleDeletePost(BlogPost post) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -312,28 +392,24 @@ public class UserBlogController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 blogService.deletePost(post.getId());
-                loadPosts(); // Recharger les posts après suppression
+                loadPosts();
             } catch (SQLException e) {
                 showAlert("Erreur", "Impossible de supprimer le post : " + e.getMessage());
                 e.printStackTrace();
             }
         }
     }
+
     private void showEditPostDialog(BlogPost post) {
         Dialog<BlogPost> dialog = new Dialog<>();
         dialog.setTitle("Modifier le post");
-
-        // Champs pour éditer le post
         TextField titleField = new TextField(post.getTitle());
         TextArea contentArea = new TextArea(post.getContent());
         TextField categoryField = new TextField(post.getCategory());
-        // Vous pouvez aussi ajouter une option pour modifier l'image si besoin
-
         VBox vbox = new VBox(10);
         vbox.getChildren().addAll(new Label("Titre:"), titleField, new Label("Contenu:"), contentArea, new Label("Catégorie:"), categoryField);
         dialog.getDialogPane().setContent(vbox);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
         dialog.setResultConverter(buttonType -> {
             if (buttonType == ButtonType.OK) {
                 post.setTitle(titleField.getText());
@@ -343,7 +419,6 @@ public class UserBlogController {
             }
             return null;
         });
-
         Optional<BlogPost> result = dialog.showAndWait();
         if (result.isPresent()) {
             try {
@@ -355,8 +430,6 @@ public class UserBlogController {
             }
         }
     }
-
-
 
     private String formatDateTime(LocalDateTime dateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM HH:mm");
@@ -405,21 +478,17 @@ public class UserBlogController {
     private void showCommentDialog(BlogPost post) {
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("Nouveau commentaire");
-
         TextArea commentArea = new TextArea();
         commentArea.setPromptText("Écrivez votre commentaire...");
         commentArea.setWrapText(true);
-
         dialog.getDialogPane().setContent(commentArea);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
         dialog.setResultConverter(buttonType -> {
             if (buttonType == ButtonType.OK) {
                 return commentArea.getText();
             }
             return null;
         });
-
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(comment -> {
             try {
@@ -429,6 +498,114 @@ public class UserBlogController {
                 showAlert("Erreur", "Impossible d'ajouter le commentaire");
             }
         });
+    }
+    private void addCommentIfAppropriate(BlogPost post, String commentText) {
+        ContentFilterService filterService = new ContentFilterService();
+        try {
+            String filteredJson = filterService.filterText(commentText);
+            if (filterService.isTextToxic(commentText, filteredJson)) {
+                showAlert("Commentaire refusé", "Votre commentaire contient des termes inappropriés.");
+            } else {
+                commentService.addComment(post.getId(), SessionManager.getCurrentUser().getCin(), commentText);
+                refreshPost(post.getId());
+            }
+        } catch (Exception e) {
+            showAlert("Erreur", "Impossible de vérifier le commentaire pour contenu inapproprié.");
+            e.printStackTrace();
+        }
+    }
+
+
+    private VBox createCommentCard(tn.esprit.entities.Comment comment) {
+        VBox commentBox = new VBox(5);
+        commentBox.getStyleClass().add("comment-box");
+
+        // Header du commentaire
+        HBox header = new HBox(10);
+        Label authorLabel = new Label(comment.getAuthorCin());
+        authorLabel.setStyle("-fx-font-weight: bold;");
+        Label timeLabel = new Label(formatDateTime(comment.getCreatedAt()));
+        timeLabel.setStyle("-fx-text-fill: #606770; -fx-font-size: 10;");
+        header.getChildren().addAll(authorLabel, timeLabel);
+
+        // Contenu en mode lecture
+        Label contentLabel = new Label(comment.getContent());
+        contentLabel.setWrapText(true);
+        contentLabel.setStyle("-fx-font-size: 12;");
+
+        // Zone d'édition inline (initialement masquée)
+        HBox editContainer = new HBox(10);
+        editContainer.setAlignment(Pos.CENTER_LEFT);
+        editContainer.setVisible(false);
+        editContainer.setManaged(false);
+        TextField editField = new TextField(comment.getContent());
+        Button saveEditBtn = new Button("Valider");
+        Button cancelEditBtn = new Button("Annuler");
+        editContainer.getChildren().addAll(editField, saveEditBtn, cancelEditBtn);
+
+        saveEditBtn.setOnAction(e -> {
+            String newContent = editField.getText().trim();
+            if (!newContent.isEmpty()) {
+                try {
+                    commentService.updateComment(comment.getId(), newContent);
+                    comment.setContent(newContent);
+                    contentLabel.setText(newContent);
+                    editContainer.setVisible(false);
+                    editContainer.setManaged(false);
+                    contentLabel.setVisible(true);
+                    contentLabel.setManaged(true);
+                } catch (SQLException ex) {
+                    showAlert("Erreur", "Impossible de modifier le commentaire");
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        cancelEditBtn.setOnAction(e -> {
+            editField.setText(comment.getContent());
+            editContainer.setVisible(false);
+            editContainer.setManaged(false);
+            contentLabel.setVisible(true);
+            contentLabel.setManaged(true);
+        });
+
+        // Actions du commentaire
+        HBox actions = new HBox(10);
+        Button editBtn = new Button("Modifier");
+        editBtn.setOnAction(e -> {
+            contentLabel.setVisible(false);
+            contentLabel.setManaged(false);
+            editContainer.setVisible(true);
+            editContainer.setManaged(true);
+        });
+        Button deleteBtn = new Button("Supprimer");
+        deleteBtn.setOnAction(e -> handleDeleteComment(comment));
+        actions.getChildren().addAll(editBtn, deleteBtn);
+
+        commentBox.getChildren().addAll(header, contentLabel, editContainer, actions);
+        return commentBox;
+    }
+
+    private void showEditCommentDialog(tn.esprit.entities.Comment comment) {
+        // Optionnel si vous souhaitez aussi ouvrir une fenêtre de dialogue,
+        // mais ici l'édition inline est déjà gérée dans createCommentCard.
+    }
+
+    private void handleDeleteComment(tn.esprit.entities.Comment comment) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Supprimer le commentaire ?");
+        alert.setContentText("Voulez-vous vraiment supprimer ce commentaire ?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                commentService.deleteComment(comment.getId());
+                refreshPost(comment.getPostId());
+            } catch (SQLException e) {
+                showAlert("Erreur", "Impossible de supprimer le commentaire");
+                e.printStackTrace();
+            }
+        }
     }
 
     private void showAlert(String title, String message) {
@@ -447,81 +624,4 @@ public class UserBlogController {
         stage.setTitle("Blog Communautaire");
         stage.show();
     }
-    private VBox createCommentCard(tn.esprit.entities.Comment comment) {
-        VBox commentBox = new VBox(5);
-        commentBox.getStyleClass().add("comment-box");
-
-        // Header du commentaire
-        HBox header = new HBox(10);
-        Label authorLabel = new Label(comment.getAuthorCin());
-        authorLabel.setStyle("-fx-font-weight: bold;");
-        Label timeLabel = new Label(formatDateTime(comment.getCreatedAt()));
-        timeLabel.setStyle("-fx-text-fill: #606770; -fx-font-size: 10;");
-        header.getChildren().addAll(authorLabel, timeLabel);
-
-        // Contenu
-        Label contentLabel = new Label(comment.getContent());
-        contentLabel.setWrapText(true);
-        contentLabel.setStyle("-fx-font-size: 12;");
-
-        // Actions
-        HBox actions = new HBox(10);
-        Button editBtn = new Button("Modifier");
-        editBtn.setOnAction(e -> showEditCommentDialog(comment));
-        Button deleteBtn = new Button("Supprimer");
-        deleteBtn.setOnAction(e -> handleDeleteComment(comment));
-        actions.getChildren().addAll(editBtn, deleteBtn);
-
-        commentBox.getChildren().addAll(header, contentLabel, actions);
-        return commentBox;
-    }
-
-    private void showEditCommentDialog(tn.esprit.entities.Comment comment) {
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setTitle("Modifier le commentaire");
-
-        TextArea commentArea = new TextArea(comment.getContent());
-        commentArea.setWrapText(true);
-        dialog.getDialogPane().setContent(commentArea);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        dialog.setResultConverter(buttonType -> {
-            if (buttonType == ButtonType.OK) {
-                return commentArea.getText();
-            }
-            return null;
-        });
-
-        Optional<String> result = dialog.showAndWait();
-        result.ifPresent(newContent -> {
-            try {
-                commentService.updateComment(comment.getId(), newContent);
-                // Rafraîchir le post pour mettre à jour les commentaires
-                refreshPost(comment.getPostId());
-            } catch (SQLException e) {
-                showAlert("Erreur", "Impossible de modifier le commentaire");
-                e.printStackTrace();
-            }
-        });
-    }
-    private void handleDeleteComment(tn.esprit.entities.Comment comment) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation");
-        alert.setHeaderText("Supprimer le commentaire ?");
-        alert.setContentText("Voulez-vous vraiment supprimer ce commentaire ?");
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            try {
-                commentService.deleteComment(comment.getId());
-                refreshPost(comment.getPostId());
-            } catch (SQLException e) {
-                showAlert("Erreur", "Impossible de supprimer le commentaire");
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-
 }

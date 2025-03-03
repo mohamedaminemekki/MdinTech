@@ -18,6 +18,8 @@ public class BlogPost {
     private LocalDate postDate;
     private String category;
     private String authorAvatarUrl;
+    private String author_cin;
+
 
     // Ajouter getter/setter
     public String getAuthorAvatarUrl() { return authorAvatarUrl; }
@@ -37,6 +39,7 @@ public class BlogPost {
         this.author = author;
         this.category = category;
         this.createdAt = LocalDateTime.now();
+
     }
 
     // Getters/Setters
@@ -58,4 +61,6 @@ public class BlogPost {
     public void setLikes(List<Like> likes) { this.likes = likes; }
     public int getLikeCount() { return likes.size(); }
     public int getCommentCount() { return comments.size(); }
+    public String getAuthorCin() { return author_cin; }
+    public void setAuthor_cin(String author_cin) { this.author_cin = author_cin; }
 }

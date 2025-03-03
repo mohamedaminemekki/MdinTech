@@ -1,40 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 
-<BorderPane stylesheets="@style.css"
-            xmlns="http://javafx.com/javafx/17"
+<BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="tn.esprit.controllers.AdminBlogController">
+            fx:controller="tn.esprit.controllers.AdminBlogController"
+            stylesheets="@style.css">
 
-    <!-- Left Drawer (identique à la page admin principale) -->
+    <!-- Menu de gauche -->
     <left>
-        <VBox prefWidth="200" spacing="15" style="-fx-background-color: #2c3e50; -fx-padding: 20;">
-            <Label style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;" text="Admin Dashboard" />
-            <Button mnemonicParsing="false" styleClass="icon-btn">
+        <VBox prefWidth="220" spacing="20" style="-fx-background-color: -primary-color; -fx-padding: 30;">
+            <Label text="Admin Dashboard" style="-fx-text-fill: white; -fx-font-size: 26px; -fx-font-weight: bold;"/>
+
+            <!-- Bouton Dashboard -->
+            <Button fx:id="dashboardBtn" styleClass="nav-btn" onAction="#loadBlogManagement">
                 <graphic>
-                    <SVGPath content="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"
-                             style="-fx-fill: white;"/>
+                    <SVGPath content="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z" style="-fx-fill: white;"/>
                 </graphic>
-                <text>Gestion de Factures</text>
+                <text>Dashboard</text>
             </Button>
-            <Button mnemonicParsing="false" styleClass="icon-btn" onAction="#loadBlogManagement">
+
+            <!-- Bouton Gestion Blog -->
+            <Button fx:id="gestionBlogBtn" styleClass="nav-btn active" onAction="#loadBlogManagement">
                 <graphic>
-                    <SVGPath content="M4 9h16v2H4zm0 4h10v2H4z"/>
+                    <SVGPath content="M4 9h16v2H4zm0 4h10v2H4z" style="-fx-fill: white;"/>
                 </graphic>
                 <text>Gestion Blog</text>
             </Button>
-            <!-- Ajouter d'autres boutons si nécessaire -->
+
+            <!-- Bouton Statistiques -->
+            <Button fx:id="statsBtn" styleClass="nav-btn" onAction="#loadBlogManagement">
+                <graphic>
+                    <SVGPath content="M2 20h20v-2H2v2zm2-3h2v-5H4v5zm5 0h2V4H9v13zm5 0h2V9h-2v8z" style="-fx-fill: white;"/>
+                </graphic>
+                <text>Statistiques</text>
+            </Button>
         </VBox>
     </left>
 
-    <!-- Contenu principal du blog -->
+    <!-- Zone centrale : Liste des articles -->
     <center>
-        <ScrollPane style="-fx-background: #ffffff;">
-            <VBox fx:id="postsContainer" spacing="15" style="-fx-padding: 20;">
-                <Label text="Publications en attente"
-                       style="-fx-font-size: 24px; -fx-text-fill: #1d2129; -fx-font-weight: bold;"/>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+            <VBox fx:id="postsContainer" spacing="25" style="-fx-padding: 30; -fx-alignment: center;">
+                <Label text="Tous les Articles" style="-fx-font-size: 28px; -fx-text-fill: -primary-color; -fx-font-weight: bold; -fx-padding: 0 0 20 0;"/>
+                <!-- Les cartes d'articles seront ajoutées ici dynamiquement -->
             </VBox>
         </ScrollPane>
     </center>

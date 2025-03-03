@@ -1,6 +1,7 @@
 package tn.esprit.services;
 
 import tn.esprit.entities.Like;
+import tn.esprit.entities.User;
 import tn.esprit.utils.MyDatabase;
 
 import java.sql.*;
@@ -57,4 +58,21 @@ public class LikeServices {
             return rs.next() && rs.getInt(1) > 0;
         }
     }
+    public List<User> getUsersWhoLikedPost(int postId) throws SQLException {
+        List<User> users = new ArrayList<>();
+        String query = "SELECT u.* FROM likes l JOIN users u ON l.user_cin = u.cin WHERE l.post_id = ?";
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, postId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                User user = new User();
+                user.setCin(rs.getString("cin"));
+                user.setNom(rs.getString("nom")); // ou username selon votre table
+                user.setAvatarUrl(rs.getString("avatar_url"));
+                users.add(user);
+            }
+        }
+        return users;
+    }
+
 }

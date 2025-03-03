@@ -15,6 +15,10 @@ import tn.esprit.services.BlogServices;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
 
 public class AdminBlogController {
 
@@ -23,86 +27,126 @@ public class AdminBlogController {
 
     @FXML
     public void initialize() {
-        loadPendingPosts();
+        loadPosts();
     }
 
-    private void loadPendingPosts() {
+    private void loadPosts() {
         try {
             postsContainer.getChildren().clear();
-            for (BlogPost post : blogService.getPendingPosts()) {
-                postsContainer.getChildren().add(createPostCard(post));
+            List<BlogPost> posts = blogService.getAllPosts();
+
+            if (posts.isEmpty()) {
+                Label emptyLabel = new Label("Aucun article trouvé");
+                emptyLabel.setStyle("-fx-text-fill: #606770; -fx-font-size: 16;");
+                postsContainer.getChildren().add(emptyLabel);
+                return;
             }
-        } catch (Exception e) {
-            showAlert("Erreur", "Chargement des posts échoué");
+
+            posts.forEach(post -> {
+                VBox postCard = createPostCard(post);
+                postsContainer.getChildren().add(postCard);
+            });
+        } catch (SQLException e) {
+            showAlert("Erreur", "Impossible de charger les articles: " + e.getMessage());
         }
     }
 
     private VBox createPostCard(BlogPost post) {
-        VBox card = new VBox(10);
-        card.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);");
+        VBox card = new VBox();
+        card.getStyleClass().add("post-card");
+        card.setMaxWidth(800);
 
-        // Contenu textuel
+        // Header (Author + Date)
+        HBox header = new HBox();
+        header.getStyleClass().add("post-header");
+
+        VBox authorInfo = new VBox(4);
+        Label authorLabel = new Label("Auteur: " + post.getAuthor());
+        authorLabel.getStyleClass().add("post-author");
+        Label dateLabel = new Label(formatDate(post.getCreatedAt()));
+        dateLabel.getStyleClass().add("post-date");
+        authorInfo.getChildren().addAll(authorLabel, dateLabel);
+
+        header.getChildren().add(authorInfo);
+
+        // Title
+        Label title = new Label(post.getTitle());
+        title.getStyleClass().add("post-title");
+
+        // Content
         Label content = new Label(post.getContent());
+        content.getStyleClass().add("post-content");
         content.setWrapText(true);
-        content.setStyle("-fx-font-size: 14px;");
 
-        // Image du post
+        // Image
         HBox imageContainer = new HBox();
         if (post.getImageUrl() != null && !post.getImageUrl().isEmpty()) {
             try {
-                Image image = new Image(new File(post.getImageUrl()).toURI().toString());
-                ImageView imageView = new ImageView(image);
-                imageView.setFitWidth(300);
+                ImageView imageView = new ImageView(new Image(new File(post.getImageUrl()).toURI().toString()));
+                imageView.setFitWidth(600);
                 imageView.setPreserveRatio(true);
+                imageView.setSmooth(true);
                 imageContainer.getChildren().add(imageView);
             } catch (Exception e) {
                 System.err.println("Erreur de chargement d'image: " + e.getMessage());
             }
         }
 
-        // Boutons d'action
-        HBox actions = new HBox(10);
-        Button approveBtn = new Button("Approuver");
-        approveBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
-        approveBtn.setOnAction(e -> handleApproval(post.getId(), true)); // Ajout de l'action
-
-        Button rejectBtn = new Button("Rejeter");
-        rejectBtn.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
-        rejectBtn.setOnAction(e -> handleApproval(post.getId(), false)); // Ajout de l'action
-
-        actions.getChildren().addAll(approveBtn, rejectBtn);
+        // Delete Button
+        Button deleteBtn = new Button("Supprimer l'article");
+        deleteBtn.getStyleClass().add("delete-btn");
+        deleteBtn.setOnAction(e -> handleDelete(post.getId()));
 
         card.getChildren().addAll(
-                new Label("Auteur: " + post.getAuthor()),
+                header,
+                title,
                 content,
                 imageContainer,
-                new Separator(),
-                actions
+                deleteBtn
         );
 
         return card;
     }
-    private void handleApproval(int postId, boolean approved) {
-        try {
-            if (approved) {
-                blogService.approvePost(postId);
-            } else {
-                blogService.rejectPost(postId);
+
+    private String formatDate(LocalDateTime date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM yyyy 'à' HH:mm");
+        return date.format(formatter);
+    }
+
+    private void handleDelete(int postId) {
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmation.setTitle("Confirmation de suppression");
+        confirmation.setHeaderText("Supprimer cet article ?");
+        confirmation.setContentText("Cette action est irréversible.");
+
+        Optional<ButtonType> result = confirmation.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                blogService.deletePost(postId);
+                showSuccessAlert("Article supprimé avec succès");
+                loadPosts(); // Refresh the list
+            } catch (SQLException ex) {
+                showAlert("Erreur", "Échec de la suppression : " + ex.getMessage());
             }
-            // Rafraîchir la liste après modification
-            loadPendingPosts();
-        } catch (SQLException ex) {
-            showAlert("Erreur", "Échec de l'opération: " + ex.getMessage());
-            ex.printStackTrace();
         }
+    }
+
+    private void showSuccessAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Succès");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
+        alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
+
     @FXML
     private void loadBlogManagement() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/tn/esprit/gui/admin_blog.fxml"));
