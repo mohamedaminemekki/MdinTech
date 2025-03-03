@@ -5,16 +5,9 @@ import utils.MyDataBase;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class RendezVousServices implements IService<RendezVous> {
 
@@ -64,25 +57,6 @@ public class RendezVousServices implements IService<RendezVous> {
         // Exécuter la requête pour insérer le rendez-vous
         ps.executeUpdate();
         System.out.println("Rendez-vous ajouté !");
-        int idService = getServiceIdByMedecin(rendezVous.getIdMedecin());
-        ServiceHospitalierServices serviceService = new ServiceHospitalierServices();
-        serviceService.deleteServiceIfLowAppointments(idService);
-
-
-    }
-
-
-    private int getServiceIdByMedecin(int idMedecin) throws SQLException {
-        String query = "SELECT idService FROM medecin WHERE idMedecin = ?";
-        try (PreparedStatement ps = con.prepareStatement(query)) {
-            ps.setInt(1, idMedecin);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("idService");
-                }
-            }
-        }
-        return -1;
     }
 
 
@@ -131,40 +105,6 @@ public class RendezVousServices implements IService<RendezVous> {
         }
         return false; // Retourne false si le créneau est disponible
     }
-
-
-    public int countRendezVousByService(int idService) throws SQLException {
-        String query = "SELECT COUNT(*) FROM rendezvous r " +
-                "JOIN medecin m ON r.idMedecin = m.idMedecin " +
-                "WHERE m.idService = ?";
-        try (PreparedStatement ps = con.prepareStatement(query)) {
-            ps.setInt(1, idService);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1); // Retourne le nombre de rendez-vous
-                }
-            }
-        }
-        return 0; // Retourne 0 si aucun rendez-vous trouvé
-    }
-
-    public Map<String, Integer> getRendezVousStats() throws SQLException {
-        Map<String, Integer> stats = new HashMap<>();
-        String query = "SELECT s.nomService, COUNT(r.idRendezVous) AS total FROM rendezvous r " +
-                "JOIN medecin m ON r.idMedecin = m.idMedecin " +
-                "JOIN servicehospitalier s ON m.idService = s.idService " +
-                "GROUP BY s.nomService";
-
-        try (PreparedStatement ps = con.prepareStatement(query);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                stats.put(rs.getString("nomService"), rs.getInt("total"));
-            }
-        }
-        return stats;
-    }
-
-
 
 
 

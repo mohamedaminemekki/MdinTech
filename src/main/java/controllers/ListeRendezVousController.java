@@ -92,59 +92,50 @@ public class ListeRendezVousController {
         // Désactiver la fermeture automatique lors du clic sur "Ajouter"
         Node addButton = dialog.getDialogPane().lookupButton(addButtonType);
         addButton.addEventFilter(ActionEvent.ACTION, event -> {
+            LocalDate date = dateField.getValue();
+            String timeText = timeField.getText().trim();
+            String lieu = lieuField.getText().trim();
+            String status = statusField.getText().trim();
+            String idMedecinText = idMedecinField.getText().trim();
+
+            // Vérification des champs vides
+            if (date == null || timeText.isEmpty() || lieu.isEmpty() || status.isEmpty() || idMedecinText.isEmpty()) {
+                showAlert("Champs vides", "Tous les champs sont obligatoires !");
+                event.consume(); // Empêcher la fermeture du dialogue
+                return;
+            }
+
+            // Vérification des valeurs
+            if (!timeText.matches("\\d{2}:\\d{2}")) {
+                showAlert("Erreur", "Le champ 'Heure' doit être au format HH:mm !");
+                event.consume();
+                return;
+            }
+            if (!idMedecinText.matches("\\d+")) {
+                showAlert("Erreur", "Le champ 'ID Médecin' doit contenir uniquement des chiffres !");
+                event.consume();
+                return;
+            }
+
+            // Conversion et ajout du rendez-vous
+            LocalTime time = LocalTime.parse(timeText);
+            int idMedecin = Integer.parseInt(idMedecinText);
+
+            RendezVous rendezVous = new RendezVous(0, date, time, lieu, status, idMedecin);
+
             try {
-                LocalDate date = dateField.getValue();
-                String timeText = timeField.getText().trim();
-                String lieu = lieuField.getText().trim();
-                String status = statusField.getText().trim();
-                String idMedecinText = idMedecinField.getText().trim();
-
-                // Vérification des champs vides
-                if (date == null || timeText.isEmpty() || lieu.isEmpty() || status.isEmpty() || idMedecinText.isEmpty()) {
-                    throw new IllegalArgumentException("Tous les champs sont obligatoires !");
-                }
-
-                // Vérification du format de l'heure
-                if (!timeText.matches("\\d{2}:\\d{2}")) {
-                    throw new IllegalArgumentException("Le champ 'Heure' doit être au format HH:mm !");
-                }
-
-                // Vérification que l'ID du médecin est numérique
-                if (!idMedecinText.matches("\\d+")) {
-                    throw new IllegalArgumentException("Le champ 'ID Médecin' doit contenir uniquement des chiffres !");
-                }
-
-                // Conversion des valeurs
-                LocalTime time = LocalTime.parse(timeText);
-                int idMedecin = Integer.parseInt(idMedecinText);
-
-                // Vérifier si le créneau est déjà pris
-                if (rendezVousServices.isTimeSlotTaken(date, time)) {
-                    throw new IllegalStateException("Ce créneau horaire est déjà réservé. Veuillez en choisir un autre.");
-                }
-
-                // Création du rendez-vous
-                RendezVous rendezVous = new RendezVous(0, date, time, lieu, status, idMedecin);
                 rendezVousServices.add(rendezVous);
-                showAlert("Succès", "Rendez-vous ajouté avec succès !", Alert.AlertType.WARNING);
-                loadRendezVous(); // Rafraîchir la liste des rendez-vous
-
-            } catch (IllegalArgumentException | IllegalStateException e) {
-                showAlert("Erreur de saisie", e.getMessage(), Alert.AlertType.WARNING);
-                event.consume();
+                showAlert("Succès", "Rendez-vous ajouté avec succès !");
+                loadRendezVous(); // Rafraîchir la liste
             } catch (SQLException e) {
-                showAlert("Erreur Base de Données", "Impossible d'ajouter le rendez-vous.", Alert.AlertType.WARNING);
+                showAlert("Erreur", "Impossible d'ajouter le rendez-vous.");
                 e.printStackTrace();
-                event.consume();
-            } catch (Exception e) {
-                showAlert("Erreur Inattendue", "Une erreur est survenue.", Alert.AlertType.WARNING);
-                e.printStackTrace();
-                event.consume();
             }
         });
 
         dialog.showAndWait();
     }
+
     private void modifierRendezVous(RendezVous rendezVous) {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Modifier un Rendez-vous");
@@ -160,30 +151,20 @@ public class ListeRendezVousController {
         grid.setVgap(10);
         grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
 
-        // ComboBox pour le lieu
-        ComboBox<String> lieuComboBox = new ComboBox<>();
-        lieuComboBox.getItems().addAll("Salle A", "Salle B", "Salle C");
-        lieuComboBox.setValue(rendezVous.getLieu());
-
-        // DatePicker pour la date
-        DatePicker datePicker = new DatePicker(rendezVous.getDateRendezVous());
-
-        // Spinner pour l'heure et les minutes
-        Spinner<Integer> heureSpinner = new Spinner<>(0, 23, rendezVous.getTimeRendezVous().getHour());
-        Spinner<Integer> minuteSpinner = new Spinner<>(0, 59, rendezVous.getTimeRendezVous().getMinute());
-
-        // ID Médecin
+        DatePicker dateField = new DatePicker(rendezVous.getDateRendezVous());
+        TextField timeField = new TextField(rendezVous.getTimeRendezVous().toString());
+        TextField lieuField = new TextField(rendezVous.getLieu());
+        TextField statusField = new TextField(rendezVous.getStatus());
         TextField idMedecinField = new TextField(String.valueOf(rendezVous.getIdMedecin()));
 
-        // Ajout des champs à la grille
-        grid.add(new Label("Lieu:"), 0, 0);
-        grid.add(lieuComboBox, 1, 0);
-        grid.add(new Label("Date:"), 0, 1);
-        grid.add(datePicker, 1, 1);
-        grid.add(new Label("Heure:"), 0, 2);
-        grid.add(heureSpinner, 1, 2);
-        grid.add(new Label("Minute:"), 0, 3);
-        grid.add(minuteSpinner, 1, 3);
+        grid.add(new Label("Date:"), 0, 0);
+        grid.add(dateField, 1, 0);
+        grid.add(new Label("Heure:"), 0, 1);
+        grid.add(timeField, 1, 1);
+        grid.add(new Label("Lieu:"), 0, 2);
+        grid.add(lieuField, 1, 2);
+        grid.add(new Label("Statut:"), 0, 3);
+        grid.add(statusField, 1, 3);
         grid.add(new Label("ID Médecin:"), 0, 4);
         grid.add(idMedecinField, 1, 4);
 
@@ -192,61 +173,53 @@ public class ListeRendezVousController {
         // Désactiver la fermeture automatique lors du clic sur "Modifier"
         Node updateButton = dialog.getDialogPane().lookupButton(updateButtonType);
         updateButton.addEventFilter(ActionEvent.ACTION, event -> {
+            LocalDate date = dateField.getValue();
+            String timeText = timeField.getText().trim();
+            String lieu = lieuField.getText().trim();
+            String status = statusField.getText().trim();
+            String idMedecinText = idMedecinField.getText().trim();
+
+            // Vérification des champs vides
+            if (date == null || timeText.isEmpty() || lieu.isEmpty() || status.isEmpty() || idMedecinText.isEmpty()) {
+                showAlert("Champs vides", "Tous les champs sont obligatoires !");
+                event.consume();
+                return;
+            }
+
+            // Vérification des valeurs
+            if (!timeText.matches("\\d{2}:\\d{2}")) {
+                showAlert("Erreur", "Le champ 'Heure' doit être au format HH:mm !");
+                event.consume();
+                return;
+            }
+            if (!idMedecinText.matches("\\d+")) {
+                showAlert("Erreur", "Le champ 'ID Médecin' doit contenir uniquement des chiffres !");
+                event.consume();
+                return;
+            }
+
+            // Conversion et mise à jour du rendez-vous
+            LocalTime time = LocalTime.parse(timeText);
+            int idMedecin = Integer.parseInt(idMedecinText);
+
+            rendezVous.setDateRendezVous(date);
+            rendezVous.setTimeRendezVous(time);
+            rendezVous.setLieu(lieu);
+            rendezVous.setStatus(status);
+            rendezVous.setIdMedecin(idMedecin);
+
             try {
-                // Récupération des valeurs
-                String lieu = lieuComboBox.getValue();
-                LocalDate date = datePicker.getValue();
-                int heure = heureSpinner.getValue();
-                int minute = minuteSpinner.getValue();
-                String idMedecinText = idMedecinField.getText().trim();
-
-                // Vérification des champs vides
-                if (lieu == null || date == null || idMedecinText.isEmpty()) {
-                    throw new IllegalArgumentException("Tous les champs doivent être remplis !");
-                }
-
-                // Vérification ID Médecin (doit être un entier)
-                if (!idMedecinText.matches("\\d+")) {
-                    throw new IllegalArgumentException("L'ID Médecin doit être un nombre valide !");
-                }
-
-                int idMedecin = Integer.parseInt(idMedecinText);
-                LocalTime time = LocalTime.of(heure, minute);
-
-                // Vérification de la disponibilité du créneau
-                if (rendezVousServices.isTimeSlotTaken(date, time)) {
-                    showAlert("Créneau Indisponible", "Ce créneau est déjà réservé. Veuillez en choisir un autre.", Alert.AlertType.WARNING);
-                    event.consume();
-                    return;
-                }
-
-                // Mise à jour des valeurs
-                rendezVous.setLieu(lieu);
-                rendezVous.setDateRendezVous(date);
-                rendezVous.setTimeRendezVous(time);
-                rendezVous.setIdMedecin(idMedecin);
-
-                // Mise à jour dans la base de données
                 rendezVousServices.update(rendezVous);
-
-                // Rafraîchir la liste des rendez-vous
-                loadRendezVous();
-
-                // Affichage du succès
-                showAlert("Succès", "Le rendez-vous a été modifié avec succès.", Alert.AlertType.INFORMATION);
-            } catch (IllegalArgumentException e) {
-                showAlert("Erreur de saisie", e.getMessage(), Alert.AlertType.WARNING);
-                event.consume();
+                showAlert("Succès", "Rendez-vous mis à jour avec succès !");
+                loadRendezVous(); // Rafraîchir la liste
             } catch (SQLException e) {
-                showAlert("Erreur Base de Données", "Impossible de modifier le rendez-vous.", Alert.AlertType.ERROR);
+                showAlert("Erreur", "Impossible de modifier le rendez-vous.");
                 e.printStackTrace();
-                event.consume();
             }
         });
 
         dialog.showAndWait();
     }
-
 
     private void supprimerRendezVous(RendezVous rendezVous) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -277,7 +250,7 @@ public class ListeRendezVousController {
     }
 
     // Méthode pour afficher une alerte sans fermer l'interface
-    private void showAlert(String title, String message, Alert.AlertType warning) {
+    private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);
         alert.setHeaderText(null);

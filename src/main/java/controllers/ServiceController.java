@@ -8,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -29,22 +28,12 @@ public class ServiceController {
     private ListView<ServiceItem> serviceListView;
     @FXML
     private Button btnMesRendezVous;
-    @FXML
-    private TextField searchField;
-
-    @FXML
-    private void onSearch() {
-        String searchText = searchField.getText().trim();
-        searchService(searchText);
-    }
-
 
     private final ServiceHospitalierServices serviceHospitalierServices = new ServiceHospitalierServices();
 
     @FXML
     public void initialize() {
         loadServicesFromDatabase();
-
 
         // Ajouter l'événement de clic sur un service
         serviceListView.setOnMouseClicked(event -> {
@@ -213,28 +202,4 @@ public class ServiceController {
             e.printStackTrace();
         }
     }
-
-    @FXML
-    private void searchService(String searchText) {
-        ObservableList<ServiceItem> filteredServices = FXCollections.observableArrayList();
-
-        try {
-            // Récupérer tous les services depuis la base de données
-            List<ServiceHospitalier> serviceList = serviceHospitalierServices.readList();
-
-            // Filtrer les services dont le nom correspond à la recherche
-            for (ServiceHospitalier s : serviceList) {
-                if (s.getNomService().toLowerCase().contains(searchText.toLowerCase())) {
-                    String imageUrl = getImagePathForService(s.getNomService());
-                    filteredServices.add(new ServiceItem(s.getNomService(), s.getDescription(), imageUrl));
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Erreur lors de la recherche des services: " + e.getMessage());
-        }
-
-        // Mettre à jour la liste avec les résultats filtrés
-        serviceListView.setItems(filteredServices);
-    }
-
 }

@@ -92,19 +92,6 @@ public class ServiceHospitalierServices implements IService<ServiceHospitalier> 
         return false;
     }
 
-    public void deleteServiceIfLowAppointments(int idService) throws SQLException {
-        RendezVousServices rendezVousServices = new RendezVousServices();
-        int count = rendezVousServices.countRendezVousByService(idService);
-
-        if (count < 5) {
-            delete(idService); // Appelle la méthode existante pour supprimer le service
-            System.out.println("Service hospitalier supprimé car il a moins de 5 rendez-vous.");
-        } else {
-            System.out.println("Service hospitalier conservé. Nombre de rendez-vous : " + count);
-        }
-    }
-
-
 
 
 }

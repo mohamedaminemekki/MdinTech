@@ -15,7 +15,7 @@ import java.sql.SQLException;
 public class LoginController {
 
     @FXML
-    private TextField identifiantField;
+    private TextField identifiantField; // Changement ici, précédemment 'usernameField'
     @FXML
     private PasswordField passwordField;
     @FXML
@@ -23,15 +23,17 @@ public class LoginController {
 
     private MainFX mainApp; // Référence à MainFX pour changer les vues
 
+    // Méthode pour gérer la connexion
     public void handleLogin() {
         String identifiant = identifiantField.getText();
         String password = passwordField.getText();
 
+        // Vérifier la connexion de l'utilisateur
         if (identifiant.isEmpty() || password.isEmpty()) {
             showAlert("Erreur", "Veuillez remplir tous les champs.");
         } else {
             try {
-                String query = "SELECT idUser, role FROM user WHERE identifiant = ? AND mdp = SHA2(?, 256)";
+                String query = "SELECT role FROM user WHERE identifiant = ? AND mdp = SHA2(?, 256)";
                 try (PreparedStatement statement = MyDataBase.getInstance().getCon().prepareStatement(query)) {
                     statement.setString(1, identifiant);
                     statement.setString(2, password);
@@ -39,49 +41,30 @@ public class LoginController {
                     try (ResultSet resultSet = statement.executeQuery()) {
                         if (resultSet.next()) {
                             String role = resultSet.getString("role");
-                            int userId = resultSet.getInt("idUser");
 
                             if (role.equals("user")) {
-                                mainApp.showServiceView();
-
-
+                                mainApp.showServiceView(); // Vue classique utilisateur
                             } else if (role.equals("admin")) {
+                                // Simplement afficher un message pour vérifier que l'admin est bien connecté
                                 mainApp.showAdminView();
+                                // Vous pouvez aussi afficher une vue de test ici si vous voulez :
+                                // mainApp.showTestAdminView(); // Remplacer par une vue de test simple
                             }
                         } else {
                             showAlert("Erreur", "Identifiants incorrects.");
                         }
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
                     }
+                } catch (SQLException e) {
+                    showAlert("Erreur", "Erreur de connexion à la base de données.");
                 }
-            } catch (SQLException e) {
-                showAlert("Erreur", "Erreur de connexion à la base de données.");
+            } catch (Exception e) {
+                showAlert("Erreur", "Erreur inattendue.");
             }
         }
     }
 
-    // Fonction pour récupérer l'email d'un utilisateur depuis la base de données
-    private String getUserEmail(int userId) {
-        String email = null;
-        try {
-            String query = "SELECT email FROM user WHERE idUser = ?";
-            try (PreparedStatement statement = MyDataBase.getInstance().getCon().prepareStatement(query)) {
-                statement.setInt(1, userId);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        email = resultSet.getString("email");
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return email;
-    }
 
-
-
+    // Méthode pour afficher une alerte
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -90,6 +73,7 @@ public class LoginController {
         alert.showAndWait();
     }
 
+    // Set MainFX dans le contrôleur
     public void setMainApp(MainFX mainApp) {
         this.mainApp = mainApp;
     }
