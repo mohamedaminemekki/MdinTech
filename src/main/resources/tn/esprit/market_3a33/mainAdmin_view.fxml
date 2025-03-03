@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.StackPane?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@main.css" fx:controller="tn.esprit.market_3a33.Controllers.MainAdminController">
+    <!-- Left Sidebar -->
+    <left>
+        <VBox fx:id="sidebar" styleClass="sidebar" spacing="10" prefWidth="220">
+            <Label text="Menu" styleClass="menu-label" />
+            <Button text="Home" styleClass="sidebar-button" onAction="#loadHome" />
+            <Button text="Product Management" styleClass="sidebar-button" onAction="#loadProductManagement" />
+            <Button text="Order Management" styleClass="sidebar-button" onAction="#loadOrderManagement" />
+            <Button text="Stock Management" styleClass="sidebar-button" onAction="#loadStockManagement" />
+        </VBox>
+    </left>
+
+    <!-- Center Content -->
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="scroll-pane">
+            <StackPane fx:id="contentPane">
+                <!-- Default Home Section -->
+                <fx:include fx:id="homeSection" source="home.fxml" />
+
+                <!-- Product Management Section (Hidden by Default) -->
+                <fx:include fx:id="productManagementSection" source="product_management.fxml" visible="false" />
+
+                <!-- Order Management Section (Hidden by Default) -->
+                <fx:include fx:id="orderManagementSection" source="order_management.fxml" visible="false" />
+
+                <!-- Stock Management Section (Hidden by Default) -->
+                <fx:include fx:id="stockManagementSection" source="stock_management.fxml" visible="false" />
+            </StackPane>
+        </ScrollPane>
+    </center>
+</BorderPane>

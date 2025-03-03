@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.ListView?>
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" spacing="10" fx:controller="tn.esprit.market_3a33.Controllers.ProductManagementController" stylesheets="@product_management.css">
+    <MenuBar>
+        <Menu text="Manage">
+            <MenuItem text="Add Product" onAction="#handleAddProduct" />
+            <MenuItem text="Edit Product" onAction="#handleEditProduct" />
+            <MenuItem text="Delete Product" onAction="#handleDeleteProduct" />
+        </Menu>
+    </MenuBar>
+    <ListView fx:id="productListView" />
+</VBox>

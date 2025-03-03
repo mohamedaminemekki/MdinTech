@@ -1,22 +1,23 @@
-module org.example.mdintech {
+module tn.esprit.market_3a33 {
     requires javafx.controls;
     requires javafx.fxml;
+    requires mysql.connector.j;
+    requires javafx.base;
+    requires javafx.graphics;
+    requires kernel;
+    requires layout;
+    requires com.zaxxer.hikari;
     requires java.sql;
-    requires spring.security.crypto;
-    requires jakarta.mail;
-    requires java.dotenv;
-    requires commons.validator;
-
-    // Open the Controller package to javafx.fxml for reflection
-    opens org.example.mdintech.Controller to javafx.fxml;
-    opens org.example.mdintech.Controller.userController to javafx.fxml;
-    opens org.example.mdintech.Controller.parkingController to javafx.fxml;
-    opens org.example.mdintech.Controller.userController.parking  to javafx.fxml;
+    requires stripe.java;
 
 
+    exports tn.esprit.market_3a33.test;
+    opens tn.esprit.market_3a33.test to javafx.graphics, javafx.fxml;
+    opens tn.esprit.market_3a33.services to javafx.fxml;
+    exports tn.esprit.market_3a33.services;
+    opens tn.esprit.market_3a33.utils to javafx.fxml;
+    exports tn.esprit.market_3a33.utils;
+    opens tn.esprit.market_3a33.Controllers to javafx.fxml;
+    opens tn.esprit.market_3a33.entities to javafx.base;
 
-    // Export the main package
-    opens org.example.mdintech to javafx.fxml;
-    exports org.example.mdintech;
-    exports org.example.mdintech.Controller;
 }

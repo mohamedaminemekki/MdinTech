@@ -1,0 +1,89 @@
+/* General Layout */
+.content {
+    -fx-background-color: #f4f4f4;
+    -fx-padding: 20px;
+    -fx-spacing: 20px;
+}
+
+/* Section Titles */
+.section-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0F6BD5;
+    -fx-padding: 10px 0;
+}
+
+/* Table Styling */
+.stock-table {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+}
+
+.stock-table .column-header-background {
+    -fx-background-color: #0F6BD5;
+}
+
+.stock-table .column-header {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.stock-table .table-row-cell:odd {
+    -fx-background-color: #f9f9f9;
+}
+
+.stock-table .table-row-cell:selected {
+    -fx-background-color: #0F6BD5;
+    -fx-text-fill: white;
+}
+
+/* Input Field */
+.text-field {
+    -fx-border-color: #ccc;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px;
+    -fx-font-size: 14px;
+}
+
+.text-field:focused {
+    -fx-border-color: #0F6BD5;
+    -fx-border-width: 2px;
+}
+
+.input-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+}
+
+/* Buttons */
+.action-button {
+    -fx-background-color: #0F6BD5;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.action-button:hover {
+    -fx-background-color: #025AB5;
+}
+
+/* Invoice Section */
+.invoice-section {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 5px;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+}
+
+.invoice-total {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #d9534f;
+}

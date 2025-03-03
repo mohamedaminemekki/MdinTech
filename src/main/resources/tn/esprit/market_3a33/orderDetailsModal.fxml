@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.market_3a33.Controllers.OrderDetailsModalController"
+      spacing="10"
+      style="-fx-background-color: white;">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label fx:id="notificationLabel" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+    <Label fx:id="totalPriceLabel" style="-fx-font-size: 14; -fx-text-fill: #333;"/>
+
+    <Separator/>
+
+    <Label text="Payment Information" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="30"/>
+            <ColumnConstraints percentWidth="70"/>
+        </columnConstraints>
+
+        <!-- Card Number -->
+        <Label text="Card Number:" GridPane.rowIndex="0"/>
+        <TextField fx:id="cardNumberField" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                   promptText="4242 4242 4242 4242">
+            <tooltip>
+                <Tooltip text="Enter 16-digit card number"/>
+            </tooltip>
+        </TextField>
+
+        <!-- Expiration Date -->
+        <Label text="Expiration Date:" GridPane.rowIndex="1"/>
+        <HBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="1">
+            <TextField fx:id="expMonthField" promptText="MM" maxWidth="60">
+                <tooltip>
+                    <Tooltip text="Month (01-12)"/>
+                </tooltip>
+            </TextField>
+            <TextField fx:id="expYearField" promptText="YYYY" maxWidth="80">
+                <tooltip>
+                    <Tooltip text="Year (4 digits)"/>
+                </tooltip>
+            </TextField>
+        </HBox>
+
+        <!-- CVC -->
+        <Label text="CVC:" GridPane.rowIndex="2"/>
+        <TextField fx:id="cvcField" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                   promptText="123" maxWidth="80">
+            <tooltip>
+                <Tooltip text="3-digit security code"/>
+            </tooltip>
+        </TextField>
+    </GridPane>
+
+    <Separator/>
+
+    <HBox spacing="10">
+        <padding>
+            <Insets top="10" right="20" bottom="10" left="0"/>
+        </padding>
+        <Button text="Pay" onAction="#handlePay"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        <Button text="Delete Order" onAction="#handleDeleteOrder"
+                style="-fx-background-color: #ff5722; -fx-text-fill: white; -fx-font-weight: bold;"/>
+    </HBox>
+</VBox>

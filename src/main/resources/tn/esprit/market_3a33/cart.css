@@ -1,0 +1,62 @@
+/* Cart Sidebar */
+.cart-sidebar {
+    -fx-background-color: #ffffff;
+    -fx-padding: 20px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 0 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 10, 0, 0, 0);
+}
+
+.cart-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e3c72;
+}
+
+.cart-list {
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+    -fx-font-size: 16px;
+    -fx-background-radius: 5px;
+}
+
+.total-price {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0288d1;
+}
+
+.delete-button {
+    -fx-background-color: #ff4444;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 8px;
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.delete-button:hover {
+    -fx-background-color: #cc0000;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.pay-button {
+    -fx-background-color: #4caf50;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 8px;
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.pay-button:hover {
+    -fx-background-color: #388e3c;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}

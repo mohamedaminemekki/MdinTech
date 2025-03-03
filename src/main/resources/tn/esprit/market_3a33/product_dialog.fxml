@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" spacing="10" fx:controller="tn.esprit.market_3a33.Controllers.ProductDialogController" stylesheets="@product_dialog.css">
+    <Label text="Name:" />
+    <TextField fx:id="nameField" />
+    <Label text="Reference:" />
+    <TextField fx:id="referenceField" />
+    <Label text="Price:" />
+    <TextField fx:id="priceField" />
+    <Label text="Stock Limit:" />
+    <TextField fx:id="stockLimitField" />
+    <Label text="Stock:" />
+    <TextField fx:id="stockField" />
+    <HBox spacing="10">
+        <Button text="OK" onAction="#handleOk" />
+        <Button text="Cancel" onAction="#handleCancel" />
+    </HBox>
+</VBox>
