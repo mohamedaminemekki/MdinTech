@@ -1,9 +1,9 @@
 package mdinteech.controllers;
 
-import javafx.fxml.FXML;
-import javafx.scene.web.WebView;
-import javafx.scene.layout.AnchorPane;
 import javafx.concurrent.Worker;
+import javafx.fxml.FXML;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.web.WebView;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,29 +15,27 @@ import java.util.List;
 public class BusMapController {
 
     @FXML
-    private WebView webView;
+    private AnchorPane mapContainer; // Correspond à fx:id="mapContainer" dans le FXML
 
     @FXML
-    private AnchorPane mapContainer;
+    private WebView webView;         // Correspond à fx:id="webView"
 
     @FXML
     public void initialize() {
-        // Charger la carte des bus depuis le fichier HTML
+        // Charger la carte depuis le fichier HTML (assurez-vous que bus_map.html est bien dans /mdinteech/views/)
         String mapUrl = getClass().getResource("/mdinteech/views/bus_map.html").toExternalForm();
         webView.getEngine().load(mapUrl);
 
-        // Attendre que la page soit complètement chargée
-        webView.getEngine().getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == Worker.State.SUCCEEDED) {
-                // Redimensionner la carte lorsque la fenêtre est redimensionnée
-                webView.widthProperty().addListener((obs, oldVal, newVal) -> {
-                    webView.getEngine().executeScript("map.invalidateSize()");
-                });
-                webView.heightProperty().addListener((obs, oldVal, newVal) -> {
-                    webView.getEngine().executeScript("map.invalidateSize()");
-                });
+        // Attendre la fin du chargement de la page HTML
+        webView.getEngine().getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+            if (newState == Worker.State.SUCCEEDED) {
+                // Appeler map.invalidateSize() lorsque le WebView est redimensionné
+                webView.widthProperty().addListener((o, oldVal, newVal) ->
+                        webView.getEngine().executeScript("map.invalidateSize()"));
+                webView.heightProperty().addListener((o, oldVal, newVal) ->
+                        webView.getEngine().executeScript("map.invalidateSize()"));
 
-                // Mettre à jour la carte avec les données des arrêts de bus
+                // Récupérer les arrêts de bus et les afficher sur la carte
                 List<BusStop> busStops = getBusStopsFromDatabase();
                 String busStopsJson = convertToJson(busStops);
                 webView.getEngine().executeScript("updateBusMap(" + busStopsJson + ")");
@@ -45,22 +43,24 @@ public class BusMapController {
         });
     }
 
+    /**
+     * Récupère les arrêts de bus depuis la base de données (table "trips" : departure, destination).
+     */
     private List<BusStop> getBusStopsFromDatabase() {
         List<BusStop> busStops = new ArrayList<>();
         try {
-            // Connexion à la base de données
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/city_transport", "root", "");
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/city_transport", "root", ""
+            );
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT departure, destination FROM trips");
 
-            // Parcourir les résultats et créer des objets BusStop
             while (resultSet.next()) {
                 String departure = resultSet.getString("departure");
                 String destination = resultSet.getString("destination");
                 busStops.add(new BusStop(departure, destination));
             }
 
-            // Fermer les ressources
             resultSet.close();
             statement.close();
             connection.close();
@@ -70,6 +70,9 @@ public class BusMapController {
         return busStops;
     }
 
+    /**
+     * Convertit la liste des arrêts de bus en JSON pour être passée à la fonction JS "updateBusMap()".
+     */
     private String convertToJson(List<BusStop> busStops) {
         StringBuilder json = new StringBuilder("[");
         for (BusStop stop : busStops) {
@@ -78,17 +81,20 @@ public class BusMapController {
                     .append("\"destination\":\"").append(stop.getDestination()).append("\"")
                     .append("},");
         }
-        if (busStops.size() > 0) {
-            json.deleteCharAt(json.length() - 1); // Supprimer la dernière virgule
+        if (!busStops.isEmpty()) {
+            // Supprimer la dernière virgule
+            json.deleteCharAt(json.length() - 1);
         }
         json.append("]");
         return json.toString();
     }
 
-    // Classe interne pour représenter un arrêt de bus
+    /**
+     * Classe interne représentant un arrêt de bus (un départ + une destination).
+     */
     private static class BusStop {
-        private String departure;
-        private String destination;
+        private final String departure;
+        private final String destination;
 
         public BusStop(String departure, String destination) {
             this.departure = departure;

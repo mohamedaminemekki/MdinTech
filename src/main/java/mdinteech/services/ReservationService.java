@@ -6,7 +6,9 @@ import mdinteech.entities.Trip;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReservationService implements Services<Reservation> {
     private Connection connection;
@@ -305,4 +307,149 @@ public class ReservationService implements Services<Reservation> {
         }
         return tripIds;
     }
+    // Dans ReservationService.java
+
+    public double getMonthlyRevenue() throws SQLException {
+        String query = "SELECT SUM("
+                + "CASE WHEN r.seat_type LIKE 'Premium%' THEN 10 ELSE 0 END + "
+                + "COALESCE(t.price, 0)"
+                + ") "
+                + "FROM reservations r "
+                + "JOIN trips t ON r.trip_id = t.id "
+                + "WHERE MONTH(r.reservation_time) = MONTH(CURRENT_DATE()) "
+                + "AND r.payment_status IN ('Paid', 'Confirmé')";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() ? rs.getDouble(1) : 0.0;
+        }
+    }
+
+    public Map<String, Integer> getReservationStatusStats() throws SQLException {
+        Map<String, Integer> stats = new LinkedHashMap<>();
+        String query = "SELECT status, COUNT(*) FROM reservations GROUP BY status";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                stats.put(rs.getString(1).toLowerCase(), rs.getInt(2));
+            }
+        }
+        return stats;
+    }
+
+    public double getAverageOccupancy() throws SQLException {
+        String query = "SELECT AVG((reservations_count * 100.0) / GREATEST(capacity, 1)) "
+                + "FROM ("
+                + "SELECT t.id, t.capacity, COUNT(r.id) as reservations_count "
+                + "FROM trips t "
+                + "LEFT JOIN reservations r ON t.id = r.trip_id "
+                + "GROUP BY t.id, t.capacity"
+                + ") as subquery";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() ? rs.getDouble(1) : 0.0;
+        }
+    }
+    // Rentabilité
+    public Map<String, Double> getMostProfitableTrips(int limit) throws SQLException {
+        Map<String, Double> data = new LinkedHashMap<>();
+        String query = "SELECT CONCAT(t.departure, ' → ', t.destination), "
+                + "SUM(t.price + CASE WHEN r.seat_type LIKE 'Premium%' THEN 10 ELSE 0 END) "
+                + "FROM reservations r "
+                + "JOIN trips t ON r.trip_id = t.id "
+                + "WHERE r.payment_status = 'Paid' "
+                + "GROUP BY t.id "
+                + "ORDER BY 2 DESC "
+                + "LIMIT ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, limit);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                data.put(rs.getString(1), rs.getDouble(2));
+            }
+        }
+        return data;
+    }
+
+
+    public Map<String, Double> getLeastProfitableTrips(int limit) throws SQLException {
+        Map<String, Double> data = new LinkedHashMap<>();
+        String query = "SELECT CONCAT(t.departure, ' → ', t.destination), "
+                + "SUM(t.price + CASE WHEN r.seat_type LIKE 'Premium%' THEN 10 ELSE 0 END) "
+                + "FROM reservations r "
+                + "JOIN trips t ON r.trip_id = t.id "
+                + "WHERE r.payment_status = 'Paid' "
+                + "GROUP BY t.id "
+                + "ORDER BY 2 ASC "
+                + "LIMIT ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, limit);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                data.put(rs.getString(1), rs.getDouble(2));
+            }
+        }
+        return data;
+    }
+
+
+    private String buildDateCondition(LocalDate... dates) {
+        if (dates.length == 2) {
+            return " AND reservation_time BETWEEN ? AND ? ";
+        }
+        return "";
+    }
+
+    private void setDateParameters(PreparedStatement stmt, LocalDate... dates) throws SQLException {
+        if (dates.length == 2) {
+            stmt.setDate(1, Date.valueOf(dates[0]));
+            stmt.setDate(2, Date.valueOf(dates[1]));
+        }
+    }
+    public Map<String, Double> getCancellationByHour(LocalDate... dates) throws SQLException {
+        Map<String, Double> data = new LinkedHashMap<>();
+        String query = "SELECT DATE_FORMAT(reservation_time, '%Hh'), "
+                + "ROUND((SUM(CASE WHEN status = 'Cancelled' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)), 1) "
+                + "FROM reservations "
+                + "WHERE 1=1 " + buildDateCondition(dates)
+                + "GROUP BY HOUR(reservation_time)";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            setDateParameters(stmt, dates);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                data.put(rs.getString(1), rs.getDouble(2));
+            }
+        }
+        return data;
+    }
+    public Map<String, Integer> getCancellationByDestination(LocalDate... dates) throws SQLException {
+        Map<String, Integer> cancellations = new LinkedHashMap<>();
+
+        String query = "SELECT t.destination, COUNT(*) AS cancellation_count " +
+                "FROM reservations r " +
+                "JOIN trips t ON r.trip_id = t.id " +
+                "WHERE r.status = 'Cancelled' " +
+                buildDateCondition(dates) +
+                "GROUP BY t.destination " +
+                "ORDER BY cancellation_count DESC";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            setDateParameters(stmt, dates);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String destination = rs.getString("destination");
+                int count = rs.getInt("cancellation_count");
+                cancellations.put(destination, count);
+            }
+        }
+
+        return cancellations;
+    }
+
+
 }

@@ -1,7 +1,5 @@
 package mdinteech.entities;
 
-import mdinteech.entities.Ville;
-
 public class ChatManager {
     private static String currentScenario = "";
     private static String currentCity = "";

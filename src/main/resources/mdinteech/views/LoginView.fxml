@@ -9,6 +9,7 @@
 <?import javafx.scene.text.FontWeight?>
 <?import javafx.scene.effect.DropShadow?>
 
+<?import java.awt.Image?>
 <VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mdinteech.controllers.LoginController"
       alignment="CENTER" spacing="20" style="-fx-background-color: linear-gradient(to bottom, #ffffff, #f0f0f0); -fx-padding: 40;">
 
@@ -31,13 +32,7 @@
 
     <!-- Bouton Admin -->
     <Button text="Admin" onAction="#handleAdminButton" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px; -fx-pref-width: 200px; -fx-pref-height: 50px; -fx-cursor: hand;">
-        <graphic>
-            <ImageView fitWidth="24" fitHeight="24">
-                <image>
-                    <Image url="@/images/admin.png" />
-                </image>
-            </ImageView>
-        </graphic>
+
         <effect>
             <DropShadow color="#aaaaaa" radius="5" offsetX="2" offsetY="2" />
         </effect>
@@ -48,13 +43,7 @@
 
     <!-- Bouton User -->
     <Button text="User" onAction="#handleUserButton" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 16px; -fx-pref-width: 200px; -fx-pref-height: 50px; -fx-cursor: hand;">
-        <graphic>
-            <ImageView fitWidth="24" fitHeight="24">
-                <image>
-                    <Image url="@/images/user.png" />
-                </image>
-            </ImageView>
-        </graphic>
+
         <effect>
             <DropShadow color="#aaaaaa" radius="5" offsetX="2" offsetY="2" />
         </effect>

@@ -20,7 +20,9 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import mdinteech.entities.Trip;
-import mdinteech.services.*;
+
+import mdinteech.services.TripService;
+import mdinteech.services.WeatherService;
 import mdinteech.utils.DatabaseConnection;
 import org.json.JSONObject;
 
@@ -320,18 +322,18 @@ public class MainController {
             if (departureData != null && destinationData != null) {
                 // Données pour la ville de départ
                 String departureWeather = departureData.getJSONArray("weather").getJSONObject(0).getString("description");
-                double departureTemp = departureData.getJSONObject("main").getDouble("temp") - 273.15; // Conversion de Kelvin à Celsius
-                double departureHumidity = departureData.getJSONObject("main").getDouble("humidity");
+                double departureTemp = departureData.getJSONObject("mdinteech/main").getDouble("temp") - 273.15; // Conversion de Kelvin à Celsius
+                double departureHumidity = departureData.getJSONObject("mdinteech/main").getDouble("humidity");
                 double departureWindSpeed = departureData.getJSONObject("wind").getDouble("speed");
-                double departurePressure = departureData.getJSONObject("main").getDouble("pressure");
+                double departurePressure = departureData.getJSONObject("mdinteech/main").getDouble("pressure");
                 String departureIconUrl = WeatherService.getWeatherIconUrl(departureData.getJSONArray("weather").getJSONObject(0).getString("icon"));
 
                 // Données pour la ville de destination
                 String destinationWeather = destinationData.getJSONArray("weather").getJSONObject(0).getString("description");
-                double destinationTemp = destinationData.getJSONObject("main").getDouble("temp") - 273.15; // Conversion de Kelvin à Celsius
-                double destinationHumidity = destinationData.getJSONObject("main").getDouble("humidity");
+                double destinationTemp = destinationData.getJSONObject("mdinteech/main").getDouble("temp") - 273.15; // Conversion de Kelvin à Celsius
+                double destinationHumidity = destinationData.getJSONObject("mdinteech/main").getDouble("humidity");
                 double destinationWindSpeed = destinationData.getJSONObject("wind").getDouble("speed");
-                double destinationPressure = destinationData.getJSONObject("main").getDouble("pressure");
+                double destinationPressure = destinationData.getJSONObject("mdinteech/main").getDouble("pressure");
                 String destinationIconUrl = WeatherService.getWeatherIconUrl(destinationData.getJSONArray("weather").getJSONObject(0).getString("icon"));
 
                 // Coordonnées géographiques des villes (exemple pour Tunis et Sousse)
@@ -347,10 +349,10 @@ public class MainController {
                     WeatherController controller = loader.getController();
                     controller.setWeather(
                             selectedTrip.getDeparture(), departureWeather, departureIconUrl,
-                            departureData.getJSONObject("main").getDouble("temp"), // Température en Kelvin
+                            departureData.getJSONObject("mdinteech/main").getDouble("temp"), // Température en Kelvin
                             departureHumidity, departureWindSpeed, departurePressure,
                             selectedTrip.getDestination(), destinationWeather, destinationIconUrl,
-                            destinationData.getJSONObject("main").getDouble("temp"), // Température en Kelvin
+                            destinationData.getJSONObject("mdinteech/main").getDouble("temp"), // Température en Kelvin
                             destinationHumidity, destinationWindSpeed, destinationPressure
                     );
 

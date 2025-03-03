@@ -5,7 +5,9 @@ import mdinteech.entities.Trip;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TripService implements Services<Trip> {
 
@@ -316,5 +318,41 @@ public class TripService implements Services<Trip> {
             ResultSet rs = ps.executeQuery();
             return rs.next() ? rs.getInt("id") : -1;
         }
+    }
+    // Dans TripService.java
+
+    public int getTotalTrips() throws SQLException {
+        String query = "SELECT COUNT(*) FROM trips";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() ? rs.getInt(1) : 0;
+        }
+    }
+
+    public Map<String, Integer> getTripsPerMonth() throws SQLException {
+        Map<String, Integer> monthlyStats = new LinkedHashMap<>();
+        String query = "SELECT DATE_FORMAT(departure_time, '%Y-%m') as month, COUNT(*) " +
+                "FROM trips GROUP BY month ORDER BY month";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                monthlyStats.put(rs.getString(1), rs.getInt(2));
+            }
+        }
+        return monthlyStats;
+    }
+
+    public Map<String, Integer> getPopularDestinations(int limit) throws SQLException {
+        Map<String, Integer> destinations = new LinkedHashMap<>();
+        String query = "SELECT destination, COUNT(*) as count " +
+                "FROM trips GROUP BY destination ORDER BY count DESC LIMIT ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, limit);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                destinations.put(rs.getString("destination"), rs.getInt("count"));
+            }
+        }
+        return destinations;
     }
 }

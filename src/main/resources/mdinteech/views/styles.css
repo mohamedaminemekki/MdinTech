@@ -483,3 +483,22 @@
     -fx-vgap: 15;
 }
 
+/* Style des tooltips */
+.chart-tooltip-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+/* Couleurs des séries */
+.default-color0.chart-bar { -fx-bar-fill: #27ae60; } /* Rentables */
+.default-color1.chart-bar { -fx-bar-fill: #e74c3c; } /* Non rentables */
+
+/* Style de la carte thermique */
+.heat-map-cell {
+    -fx-background-color: derive(#3498db, 50%);
+    -fx-border-color: #ecf0f1;
+}
+
+.heat-map-cell:hover {
+    -fx-background-color: derive(#2980b9, 20%);
+}

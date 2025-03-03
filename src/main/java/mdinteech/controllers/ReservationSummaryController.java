@@ -10,7 +10,6 @@ import javafx.stage.Stage;
 import mdinteech.entities.Reservation;
 import mdinteech.entities.Trip;
 import mdinteech.services.ReservationService;
-import mdinteech.services.TripService;
 import mdinteech.utils.DatabaseConnection;
 
 import java.io.IOException;

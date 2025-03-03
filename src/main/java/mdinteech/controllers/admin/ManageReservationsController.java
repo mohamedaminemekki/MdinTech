@@ -14,12 +14,10 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import mdinteech.entities.Reservation;
 import mdinteech.services.ReservationService;
-import mdinteech.services.TripService;
 import mdinteech.utils.DatabaseConnection;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;

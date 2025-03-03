@@ -13,13 +13,11 @@ import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import mdinteech.entities.Trip;
-import mdinteech.services.ReservationService;
 import mdinteech.services.TripService;
 import mdinteech.utils.DatabaseConnection;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -222,5 +220,13 @@ public class ManageTripsController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    @FXML
+    private void showStats() throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/mdinteech/views/admin/stats_trips.fxml"));
+        Stage stage = new Stage();
+        stage.setTitle("Statistiques des trajets");
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 }

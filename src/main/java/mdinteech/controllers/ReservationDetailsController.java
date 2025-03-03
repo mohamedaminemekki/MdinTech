@@ -9,13 +9,10 @@ import javafx.stage.Stage;
 import mdinteech.entities.Reservation;
 import mdinteech.entities.Trip;
 import mdinteech.services.ReservationService;
-import mdinteech.services.TripService;
 import mdinteech.utils.DatabaseConnection;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 
 public class ReservationDetailsController {
@@ -136,7 +133,7 @@ public class ReservationDetailsController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/mdinteech/views/ReservationSummary.fxml"));
             Parent root = loader.load();
 
-            mdinteech.controllers.ReservationSummaryController controller = loader.getController();
+            ReservationSummaryController controller = loader.getController();
             controller.setReservationDetails(
                     reservation,
                     selectedDeparture,
