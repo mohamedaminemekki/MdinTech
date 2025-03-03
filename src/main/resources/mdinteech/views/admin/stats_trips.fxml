@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="mdinteech.controllers.admin.TripStatsController">
+
+    <top>
+        <HBox alignment="CENTER" style="-fx-background-color: #2c3e50; -fx-padding: 15;">
+            <Label text="Tableau de bord des trajets" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" />
+        </HBox>
+    </top>
+
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE" style="-fx-padding: 10;">
+            <!-- Onglet 1: Statistiques générales -->
+            <Tab text="Statistiques générales">
+                <VBox spacing="20" style="-fx-padding: 20;">
+                    <!-- KPI Principaux -->
+                    <HBox spacing="30" alignment="CENTER">
+                        <VBox alignment="CENTER" style="-fx-background-color: #f0f0f0; -fx-padding: 15; -fx-background-radius: 10;">
+                            <Label text="Total Trajets" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                            <Label fx:id="totalTripsLabel" text="0" style="-fx-font-size: 24; -fx-text-fill: #2c3e50;"/>
+                        </VBox>
+
+                        <VBox alignment="CENTER" style="-fx-background-color: #f0f0f0; -fx-padding: 15; -fx-background-radius: 10;">
+                            <Label text="Remplissage moyen" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                            <Label fx:id="occupancyLabel" text="0%" style="-fx-font-size: 24; -fx-text-fill: #2980b9;"/>
+                        </VBox>
+
+                        <VBox alignment="CENTER" style="-fx-background-color: #f0f0f0; -fx-padding: 15; -fx-background-radius: 10;">
+                            <Label text="Revenu Mensuel" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                            <Label fx:id="revenueLabel" text="0 DT" style="-fx-font-size: 24; -fx-text-fill: #27ae60;"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- Graphiques principaux -->
+                    <HBox spacing="20">
+                        <LineChart fx:id="tripsChart" title="Évolution des trajets"
+                                   style="-fx-pref-width: 600; -fx-pref-height: 300;">
+                            <xAxis><CategoryAxis label="Mois" /></xAxis>
+                            <yAxis><NumberAxis label="Nombre de trajets" /></yAxis>
+                        </LineChart>
+
+                        <PieChart fx:id="destinationsChart" title="Destinations populaires"
+                                  style="-fx-pref-width: 400; -fx-pref-height: 300;" />
+                    </HBox>
+                </VBox>
+            </Tab>
+
+            <!-- Onglet 2: Analyse de rentabilité -->
+            <Tab text="Rentabilité">
+                <VBox spacing="15" style="-fx-padding: 15;">
+                    <HBox spacing="20">
+                        <BarChart fx:id="profitableTripsChart" title="Top 5 trajets rentables"
+                                  style="-fx-pref-width: 600; -fx-pref-height: 300;">
+                            <xAxis><CategoryAxis label="Trajet" /></xAxis>
+                            <yAxis><NumberAxis label="Revenu (DT)" /></yAxis>
+                        </BarChart>
+
+                        <BarChart fx:id="unprofitableTripsChart" title="Top 5 trajets peu rentables"
+                                  style="-fx-pref-width: 600; -fx-pref-height: 300;">
+                            <xAxis><CategoryAxis label="Trajet" /></xAxis>
+                            <yAxis><NumberAxis label="Revenu (DT)" /></yAxis>
+                        </BarChart>
+                    </HBox>
+                </VBox>
+            </Tab>
+
+            <!-- Onglet 3: Analyse temporelle -->
+            <Tab text="Analyse temporelle">
+                <VBox spacing="15" style="-fx-padding: 15;">
+                    <HBox spacing="20">
+                        <LineChart fx:id="cancellationHeatMap" title="Taux d'annulation par heure"
+                                   style="-fx-pref-width: 600; -fx-pref-height: 300;">
+                            <xAxis><CategoryAxis label="Heure" /></xAxis>
+                            <yAxis><NumberAxis label="Taux (%)" /></yAxis>
+                        </LineChart>
+
+                        <PieChart fx:id="destinationCancellationChart" title="Annulations par destination"
+                                  style="-fx-pref-width: 400; -fx-pref-height: 300;" />
+                    </HBox>
+
+                    <!-- Filtres interactifs -->
+                    <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 10;">
+                        <Label text="Période:" style="-fx-font-weight: bold;"/>
+                        <DatePicker fx:id="startDatePicker" style="-fx-pref-width: 150;"/>
+                        <Label text="à"/>
+                        <DatePicker fx:id="endDatePicker" style="-fx-pref-width: 150;"/>
+                        <Button text="Actualiser" onAction="#updateTimeAnalysis"
+                                style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
+                    </HBox>
+
+                    <!-- Carte thermique interactive -->
+                    <HBox spacing="20" style="-fx-padding: 10;">
+                        <Label text="Demande par zone:" style="-fx-font-weight: bold;"/>
+                        <!-- Ajouter ici un composant personnalisé pour la carte thermique -->
+                    </HBox>
+                </VBox>
+            </Tab>
+        </TabPane>
+    </center>
+
+    <!-- Pied de page optionnel -->
+    <bottom>
+        <HBox alignment="CENTER" style="-fx-background-color: #ecf0f1; -fx-padding: 10;">
+            <Label text="Statistiques en temps réel - Mise à jour: " />
+            <Label fx:id="updateTimeLabel" text="00:00:00" />
+        </HBox>
+    </bottom>
+</BorderPane>
