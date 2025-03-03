@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.MainLayoutController"
+            stylesheets="@style.css">
+    <!-- Navbar will be included here once -->
+    <left>
+        <fx:include source="navBar.fxml"/>
+    </left>
+    <!-- The center will be replaced by page content -->
+    <center>
+        <!-- Initially empty or a welcome page -->
+    </center>
+</BorderPane>
